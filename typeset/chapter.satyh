@@ -141,7 +141,9 @@ end = struct
         let () = ChapterRef.reset-subsection-num () in
         let () = ChapterRef.register-new-chapter label |> Fn.ignore in
         let title-for-toc = title-for-toc |> Option.unwrap-or title in
-        let () = toc-acc-ref <- (TOCElementChapter(label, title-for-toc, subtitle, author)) :: !toc-acc-ref in
+        let () =
+            TOCElementChapter(label, title-for-toc, subtitle, author)
+            |> TableOfContentsRepository.register in
         let () = Bibliography.register bibliography in
         % Render
         let ctx-doc =

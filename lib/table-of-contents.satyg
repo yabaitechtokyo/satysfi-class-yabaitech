@@ -1,4 +1,27 @@
+@require: base/ref
+@require: base/list-ext
+
 type toc-element =
 | TOCElementChapter    of string * inline-text * inline-text option * inline-text
 % | TOCElementSection    of string * inline-text
 % | TOCElementSubsection of string * inline-text
+
+module TableOfContentsRepository : sig
+
+    val register : toc-element -> unit
+    val get-all : unit -> toc-element list
+
+end = struct
+
+    let toc-list-ref = Ref.make []
+
+    let register element =
+        toc-list-ref
+        |> Ref.set (element :: Ref.get toc-list-ref)
+
+    let get-all () =
+        toc-list-ref
+        |> Ref.get
+        |> List.reverse
+
+end

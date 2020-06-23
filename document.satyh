@@ -3,6 +3,7 @@
 @require: base/ref
 @require: base/pager
 
+@import: lib/table-of-contents
 @import: pages/table-of-contents
 @import: pages/title
 @import: typeset/chapter
@@ -86,7 +87,7 @@ end = struct
         in
         let bb-toc-pages =
             ctx-doc
-            |> TableOfContentsPage.render (Ref.get Mutables.toc-acc-ref)
+            |> TableOfContentsPage.render (TableOfContentsRepository.get-all ())
         in
         let bb-colophon-pages = make-bb-colophon-page record ctx-doc
         in

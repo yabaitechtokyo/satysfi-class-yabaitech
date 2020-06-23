@@ -30,7 +30,6 @@ end = struct
   let make-bb toc-list ctx =
     let bb-toc-main =
         toc-list
-        |> List.reverse
         |> List.fold-left (fun bbacc tocelem -> (
              match tocelem with
              | TOCElementChapter(label, title, subtitle, author) ->
