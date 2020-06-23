@@ -1,0 +1,32 @@
+@import: ../document
+@import: ../document-config
+@import: ../font-config
+@import: ../typeset/page-header
+
+module FakeDocument : sig
+
+    val render : block-boxes -> document
+
+end = struct
+
+    let get-content-area pbinfo =
+        let (text-origin-x, text-origin-y) = DocumentConfig.text-origin in
+        (|
+            text-origin = (text-origin-x, text-origin-y);
+            text-height = DocumentConfig.text-height;
+        |)
+
+    let render-header-and-footer pbinfo =
+        let pageno = pbinfo#page-number in
+        (|
+            header-origin  = DocumentConfig.header-origin;
+            header-content = PageHeader.render-block pageno;
+            footer-origin  = DocumentConfig.footer-origin;
+            footer-content = PageFooter.render-block pageno;
+        |)
+
+    let render content =
+        content
+        |> page-break DocumentConfig.paper-size get-content-area render-header-and-footer
+
+end
