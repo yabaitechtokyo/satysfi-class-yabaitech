@@ -1,0 +1,78 @@
+@require: base/ref
+@require: base/option-ext
+@import: label
+
+module TheoremRef : sig
+
+    val register-definition : string option -> string
+    val register-theorem : string option -> string
+    val register-lemma : string option -> string
+    val register-corollary : string option -> string
+    val register-assumption : string option -> string
+    val register-example : string option -> string
+    val register-notation : string option -> string
+
+    val get-definition : string -> string option
+    val get-theorem : string -> string option
+    val get-lemma : string -> string option
+    val get-corollary : string -> string option
+    val get-assumption : string -> string option
+    val get-example : string -> string option
+    val get-notation : string -> string option
+
+end = struct
+
+    let num-theorems = Ref.make 0
+
+    let register-generic prefix label-opt = 
+        let () = Ref.inc num-theorems in
+        let num-string = (arabic (Ref.get num-theorems)) in
+        let () = label-opt |> Option.iter (fun label -> (
+            let rawlabel = (label |> Label.decorate prefix `num`) in
+            register-cross-reference rawlabel num-string)) in
+        num-string
+
+    let register-definition label-opt =
+        register-generic `definition` label-opt
+
+    let register-theorem label-opt =
+        register-generic `theorem` label-opt
+
+    let register-lemma label-opt =
+        register-generic `lemma` label-opt
+
+    let register-corollary label-opt =
+        register-generic `corollary` label-opt
+
+    let register-assumption label-opt =
+        register-generic `assumption` label-opt
+
+    let register-example label-opt =
+        register-generic `example` label-opt
+
+    let register-notation label-opt =
+        register-generic `notation` label-opt
+
+
+    let get-definition label =
+        label |> Label.decorate `definition` `num` |> get-cross-reference
+
+    let get-theorem label =
+        label |> Label.decorate `theorem` `num` |> get-cross-reference
+
+    let get-lemma label =
+        label |> Label.decorate `lemma` `num` |> get-cross-reference
+
+    let get-corollary label =
+        label |> Label.decorate `corollary` `num` |> get-cross-reference
+
+    let get-assumption label =
+        label |> Label.decorate `assumption` `num` |> get-cross-reference
+
+    let get-example label =
+        label |> Label.decorate `example` `num` |> get-cross-reference
+
+    let get-notation label =
+        label |> Label.decorate `notation` `num` |> get-cross-reference
+
+end

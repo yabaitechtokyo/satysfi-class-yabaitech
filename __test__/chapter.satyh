@@ -1,0 +1,77 @@
+@import: ../yabaitech
+@require: base/option-ext
+
+module ChapterTest : sig
+
+    val article :  block-text
+
+end = struct
+
+    let article = '<
+        +chapter ?:(`chapter`)
+        (|
+            bibliography = [];
+            title = {chapterのテスト};
+            title-for-toc = Option.none;
+            subtitle = Option.none;
+            author = {著者名};
+        |)
+        <
+        +p {Hello, world!}
+        >
+
+        +chapter ?:(`chapter-with-substitle`)
+        (|
+            bibliography = [];
+            title = {chapterのサブタイトルのテスト};
+            title-for-toc = Option.none;
+            subtitle = Option.some {サブタイトル};
+            author = {著者名};
+        |)
+        <
+        +p {Hello, world!}
+        >
+
+        +chapter ?:(`section-and-subsection`)
+        (|
+            bibliography = [];
+            title = {sectionとsubsectionのテスト};
+            title-for-toc = Option.none;
+            subtitle = Option.none;
+            author = {著者名};
+        |)
+        <
+            +section {節の1} <
+                +subsection {小節の1} <
+                    +subsubsection {少々節の1} <
+                        +p {Hello, world!}
+                    >
+                >
+                +subsection {小節の2} <
+                    +p {Hello, world!}
+                >
+            >
+            +section ?:(`section-2`) {節の2} <
+                +subsection {小節の3} <
+                    +p {Hello, world!}
+                >
+                +subsection ?:(`subsection-4`) {小節の4} <
+                    +p {Hello, world!}
+                >
+            >
+        >
+
+        +chapter ?:(`reference-to-chapter-ish`)
+        (|
+            bibliography = [];
+            title = {chapter系の参照のテスト};
+            title-for-toc = Option.none;
+            subtitle = Option.none;
+            author = {著者名};
+        |) <
+            +p {\ref-chapter(`chapter`);は「chapterのテスト」です}
+            +p {\ref-chapter(`section-and-subsection`);の\ref-section(`section-2`);は「セクションの2」です}
+            +p {\ref-chapter(`section-and-subsection`);の\ref-subsection(`subsection-4`);は「サブセクションの4」です}
+        >
+    >
+end

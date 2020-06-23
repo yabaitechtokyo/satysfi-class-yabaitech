@@ -1,0 +1,229 @@
+@require: pervasives
+@require: base/inline
+@require: base/block
+@require: base/fn
+
+@import: ../lib/chapter-ref
+@import: ../lib/label
+@import: ../lib/table-of-contents
+@import: ../lib/bibliography
+@import: ../typeset/bibliography-section
+@import: ../document-config
+@import: ../font-config
+@import: ../mutables
+
+module Chapter : sig
+
+    val chapter-heading : context -> inline-boxes option -> inline-boxes -> block-boxes
+    val chapter-scheme : context -> string option -> bib-defs -> inline-text -> inline-text option -> inline-text option -> inline-text -> block-text -> block-boxes
+    val render-pseudo-chapter : context -> string option -> bib-defs -> inline-text -> inline-text option -> inline-text option -> inline-text -> block-text -> block-boxes
+    val section-scheme : context -> string option -> inline-text -> block-text -> block-boxes
+    val subsection-scheme : context -> string option -> inline-text -> block-text -> block-boxes
+    val subsubsection-scheme : context -> string option -> inline-text -> block-text -> block-boxes
+
+    val render-inline-ref-chapter : string -> context -> inline-boxes
+    val render-inline-ref-section : string -> context -> inline-boxes
+    val render-inline-ref-subsection : string -> context -> inline-boxes
+
+end = struct
+
+    open DocumentConfig
+    open Mutables
+    open FontConfig
+
+    let chapter-heading ctx ib-num-opt ib-title =
+        let bb =
+            match ib-num-opt with
+            | None         -> block-nil
+            | Some(ib-num) -> line-break false false ctx (ib-num ++ inline-fil)
+            in
+            bb +++ line-break false false ctx (ib-title ++ inline-fil) +++ block-skip 36pt
+
+
+    let section-heading ctx ib-heading =
+        line-break true false (ctx |> set-paragraph-margin section-top-margin section-bottom-margin) ib-heading
+
+
+    let render-block-bib-section ctx-bib ctx-doc bibliography =
+        match bibliography with
+        | [] -> Block.nil
+        | bibliography -> 
+            let ib-bib-title =
+                ctx-doc
+                |> make-chapter-title
+                |> Inline.read {参考文献}
+            in
+            let bb-bib-title =
+                (ib-bib-title ++ inline-fil)
+                |> section-heading ctx-doc
+            in
+            let bb-bib-main = BibliographySection.render-block ctx-bib bibliography
+            in
+            bb-bib-title +++ bb-bib-main
+
+    let render-block-chapter-title title ctx =
+        ctx |> FontConfig.make-chapter-title
+            |> Block.of-inline ?:true false false (Inline.read title)
+
+    let render-block-chapter-subtitle subtitle ctx =
+        let render-inline ctx =
+            let ctx-subtitle = ctx |> make-chapter-subtitle
+            in
+            Inline.concat [
+                ctx-subtitle |> Inline.read {― #subtitle; ―};
+                Inline.fil;
+            ]
+        in
+        ctx |> FontConfig.make-chapter-subtitle
+            |> Block.of-inline false false render-inline
+    
+    let render-block-chapter-author author ctx =
+        let render-inline ctx =
+            Inline.concat [
+                Inline.fil;
+                ctx |> FontConfig.make-chapter-author
+                    |> Inline.read author
+            ]
+        in
+        ctx |> make-chapter-author
+            |> Block.of-inline false false render-inline
+
+    let render-block-chapter-heading label title subtitle-opt author ctx =
+        let bb-title = ctx |> render-block-chapter-title title
+        in
+        let bb-subtitle = subtitle-opt
+            |> Option.map (fun subtitle -> render-block-chapter-subtitle subtitle ctx)
+            |> Option.unwrap-or Block.nil
+        in
+        let bb-author = ctx |> render-block-chapter-author author
+        in
+        Block.concat [
+            Block.skip 18pt;
+            bb-title;
+            bb-subtitle;
+            bb-author;
+            Block.skip 18pt
+        ]
+
+    let render-pseudo-chapter ctx labelopt bibliography title title-for-toc subtitle author inner =
+        % Setup
+        let label = Label.or-fresh labelopt in
+        let () = ChapterRef.reset-section-num () in
+        let () = ChapterRef.reset-subsection-num () in
+        let () = ChapterRef.register-new-chapter label |> Fn.ignore in
+        let title-for-toc = title-for-toc |> Option.unwrap-or title in
+        let () = Bibliography.register bibliography in
+        % Render
+        let ctx-doc =
+            get-standard-context text-width
+            |> set-font-size 12pt
+            |> set-leading 18pt
+            |> set-hyphen-penalty 1000
+        in
+        let ib-pagehook = hook-page-break (fun pbinfo _ -> 
+            ChapterRef.register-chapter-page label (arabic pbinfo#page-number))
+        in
+        let bb-title = ctx |> render-block-chapter-heading label title subtitle author in
+        let bb-content = read-block ctx inner in
+        let bb-bib-section = render-block-bib-section ctx ctx-doc bibliography
+        in
+        Block.concat [
+            line-break false false ctx ib-pagehook;
+            bb-title;
+            bb-content;
+            bb-bib-section;
+        ]
+
+    let chapter-scheme ctx labelopt bibliography title title-for-toc subtitle author inner =
+        % Setup
+        let label = Label.or-fresh labelopt in
+        let () = ChapterRef.reset-section-num () in
+        let () = ChapterRef.reset-subsection-num () in
+        let () = ChapterRef.register-new-chapter label |> Fn.ignore in
+        let title-for-toc = title-for-toc |> Option.unwrap-or title in
+        let () = toc-acc-ref <- (TOCElementChapter(label, title-for-toc, subtitle, author)) :: !toc-acc-ref in
+        let () = Bibliography.register bibliography in
+        % Render
+        let ctx-doc =
+            get-standard-context text-width
+            |> set-font-size 12pt
+            |> set-leading 18pt
+            |> set-hyphen-penalty 1000
+        in
+        let ib-pagehook = hook-page-break (fun pbinfo _ -> 
+            ChapterRef.register-chapter-page label (arabic pbinfo#page-number))
+        in
+        let bb-title = ctx |> render-block-chapter-heading label title subtitle author in
+        let bb-content = read-block ctx inner in
+        let bb-bib-section = render-block-bib-section ctx ctx-doc bibliography
+        in
+        Block.concat [
+            line-break false false ctx ib-pagehook;
+            bb-title;
+            bb-content;
+            bb-bib-section;
+            clear-page
+        ]
+
+    let section-scheme ctx label-opt title inner =
+        let ctx-title = make-section-title ctx in
+        let () = ChapterRef.reset-subsection-num () in
+        let label = Label.or-fresh label-opt in
+        let section-num = ChapterRef.register-new-section label in
+        let ib-num = read-inline ctx-title (embed-string (section-num ^ `.`)) in
+        let ib-title = read-inline ctx-title title in
+        let bb-title = section-heading ctx (ib-num ++ (inline-skip 10pt) ++ ib-title ++ (inline-fil)) in
+        let bb-inner = read-block ctx inner in
+        bb-title +++ bb-inner
+
+    let subsection-scheme ctx label-opt title inner =
+        let label = Label.or-fresh label-opt in
+        let subsection-num = ChapterRef.register-new-subsection label in
+        let ctx-title = make-subsection-title ctx in
+        let ib-num = read-inline ctx-title (embed-string (subsection-num ^ `.`))
+        in
+        let ib-title = read-inline ctx-title title in
+        let bb-title =
+            line-break true false (ctx |> set-paragraph-margin section-top-margin section-bottom-margin)
+            (ib-num ++ (inline-skip 10pt) ++ ib-title ++ (inline-fil))
+        in
+        let bb-inner = read-block ctx inner in
+        bb-title +++ bb-inner
+
+    let subsubsection-scheme ctx label-opt title inner =
+        let ib-title =
+            let ctx-title = make-subsubsection-title ctx
+            in
+            read-inline ctx-title title
+        in
+        let bb-title = line-break true false ctx (ib-title ++ inline-fil)
+        in
+        let bb-main = read-block ctx inner in
+        bb-title +++ bb-main
+
+
+    let render-inline-ref-chapter label ctx =
+        let value = label
+                    |> ChapterRef.get-chapter-num
+                    |> Option.unwrap-or `?`
+                    |> embed-string
+        in
+        ctx |> Inline.read {第#value;章}
+
+    let render-inline-ref-section label ctx =
+        let value = label
+                    |> ChapterRef.get-section-num
+                    |> Option.unwrap-or `?`
+                    |> embed-string
+        in
+        ctx |> Inline.read {#value;節}
+
+    let render-inline-ref-subsection label ctx =
+        let value = label
+                    |> ChapterRef.get-subsection-num
+                    |> Option.unwrap-or `?`
+                    |> embed-string
+        in
+        ctx |> Inline.read {#value;節}
+
+end

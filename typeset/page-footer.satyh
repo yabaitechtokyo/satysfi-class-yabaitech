@@ -1,0 +1,28 @@
+@require: base/inline
+@require: base/block
+@import: ../document-config
+@import: ../font-config
+@import: ../mutables
+
+module PageFooter : sig
+
+    val render-block : int -> block-boxes
+
+end = struct
+
+    let render-block pageno =
+        match !Mutables.show-page-number-ref with
+        | Some(pagenolast) ->
+            let render-inline ctx =
+                let pageno = embed-string (arabic (pageno - pagenolast + 1)) in
+                Inline.concat [
+                    Inline.fil;
+                    ctx |> Inline.read pageno;
+                    Inline.fil;
+                ]
+            in
+            FontConfig.page-footer |> Block.of-inline ?:false true true render-inline 
+        | None ->
+            block-nil
+
+end

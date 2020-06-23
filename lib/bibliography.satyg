@@ -1,0 +1,65 @@
+@require: base/list-ext
+@require: base/tuple
+@import: cross-ref
+
+type bib-in-proceedings = (|
+    author    : inline-text list;
+    title     : inline-text;
+    booktitle : inline-text;
+    series    : inline-text option;
+    volume    : int option;
+    number    : inline-text option;
+    pages     : int * int;
+    year      : int;
+|)
+
+type bib-article = (|
+    author  : inline-text list;
+    title   : inline-text;
+    journal : inline-text;
+    volume  : int option;
+    number  : inline-text option;
+    pages   : int * int;
+    year    : int;
+|)
+
+type bib-book = (|
+    author    : inline-text list;
+    title     : inline-text;
+    publisher : inline-text;
+    year      : int;
+|)
+
+type bib-web-site = (|
+    author : inline-text list;
+    title  : inline-text;
+    url    : string;
+    year   : int;
+|)
+
+type bib-item =
+| InProceedings of bib-in-proceedings
+| Article       of bib-article
+| Book          of bib-book
+| WebSite       of bib-web-site
+
+type bib-defs = (string * bib-item) list
+
+module Bibliography : sig
+
+    val register : bib-defs -> unit
+    val get : string -> string option
+
+end = struct
+
+    let register bib-list =
+        bib-list 
+        |> List.map Pair.fst
+        |> List.iteri (fun bib-idx label -> (
+            (`bib:` ^ label)
+            |> CrossRef.register (arabic (bib-idx + 1))
+        ))
+
+    let get label = CrossRef.get (`bib:` ^ label)
+
+end

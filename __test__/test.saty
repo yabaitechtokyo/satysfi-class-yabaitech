@@ -1,0 +1,38 @@
+% -*- coding: utf-8 -*-
+@require: base/debug
+@import: ../yabaitech
+@import: bibliography
+@import: chapter
+@import: figure
+@import: footnote
+@import: misc-commands
+@import: theorem
+
+let () = Debug.log ``
+=====================
+YABAITECH.TOKYO vol.4
+
+　 ∧,,∧
+　(；`・ω・）　　｡･ﾟ･⌒） pdf 作るよ！！
+　/　　 ｏ━ヽニニフ))
+　しー-Ｊ
+
+=====================
+`` in
+
+document (|
+  title = `YABAITECH.TOKYO vol.4 class file`;
+  volume = `(no volume)`;
+  date = `Feb 29th 2020`;
+  author = `yabaitech.tokyo`;
+  email = `admin@yabaitech.tokyo`;
+  website = `http://yabaitech.tokyo`;
+  publisher = `どこかの出版社`
+  |) '<
+    #ChapterTest.article;
+    #BibliographyTest.article;
+    #TheoremTest.article;
+    #MiscCommandsTest.article;
+    #FigureTest.article;
+    #FootnoteTest.article;
+>

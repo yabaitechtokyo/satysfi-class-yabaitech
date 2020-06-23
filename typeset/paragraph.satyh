@@ -1,0 +1,54 @@
+@require: base/block
+@require: base/inline
+@import: ../font-config
+
+module Paragraph : sig
+
+    val render-block-paragraph : inline-text -> context -> block-boxes
+    val render-block-topic : inline-text -> inline-text -> context -> block-boxes
+    val render-block-proof : inline-text option -> inline-text -> context -> block-boxes
+
+end = struct
+
+    let render-block-paragraph content ctx =
+        let len = get-font-size ctx *' FontConfig.font-ratio-cjk in
+        let render-inline ctx = Inline.concat [
+            Inline.skip len;
+            ctx |> Inline.read content;
+            Inline.fil;
+        ] in
+        ctx |> FontConfig.make-paragraph
+            |> Block.of-inline ?:true true true render-inline
+
+    let render-block-topic topic-name content ctx =
+        let len = get-font-size ctx *' FontConfig.font-ratio-cjk in
+        let render-inline ctx = Inline.concat [
+            ctx |> FontConfig.make-topic-name
+                |> Inline.read topic-name;
+            Inline.skip len;
+            ctx |> Inline.read content;
+            Inline.fil;
+        ] in
+        ctx |> FontConfig.make-paragraph
+            |> Block.of-inline ?:true true true render-inline
+    
+    let-math \QED = math-char MathOrd `∎`
+
+    let render-block-proof name-opt content ctx =
+        let render-inline ctx =
+            let heading = match name-opt with
+                | None    -> {証明}
+                | Some(w) -> {#w; の証明} in
+            Inline.concat [
+                ctx |> FontConfig.make-proof-header
+                    |> Inline.read heading;
+                Inline.skip (get-font-size ctx);
+                ctx |> Inline.read content;
+                Inline.fil;
+                Inline.skip (get-font-size ctx);
+                ctx |> Inline.read {${\QED}} 
+            ]
+        in
+        ctx |> FontConfig.make-paragraph
+            |> Block.of-inline ?:false true true render-inline
+end

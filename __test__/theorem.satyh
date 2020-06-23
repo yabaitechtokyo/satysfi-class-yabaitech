@@ -1,0 +1,63 @@
+@import: ../yabaitech
+@require: base/option-ext
+
+module TheoremTest : sig
+
+    val article : block-text
+
+end = struct
+
+    let article = '<
+        +chapter ?:(`theorem`)
+        (|
+            bibliography = [];
+            title = {Theoremのテスト};
+            title-for-toc = Option.none;
+            subtitle = Option.none;
+            author = {著者名};
+        |)
+        <
+            +theorem {
+                これは定理です
+            }
+
+            +theorem ?:({定理の名前}) {
+                定理には名前がつけられるよ
+            }
+
+            +section{何らかの節} <
+                +theorem ?:({定理の名前}) ?:(`theorem-label`) {
+                    節は定理番号に影響は与えないです
+                }
+            >
+
+            +lemma ?:({補題の名前}) ?:(`lemma-label`) {
+                補題も書けるよ
+            }
+
+            +definition ?:({定義の名前}) ?:(`definition-label`) {
+                定義も書けるよ
+            }
+
+            +example ?:({例の名前}) ?:(`example-label`) {
+                例も書けるよ
+            } 
+
+            +notation ?:({記法の名前}) ?:(`notation-label`) {
+                記法も書けるよ
+            }
+
+            +assumption ?:({仮定の名前}) ?:(`assumption-label`) {
+                仮定も書けるよ
+            }
+
+            +p {3つ目の定理は\ref-theorem(`theorem-label`);です}
+            +p {補題は\ref-lemma(`lemma-label`);です}
+            +p {定義は\ref-definition(`definition-label`);です}
+            +p {例は\ref-example(`example-label`);です}
+            +p {記法は\ref-notation(`notation-label`);です}
+            +p {仮定は\ref-assumption(`assumption-label`);です}
+         >
+    >
+
+end

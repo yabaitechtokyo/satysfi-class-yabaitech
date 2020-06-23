@@ -1,0 +1,23 @@
+module Label : sig
+
+    val or-fresh : string option -> string
+    val decorate : string -> string -> string -> string
+
+end = struct
+
+    let generate-fresh-label =
+        let-mutable count <- 0 in
+        (fun () -> (
+            let () = count <- !count + 1 in
+            `generated:` ^ (arabic (!count))
+        ))
+
+    let or-fresh label-opt =
+        match label-opt with
+        | None -> generate-fresh-label ()
+        | Some(label) -> label
+
+    let decorate prefix suffix label =
+        prefix ^ `:` ^ label ^ `:` ^ suffix
+
+end

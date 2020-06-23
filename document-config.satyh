@@ -1,0 +1,45 @@
+module DocumentConfig : sig
+
+  val paper-size : page
+  val text-origin : length * length
+  val text-width : length
+  val text-height : length
+  val header-origin : length * length
+  val header-width : length
+  val footer-origin : length * length
+  val footer-width : length
+  val footnote-indent : length
+
+  val section-top-margin : length
+  val section-bottom-margin : length
+  val section-top-padding : length
+  val section-bottom-padding : length
+  val title-line-margin : length
+  val title-line-thickness : length
+  val header-line-thickness : length
+  val header-line-margin-top : length
+  val header-line-margin-bottom : length
+
+end = struct
+
+  let paper-size = UserDefinedPaper(182mm, 257mm)
+  let text-origin = (16mm, 30mm)
+  let text-width = 150mm
+  let text-height = 200mm
+  let header-origin = (16mm, 15mm)
+  let header-width = text-width
+  let footer-origin = (16mm, 240mm)
+  let footer-width = text-width
+  let footnote-indent = 6mm
+
+  let section-top-margin = 20pt
+  let section-bottom-margin = 12pt
+  let section-top-padding = 6pt
+  let section-bottom-padding = 7pt
+  let title-line-margin = 4pt
+  let title-line-thickness = 1pt
+  let header-line-thickness = 0.5pt
+  let header-line-margin-top = 2pt
+  let header-line-margin-bottom = 6pt
+
+end

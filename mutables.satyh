@@ -1,0 +1,23 @@
+@import: lib/table-of-contents
+
+module Mutables : sig
+
+    val num-figure : int ref
+
+    val ref-float-boxes : ((int * block-boxes) list) ref
+
+    val toc-acc-ref : (toc-element list) ref
+
+    val show-page-number-ref : (int option) ref
+
+end = struct
+
+    let-mutable num-figure <- 0
+
+    let-mutable ref-float-boxes <- []
+
+    let-mutable toc-acc-ref <- []
+
+    let-mutable show-page-number-ref <- None
+
+end

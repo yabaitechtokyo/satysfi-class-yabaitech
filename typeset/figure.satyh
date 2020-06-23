@@ -1,0 +1,64 @@
+@require: base/inline
+@require: base/block
+@import: ../lib/label
+@import: ../font-config
+@import: ../mutables
+
+module Figure : sig
+
+    val render-inline-figure : string option -> inline-text -> block-text -> context -> inline-boxes
+    val render-inline-table : string option -> inline-text -> block-text -> context -> inline-boxes
+
+    val render-inline-ref-figure : string -> context -> inline-boxes
+    val render-inline-ref-table : string -> context -> inline-boxes
+
+end = struct
+
+    open FontConfig
+    open Mutables
+
+    let figure-scheme ctx labelopt prefix category caption inner =
+        let () = num-figure <- !num-figure + 1 in
+        let s-num = arabic !num-figure in
+        let () = labelopt
+            |> Option.map (fun label -> (prefix ^ label ^ `:num`))
+            |> CrossRef.register-if-present s-num
+        in
+        let it-num = embed-string s-num in
+        let ctx-category =
+          ctx |> set-font Latin font-latin-sans
+              |> set-cjk-font font-cjk-gothic in
+        let ib-caption =
+          Inline.concat [
+            ctx-category |> Inline.read {#category; #it-num;};
+            Inline.skip (get-font-size ctx);
+            ctx |> Inline.read caption
+          ] in
+        let bb-inner =
+          let d (_, _) _ _ _ = [] in
+          block-frame-breakable ctx (2pt, 2pt, 2pt, 2pt) (d, d, d, d) (fun ctx -> (
+            (ctx |> Block.read inner) +++ (ctx |> Block.centering (Fn.const ib-caption))
+          ))
+        in
+          hook-page-break (fun pbinfo _ -> (
+%            let () = display-message (`register` ^ (arabic pbinfo#page-number)) in
+            ref-float-boxes <- (pbinfo#page-number, bb-inner) :: !ref-float-boxes
+          ))
+
+
+    let render-inline-figure labelopt caption inner ctx =
+        figure-scheme ctx labelopt `figure:` {図} caption inner
+
+    let render-inline-table labelopt caption inner ctx =
+        figure-scheme ctx labelopt `table:` {表} caption inner
+
+    let render-inline-ref-figure =
+        CrossRef.gen-render-inline-ref
+            (Label.decorate `figure` `num`)
+            (fun value -> {図#value;})
+
+    let render-inline-ref-table =
+        CrossRef.gen-render-inline-ref
+            (Label.decorate `table` `num`)
+            (fun value -> {表#value;})
+end

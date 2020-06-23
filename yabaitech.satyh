@@ -1,0 +1,182 @@
+% -*- coding: utf-8 -*-
+@import: typeset/chapter
+@import: typeset/cite
+@import: typeset/figure
+@import: typeset/footnote
+@import: typeset/misc-commands
+@import: typeset/paragraph
+@import: typeset/review-comment
+@import: typeset/theoremish
+@import: document
+@import: document-config
+@import: font-config
+@import: mutables
+
+module Book : sig
+
+  val document : 'a -> block-text -> document
+    constraint 'a :: (|
+      title: string;
+      volume: string;
+      date: string;
+      author: string;
+      email: string;
+      website: string;
+      publisher: string;
+    |)
+
+  % from Bibliography
+  direct \cite : [string list] inline-cmd
+
+  % from Chapter
+  direct +chapter : [string?; 'a; block-text] block-cmd
+    constraint 'a :: (|
+      title : inline-text;
+      title-for-toc : inline-text option;
+      subtitle : inline-text option;
+      author : inline-text;
+      bibliography : (string * bib-item) list;
+    |)
+
+  direct +pseudo-chapter : [string?; 'a; block-text] block-cmd
+    constraint 'a :: (|
+      title : inline-text;
+      title-for-toc : inline-text option;
+      subtitle : inline-text option;
+      author : inline-text;
+      bibliography : (string * bib-item) list;
+    |)
+
+  direct +section : [string?; inline-text; block-text] block-cmd
+  direct +subsection : [string?; inline-text; block-text] block-cmd
+  direct +subsubsection : [inline-text; block-text] block-cmd
+
+  direct \ref-chapter : [string] inline-cmd
+  direct \ref-section : [string] inline-cmd
+  direct \ref-subsection : [string] inline-cmd
+
+  % from Theoremish
+  direct +definition : [inline-text?; string?; inline-text] block-cmd
+  direct +theorem : [inline-text?; string?; inline-text] block-cmd
+  direct +lemma : [inline-text?; string?; inline-text] block-cmd
+  direct +corollary : [inline-text?; string?; inline-text] block-cmd
+  direct +example : [inline-text?; string?; inline-text] block-cmd
+  direct +notation : [inline-text?; string?; inline-text] block-cmd
+  direct +assumption : [inline-text?; string?; inline-text] block-cmd
+
+  direct \ref-definition : [string] inline-cmd
+  direct \ref-theorem : [string] inline-cmd
+  direct \ref-lemma : [string] inline-cmd
+  direct \ref-corollary : [string] inline-cmd
+  direct \ref-assumption : [string] inline-cmd
+  direct \ref-example : [string] inline-cmd
+  direct \ref-notation : [string] inline-cmd
+  direct \ref-figure : [string] inline-cmd
+  direct \ref-table : [string] inline-cmd
+
+  % from MiscCommands
+  direct +p : [inline-text] block-cmd
+  direct +topic : [inline-text; inline-text] block-cmd
+  direct +proof : [inline-text?; inline-text] block-cmd
+  direct \emph : [inline-text] inline-cmd
+  direct \dfn : [inline-text] inline-cmd
+  direct \br : [] inline-cmd
+
+  % from Fiure
+  direct \figure : [string?; inline-text; block-text] inline-cmd
+  direct \table : [string?; inline-text; block-text] inline-cmd
+
+  % from Footnote
+  direct \footnote : [inline-text] inline-cmd
+
+  % from ReviewComment
+  direct \review-comment : [string; inline-text] inline-cmd
+  direct +review-comment : [string; inline-text] block-cmd
+
+end = struct
+
+  let document record inner = Document.render record inner
+
+  let-inline ctx \cite labels = Cite.render-inline ctx labels
+
+  let-inline ctx \figure ?:labelopt caption inner =
+    ctx |> Figure.render-inline-figure labelopt caption inner
+
+  let-inline ctx \table ?:labelopt caption inner =
+    ctx |> Figure.render-inline-table labelopt caption inner
+
+  let-inline ctx \ref-figure key = ctx |> Figure.render-inline-ref-figure key
+  let-inline ctx \ref-table key = ctx |> Figure.render-inline-ref-table key
+
+
+  let-block ctx +chapter ?:labelopt record inner =
+    Chapter.chapter-scheme ctx labelopt record#bibliography record#title record#title-for-toc record#subtitle record#author inner
+
+  let-block ctx +pseudo-chapter ?:labelopt record inner =
+    Chapter.render-pseudo-chapter ctx labelopt record#bibliography record#title record#title-for-toc record#subtitle record#author inner
+
+  let-block ctx +section ?:labelopt title inner =
+    Chapter.section-scheme ctx labelopt title inner
+
+  let-block ctx +subsection ?:labelopt title inner =
+    Chapter.subsection-scheme ctx labelopt title inner
+
+  let-block ctx +subsubsection title inner =
+    Chapter.subsubsection-scheme ctx (Option.none) title inner
+
+  let-inline ctx \ref-chapter key = ctx |> Chapter.render-inline-ref-chapter key
+  let-inline ctx \ref-section key = ctx |> Chapter.render-inline-ref-section key
+  let-inline ctx \ref-subsection key = ctx |> Chapter.render-inline-ref-subsection key
+
+
+  let-block ctx +definition ?:wordopt ?:labelopt inner =
+    ctx |> Theoremish.render-block-definition labelopt wordopt inner
+
+  let-block ctx +theorem ?:wordopt ?:labelopt inner =
+    ctx |> Theoremish.render-block-theorem labelopt wordopt inner
+
+  let-block ctx +lemma ?:wordopt ?:labelopt inner =
+    ctx |> Theoremish.render-block-lemma labelopt wordopt inner
+
+  let-block ctx +corollary ?:wordopt ?:labelopt inner =
+    ctx |> Theoremish.render-block-corollary labelopt wordopt inner
+
+  let-block ctx +assumption ?:wordopt ?:labelopt inner =
+    ctx |> Theoremish.render-block-assumption labelopt wordopt inner
+
+  let-block ctx +example ?:wordopt ?:labelopt inner =
+    ctx |> Theoremish.render-block-example labelopt wordopt inner
+
+  let-block ctx +notation ?:wordopt ?:labelopt inner =
+    ctx |> Theoremish.render-block-notation labelopt wordopt inner
+
+  let-inline ctx \ref-definition key = ctx |> Theoremish.render-inline-ref-definition key
+  let-inline ctx \ref-theorem key = ctx |> Theoremish.render-inline-ref-theorem key
+  let-inline ctx \ref-lemma key = ctx |> Theoremish.render-inline-ref-lemma key
+  let-inline ctx \ref-corollary key = ctx |> Theoremish.render-inline-ref-corollary key
+  let-inline ctx \ref-assumption key = ctx |> Theoremish.render-inline-ref-assumption key
+  let-inline ctx \ref-example key = ctx |> Theoremish.render-inline-ref-example key
+  let-inline ctx \ref-notation key = ctx |> Theoremish.render-inline-ref-notation key
+
+
+  let-block ctx +p inner = ctx |> Paragraph.render-block-paragraph inner
+
+  let-block ctx +topic topic inner =
+    ctx |> Paragraph.render-block-topic topic inner
+
+  let-block ctx +proof ?:wordopt inner =
+    ctx |> Paragraph.render-block-proof wordopt inner
+
+  let-inline ctx \emph inner = ctx |> MiscCommands.make-ib-emph inner
+  let-inline ctx \dfn inner = ctx |> MiscCommands.make-ib-dfn inner
+  let-inline ctx \br = ctx |> MiscCommands.make-ib-br
+
+  let-inline ctx \footnote it = ctx |> Footnote.render-block it
+
+  let-inline ctx \review-comment reviewer comment = ctx |> ReviewComment.render-inline reviewer comment
+  let-block ctx +review-comment reviewer comment = ctx |> ReviewComment.render-block reviewer comment
+
+end
+
+let document = Book.document
+  % ad-hoc

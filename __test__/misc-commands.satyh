@@ -1,0 +1,56 @@
+@import: ../yabaitech
+@require: base/option-ext
+
+module MiscCommandsTest : sig
+
+    val article : block-text
+
+end = struct
+
+    let lorem = {Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum}
+
+    let article = '<
+        +chapter ?:(`misc-commands`)
+        (|
+            bibliography = [];
+            title = {諸々のコマンドのテスト};
+            title-for-toc = Option.none;
+            subtitle = Option.none;
+            author = {著者名};
+        |)
+        <
+            +topic { emphのテスト } {
+                emph を使えば\emph{文字を強調することができます}。
+            }
+
+            +topic { dfnのテスト } {
+                dfn はこれが\dfn{新しい単語}だよということを示すために使います。これちょっとgfnっぽいよね
+            }
+
+            +section {paragraphのテスト} <
+                +p { #lorem; }
+                +p { #lorem; }
+            >
+
+            +section {topicのテスト} <
+                +topic{トピックの1} { #lorem; }
+                +topic{トピックの2} { #lorem; }
+            >
+
+            +section {proofのテスト} <
+                +proof { #lorem; }
+                +proof ?:({何らかの定理}) { #lorem; }
+            >
+
+            +section {review-commentのテスト} <
+                +review-comment (`zeptometer`) {ここにレビューコメントが入る}
+                +p {
+                    review-commmentを使うとSATySFiのコード上にレビューコメントを書くことができます。
+                    今のところは何もしませんがSATySFiの注釈機能に対応させるようにしたい。
+                    \review-comment (`zeptometer`) {inline commandでも使えるよ}
+                }
+            >
+        >
+    >
+
+end

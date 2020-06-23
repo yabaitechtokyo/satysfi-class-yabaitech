@@ -1,0 +1,4 @@
+type toc-element =
+| TOCElementChapter    of string * inline-text * inline-text option * inline-text
+% | TOCElementSection    of string * inline-text
+% | TOCElementSubsection of string * inline-text

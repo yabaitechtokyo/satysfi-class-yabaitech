@@ -1,0 +1,38 @@
+@require: base/option-ext
+@require: base/inline
+
+@import: unit
+
+module CrossRef : sig
+
+    val register : string -> string -> unit
+    val register-if-present :  string -> string option -> unit
+    val get : string -> string option
+
+    val gen-render-inline-ref : (string -> string) -> (inline-text -> inline-text) -> (string -> context -> inline-boxes )
+
+end = struct
+
+    let register value label =
+        register-cross-reference label value
+
+    let register-if-present value label-opt =
+        label-opt
+        |> Option.map (fun label ->
+            register-cross-reference label value
+        )
+        |> Unit2.discard
+
+    let get label = get-cross-reference label
+
+    let gen-render-inline-ref label-annotator value-annotator =
+        fun label ctx -> (
+            let value =
+                get-cross-reference (label-annotator label)
+                |> Option.unwrap-or `?`
+                |> embed-string
+            in
+            read-inline ctx (value-annotator value)
+        )
+
+end

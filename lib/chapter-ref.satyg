@@ -1,0 +1,92 @@
+@require: base/ref
+@import: label
+
+module ChapterRef : sig
+
+    val get-chapter-num : string -> string option
+    val register-new-chapter : string -> string
+    val get-chapter-page : string -> string option
+    val register-chapter-page : string -> string -> unit
+
+    val reset-section-num : unit -> unit
+    val register-new-section : string -> string
+    val get-section-num : string -> string option
+
+    val reset-subsection-num : unit -> unit
+    val get-subsection-num : string -> string option
+    val register-new-subsection : string -> string
+
+end = struct
+
+    let num-chapter-ref = Ref.make 0
+    let num-section-ref = Ref.make 0
+    let num-subsection-ref = Ref.make 0
+
+    let get-chapter-num name =
+        name |> Label.decorate `chapter` `num`
+             |> get-cross-reference
+    
+    let register-new-chapter name =
+        let new-num = 1 + Ref.get num-chapter-ref
+        in
+        let new-num-str = arabic new-num
+        in
+        let () = register-cross-reference
+                    (name |> Label.decorate `chapter` `num`)
+                    new-num-str
+        in
+        let () = num-chapter-ref |> Ref.set new-num
+        in
+        new-num-str
+    
+    let get-chapter-page name =
+        name |> Label.decorate `chapter` `page`
+             |> get-cross-reference
+
+    let register-chapter-page name page =
+        register-cross-reference
+            (name |> Label.decorate `chapter` `page`)
+            page
+
+
+    let reset-section-num () = num-section-ref |> Ref.set 0
+
+    let register-new-section name =
+        let new-num = 1 + Ref.get num-section-ref
+        in
+        let new-num-str = (arabic new-num)
+        in
+        let () = register-cross-reference
+                    (name |> Label.decorate `section` `num`)
+                    new-num-str
+        in
+        let () = num-section-ref |> Ref.set new-num
+        in
+        new-num-str
+
+    let get-section-num name = 
+        name |> Label.decorate `section` `num`
+             |> get-cross-reference
+
+
+    let reset-subsection-num () = num-subsection-ref |> Ref.set 0
+    
+    let register-new-subsection name =
+        let new-num = 1 + Ref.get num-subsection-ref
+        in
+        let new-num-str = (arabic (num-section-ref |> Ref.get)) 
+                          ^ `.` ^ (arabic new-num)
+        in
+        let () = register-cross-reference
+                    (name |> Label.decorate `subsection` `num`)
+                    new-num-str
+        in
+        let () = num-subsection-ref |> Ref.set new-num
+        in
+        new-num-str
+
+    let get-subsection-num name =
+        name |> Label.decorate `subsection` `num`
+             |> get-cross-reference
+
+end

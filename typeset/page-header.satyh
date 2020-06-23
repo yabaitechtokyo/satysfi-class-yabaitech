@@ -1,0 +1,34 @@
+@require: base/ref
+@import: ../document-config
+@import: ../font-config
+@import: ../mutables
+
+module PageHeader : sig
+
+    val render-block : int -> block-boxes
+
+end = struct
+
+    let render-block pageno =
+        let ctx =
+            FontConfig.get-standard-context DocumentConfig.header-width
+            |> set-paragraph-margin 0pt 0pt
+        in
+        let (bb-float-boxes, acc) =
+            (!Mutables.ref-float-boxes) |> List.fold-left (fun (bbacc, acc) elem -> (
+            let (pn, bb) = elem in
+                if pn < pageno then
+                let bbs =
+                    line-break true true (ctx |> set-paragraph-margin 0pt 12pt)
+                    (inline-fil ++ embed-block-top ctx DocumentConfig.text-width (fun _ -> bb) ++ inline-fil)
+                        % 'ctx' is a dummy context
+                in
+                    (bbacc +++ bbs, acc)
+                else
+                (bbacc, elem :: acc)
+            )) (block-nil, [])
+        in
+        let () = Mutables.ref-float-boxes |> Ref.set acc in
+            bb-float-boxes
+
+end

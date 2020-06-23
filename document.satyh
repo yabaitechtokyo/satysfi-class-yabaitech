@@ -1,0 +1,120 @@
+@require: footnote-scheme
+@require: base/option-ext
+@require: base/ref
+@require: base/pager
+
+@import: pages/table-of-contents
+@import: pages/title
+@import: typeset/chapter
+@import: typeset/page-footer
+@import: typeset/page-header
+@import: document-config
+@import: font-config
+@import: mutables
+
+module Document : sig
+
+    val render : 'a -> block-text -> document
+        constraint 'a :: (|
+            title: string;
+            volume: string;
+            date: string;
+            author: string;
+            email: string;
+            website: string;
+            publisher: string;
+        |)
+
+end = struct
+    let make-bb-disable-page-number ctx =
+        ctx |> Block.of-inline false false
+                (Fn.const (Pager.make-hook (fun _ _ -> (Mutables.show-page-number-ref |> Ref.set Option.none))))
+
+    let align-ib-left ib = ib ++ inline-fil
+
+    let height-of-float-boxes pageno =
+        (!Mutables.ref-float-boxes) |> List.fold-left (fun h (pn, bb) -> (
+            if pn < pageno then h +' (get-natural-length bb) else h
+        )) 0pt
+
+    let make-bb-toc-page ctx =
+        let ib-toc-title =
+            ctx |> FontConfig.make-chapter-title
+                |> Inline.read {目次}
+                |> align-ib-left
+        in
+        let bb-toc-title = Chapter.chapter-heading ctx None ib-toc-title
+        in
+        let bb-toc-main = TableOfContents.make-bb Mutables.toc-acc-ref ctx
+        in
+        Block.concat [
+            bb-toc-title;
+            bb-toc-main;
+            clear-page;
+            line-break false false (ctx |> set-paragraph-margin 0pt 0pt)
+                  (hook-page-break (fun pbinfo _ -> (Mutables.show-page-number-ref |> Ref.set (Option.some pbinfo#page-number))) ++ inline-fil);
+        ]
+
+    let make-bb-colophon-page record ctx =
+        ctx |> make-bb-disable-page-number
+
+    let get-content-area pbinfo =
+        let () = FootnoteScheme.start-page () in
+        let hgtfb = height-of-float-boxes pbinfo#page-number in
+        let (text-origin-x, text-origin-y) = DocumentConfig.text-origin in
+        (|
+            text-origin = (text-origin-x, text-origin-y +' hgtfb);
+            text-height = DocumentConfig.text-height -' hgtfb;
+        |)
+
+    let render-header-and-footer pbinfo =
+        let pageno = pbinfo#page-number in
+        (|
+            header-origin  = DocumentConfig.header-origin;
+            header-content = PageHeader.render-block pageno;
+            footer-origin  = DocumentConfig.footer-origin;
+            footer-content = PageFooter.render-block pageno;
+        |)
+
+    let render-front path ctx =
+        let width = 188mm in
+        let lower-left-corner = (-3mm, -3mm) in
+        let img = load-pdf-image path 1 in
+        let ib =
+            inline-graphics 0pt 0pt 0pt (fun _ ->
+            [ draw-text lower-left-corner
+                (use-image-by-width img width) ]
+            )
+        in
+        line-break false true ctx (ib ++ inline-fil)
+            +++ clear-page
+
+    let render record inner =
+        let ctx-doc =
+            FontConfig.get-standard-context DocumentConfig.text-width
+        in
+        let front-page =
+            ctx-doc |> render-front `front.pdf`
+        in
+        let bb-title-pages = ctx-doc |> Title.make-bb (|
+                title = record#title;
+                volume = record#volume;
+                date  = record#date;
+            |)
+        in
+        let bb-main-pages = read-block ctx-doc inner
+        in
+        let bb-toc-pages = make-bb-toc-page ctx-doc
+        in
+        let bb-colophon-pages = make-bb-colophon-page record ctx-doc
+        in
+        page-break DocumentConfig.paper-size get-content-area render-header-and-footer
+            (Block.concat [
+                front-page;
+                bb-title-pages;
+                bb-toc-pages;
+                bb-main-pages;
+                bb-colophon-pages;
+            ])
+
+end

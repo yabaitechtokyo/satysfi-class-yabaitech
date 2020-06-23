@@ -1,0 +1,11 @@
+{
+  "devDependencies": {
+    "gm": "^1.23.1",
+    "jest": "^24.9.0",
+    "jest-pdf-snapshot": "^0.5.2",
+    "shelljs": "^0.8.3"
+  },
+  "scripts": {
+    "test": "jest"
+  }
+}

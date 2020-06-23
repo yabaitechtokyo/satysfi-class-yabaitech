@@ -1,0 +1,66 @@
+@require: base/block
+@require: base/image
+
+@import: ../font-config
+
+type title-info = (|
+    title : string;
+    volume : string;
+    date  : string;
+|)
+
+module Title : sig
+
+    val make-bb : title-info -> context -> block-boxes
+
+end = struct
+
+    open FontConfig
+
+    let of-title ctx =
+        ctx |> set-latin-font (`fonts-noto-sans:NotoSans-Regular`, 1.0, 0.)
+            |> set-font-size 48pt
+    
+    let of-volume ctx =
+        ctx |> set-latin-font (`fonts-noto-sans:NotoSans-Light`, 1.0, 0.)
+            |> set-font-size 32pt
+
+    let of-date ctx =
+        ctx |> set-latin-font (`fonts-noto-sans:NotoSans-Light`, 1.0, 0.)
+            |> set-cjk-font (`fonts-noto-sans-cjk-jp:NotoSansCJKjp-Light`, 1.0, 0.)
+            |> set-font-size 20pt
+
+    let make-bb info ctx = 
+        let render-title ctx =
+            Inline.concat [
+                Inline.fil;
+                ctx |> Inline.of-string info#title;
+                Inline.fil;
+            ]
+        in
+        let render-volume ctx =
+            Inline.concat [
+                Inline.fil;
+                ctx |> Inline.of-string info#volume;
+                Inline.fil;
+            ]
+        in
+        let render-date ctx =
+            Inline.concat [
+                Inline.fil;
+                ctx |> Inline.of-string info#date;
+                Inline.fil;
+            ]
+        in
+        Block.concat [
+            Block.skip 200pt;
+            ctx |> of-title 
+                |> Block.of-inline ?:false false false render-title;
+            ctx |> of-volume
+                |> Block.of-inline ?:false false false render-volume;
+            Block.skip 190pt;
+            ctx |> of-date
+                |> Block.of-inline ?:false false false render-date;
+            clear-page;
+        ]
+end
