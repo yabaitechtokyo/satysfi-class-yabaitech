@@ -4,13 +4,14 @@
 @require: base/option-ext
 @require: base/ref
 
+@import: ../typeset/chapter
 @import: ../lib/chapter-ref
 @import: ../lib/table-of-contents
 @import: ../font-config
 
-module TableOfContents : sig
+module TableOfContentsPage : sig
   
-  val make-bb : (toc-element list) ref -> context -> block-boxes
+  val render : (toc-element list) -> context -> block-boxes
 
 end = struct
 
@@ -26,10 +27,9 @@ end = struct
     let n = round (w /' wdot) in
       inline-fil ++ (repeat-inline n ib)
 
-  let make-bb toc-acc-ref ctx = 
+  let make-bb toc-list ctx =
     let bb-toc-main =
-        toc-acc-ref
-        |> Ref.get
+        toc-list
         |> List.reverse
         |> List.fold-left (fun bbacc tocelem -> (
              match tocelem with
@@ -82,4 +82,25 @@ end = struct
         )) block-nil
     in
     bb-toc-main
+
+    let align-ib-left ib = ib ++ inline-fil
+
+    let render toc-list ctx =
+        let ib-toc-title =
+            ctx |> FontConfig.make-chapter-title
+                |> Inline.read {目次}
+                |> align-ib-left
+        in
+        let bb-toc-title = Chapter.chapter-heading ctx None ib-toc-title
+        in
+        let bb-toc-main = make-bb toc-list ctx
+        in
+        Block.concat [
+            bb-toc-title;
+            bb-toc-main;
+            clear-page;
+            line-break false false (ctx |> set-paragraph-margin 0pt 0pt)
+                  (hook-page-break (fun pbinfo _ -> (Mutables.show-page-number-ref |> Ref.set (Option.some pbinfo#page-number))) ++ inline-fil);
+        ]
+
 end

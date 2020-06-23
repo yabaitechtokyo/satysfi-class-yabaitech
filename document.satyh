@@ -30,30 +30,10 @@ end = struct
         ctx |> Block.of-inline false false
                 (Fn.const (Pager.make-hook (fun _ _ -> (Mutables.show-page-number-ref |> Ref.set Option.none))))
 
-    let align-ib-left ib = ib ++ inline-fil
-
     let height-of-float-boxes pageno =
         (!Mutables.ref-float-boxes) |> List.fold-left (fun h (pn, bb) -> (
             if pn < pageno then h +' (get-natural-length bb) else h
         )) 0pt
-
-    let make-bb-toc-page ctx =
-        let ib-toc-title =
-            ctx |> FontConfig.make-chapter-title
-                |> Inline.read {目次}
-                |> align-ib-left
-        in
-        let bb-toc-title = Chapter.chapter-heading ctx None ib-toc-title
-        in
-        let bb-toc-main = TableOfContents.make-bb Mutables.toc-acc-ref ctx
-        in
-        Block.concat [
-            bb-toc-title;
-            bb-toc-main;
-            clear-page;
-            line-break false false (ctx |> set-paragraph-margin 0pt 0pt)
-                  (hook-page-break (fun pbinfo _ -> (Mutables.show-page-number-ref |> Ref.set (Option.some pbinfo#page-number))) ++ inline-fil);
-        ]
 
     let make-bb-colophon-page record ctx =
         ctx |> make-bb-disable-page-number
@@ -104,7 +84,9 @@ end = struct
         in
         let bb-main-pages = read-block ctx-doc inner
         in
-        let bb-toc-pages = make-bb-toc-page ctx-doc
+        let bb-toc-pages =
+            ctx-doc
+            |> TableOfContentsPage.render (Ref.get Mutables.toc-acc-ref)
         in
         let bb-colophon-pages = make-bb-colophon-page record ctx-doc
         in
