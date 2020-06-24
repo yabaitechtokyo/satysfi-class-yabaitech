@@ -1,0 +1,23 @@
+(version "0.0.2")
+(library
+  (name "class-yabaitech")
+  (version "0.0.1")
+  (sources
+    ((packageDir "src")))
+  (opam "satysfi-class-yabaitech.opam")
+  (dependencies (
+      (base ())
+      (fonts-noto-sans ())
+      (fonts-noto-serif ())
+      (fonts-noto-sans-cjk-jp ())
+      (fonts-noto-serif-cjk-jp ())
+      (fonts-asana-math ()))))
+(libraryDoc
+  (name "class-yabaitech-doc")
+  (version "0.0.1")
+  (build
+    ((satysfi "__test__/test.saty" "-o" "yabaitech-demo.pdf")))
+  (sources
+    ((doc "yabaitech-demo.pdf" "./yabaitech-demo.pdf")))
+  (opam "satysfi-class-yabaitech-doc.opam")
+  (dependencies ((class-yabaitech ()))))
