@@ -1,26 +1,19 @@
+@require: base/option-ext
 @import: fakedoc
 @import: ../document-config
 @import: ../font-config
 @import: ../lib/chapter-ref
 @import: ../pages/table-of-contents
 
-let () =  ChapterRef.register-chapter-page `1` `3` in
-let () =  ChapterRef.register-chapter-page `2` `13` in
-let () =  ChapterRef.register-chapter-page `3` `23` in
-let () =  ChapterRef.register-chapter-page `4` `33` in
-let () =  ChapterRef.register-chapter-page `5` `43` in
-let () =  ChapterRef.register-chapter-page `6` `53` in
-let () =  ChapterRef.register-chapter-page `7` `63` in
-let () =  ChapterRef.register-chapter-page `8` `203` in
 let toc-list = [
-    TOCElementChapter(`1`, {チャプターその1}, Option.none, {著者の1});
-    TOCElementChapter(`2`, {チャプターその2}, Option.some({サブタイトル}), {著者の2});
-    TOCElementChapter(`3`, {the 3rd chapter}, Option.none, {the 3rd author});
-    TOCElementChapter(`4`, {the 4th chapter}, Option.some({subtitle}), {the 4th author});
-    TOCElementChapter(`5`, {チャプターその5とちょっと眺めのタイトル}, Option.none, {著者の5});
-    TOCElementChapter(`6`, {チャプターその6}, Option.none, {著者の6});
-    TOCElementChapter(`7`, {チャプターその7}, Option.none, {著者の7});
-    TOCElementChapter(`8`, {チャプターその8}, Option.none, {著者の8});
+    (TOCElementChapter(`1`, {チャプターその1}, Option.none, {著者の1}), Option.some(`3`));
+    (TOCElementChapter(`2`, {チャプターその2}, Option.some({サブタイトル}), {著者の2}), Option.some(`13`));
+    (TOCElementChapter(`3`, {the 3rd chapter}, Option.none, {the 3rd author}), Option.some(`23`));
+    (TOCElementChapter(`4`, {the 4th chapter}, Option.some({subtitle}), {the 4th author}), Option.some(`33`));
+    (TOCElementChapter(`5`, {チャプターその5とちょっと眺めのタイトル}, Option.none, {著者の5}), Option.some(`43`));
+    (TOCElementChapter(`6`, {チャプターその6}, Option.none, {著者の6}), Option.some(`53`));
+    (TOCElementChapter(`7`, {チャプターその7}, Option.none, {著者の7}), Option.some(`63`));
+    (TOCElementChapter(`8`, {チャプターその8}, Option.none, {著者の8}), Option.some(`203`));
 ]
 in
 let toc-page =

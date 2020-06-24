@@ -1,5 +1,11 @@
-@require: base/ref
 @require: base/list-ext
+@require: base/map
+@require: base/option-ext
+@require: base/ref
+@require: base/string
+
+@import: cross-ref
+@import: label
 
 type toc-element =
 | TOCElementChapter    of string * inline-text * inline-text option * inline-text
@@ -8,20 +14,37 @@ type toc-element =
 
 module TableOfContentsRepository : sig
 
-    val register : toc-element -> unit
-    val get-all : unit -> toc-element list
+    val register-element : toc-element -> unit
+    val register-page : string -> string -> unit
+    val get-element-page-list : unit -> (toc-element * string option) list
 
 end = struct
 
     let toc-list-ref = Ref.make []
+    let toc-page-map-ref = Ref.make Map.empty
 
-    let register element =
+    let register-element element =
         toc-list-ref
         |> Ref.set (element :: Ref.get toc-list-ref)
 
-    let get-all () =
+    let register-page label page =
+        label
+        |> Label.decorate `toc` `page`
+        |> CrossRef.register page
+
+    let get-page-opt label =
+        label
+        |> Label.decorate `toc` `page`
+        |> CrossRef.get
+
+    let get-element-page-list () =
         toc-list-ref
         |> Ref.get
+        |> List.map (fun (element) -> (
+            match element with
+            | TOCElementChapter(label, _, _, _) ->
+                (element, get-page-opt label)
+        ))
         |> List.reverse
 
 end

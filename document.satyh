@@ -86,8 +86,9 @@ end = struct
         let bb-main-pages = read-block ctx-doc inner
         in
         let bb-toc-pages =
+            let toc-list = TableOfContentsRepository.get-element-page-list () in
             ctx-doc
-            |> TableOfContentsPage.render (TableOfContentsRepository.get-all ())
+            |> TableOfContentsPage.render toc-list
         in
         let bb-colophon-pages = make-bb-colophon-page record ctx-doc
         in

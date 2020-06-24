@@ -11,7 +11,7 @@
 
 module TableOfContentsPage : sig
   
-  val render : (toc-element list) -> context -> block-boxes
+  val render : ((toc-element * string option) list) -> context -> block-boxes
 
 end = struct
 
@@ -32,7 +32,7 @@ end = struct
         toc-list
         |> List.fold-left (fun bbacc tocelem -> (
              match tocelem with
-             | TOCElementChapter(label, title, subtitle, author) ->
+             | (TOCElementChapter(label, title, subtitle, author), page-opt) ->
                  let ctx = ctx |> set-font Latin font-latin-bold
                  in
                  let ib-title = ctx |> Inline.read {#title;}
@@ -48,7 +48,7 @@ end = struct
                    ++ inline-skip 3pt
                  in
                  let it-page =
-                   ChapterRef.get-chapter-page label
+                   page-opt
                    |> Option.map (fun page-num ->
                            (arabic (Int.of-string page-num - 2)))
                    |> Option.unwrap-or `?`
