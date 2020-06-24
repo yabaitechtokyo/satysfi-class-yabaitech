@@ -5,12 +5,13 @@
 
 @import: ../lib/chapter-ref
 @import: ../lib/label
-@import: ../lib/table-of-contents
 @import: ../lib/bibliography
 @import: ../typeset/bibliography-section
 @import: ../document-config
 @import: ../font-config
 @import: ../mutables
+@import: ../table-of-contents/data
+@import: ../table-of-contents/repository
 
 module Chapter : sig
 
@@ -142,7 +143,7 @@ end = struct
         let () = ChapterRef.register-new-chapter label |> Fn.ignore in
         let title-for-toc = title-for-toc |> Option.unwrap-or title in
         let () =
-            TOCElementChapter(label, title-for-toc, subtitle, author)
+            TableOfContentsElement.make label title-for-toc subtitle author
             |> TableOfContentsRepository.register-element in
         let () = Bibliography.register bibliography in
         % Render

@@ -3,17 +3,18 @@
 @import: ../document-config
 @import: ../font-config
 @import: ../lib/chapter-ref
-@import: ../pages/table-of-contents
+@import: ../table-of-contents/data
+@import: ../table-of-contents/page
 
 let toc-list = [
-    (TOCElementChapter(`1`, {チャプターその1}, Option.none, {著者の1}), Option.some(`3`));
-    (TOCElementChapter(`2`, {チャプターその2}, Option.some({サブタイトル}), {著者の2}), Option.some(`13`));
-    (TOCElementChapter(`3`, {the 3rd chapter}, Option.none, {the 3rd author}), Option.some(`23`));
-    (TOCElementChapter(`4`, {the 4th chapter}, Option.some({subtitle}), {the 4th author}), Option.some(`33`));
-    (TOCElementChapter(`5`, {チャプターその5とちょっと眺めのタイトル}, Option.none, {著者の5}), Option.some(`43`));
-    (TOCElementChapter(`6`, {チャプターその6}, Option.none, {著者の6}), Option.some(`53`));
-    (TOCElementChapter(`7`, {チャプターその7}, Option.none, {著者の7}), Option.some(`63`));
-    (TOCElementChapter(`8`, {チャプターその8}, Option.none, {著者の8}), Option.some(`203`));
+    (TableOfContentsElement.make `1` {チャプターその1} Option.none {著者の1}, Option.some(`3`));
+    (TableOfContentsElement.make `2` {チャプターその2} (Option.some {サブタイトル}) {著者の2}, Option.some(`13`));
+    (TableOfContentsElement.make `3` {the 3rd chapter} Option.none {the 3rd author}, Option.some(`23`));
+    (TableOfContentsElement.make `4` {the 4th chapter} (Option.some {subtitle}) {the 4th author}, Option.some(`33`));
+    (TableOfContentsElement.make `5` {チャプターその5とちょっと眺めのタイトル} Option.none {著者の5}, Option.some(`43`));
+    (TableOfContentsElement.make `6` {チャプターその6} Option.none {著者の6}, Option.some(`53`));
+    (TableOfContentsElement.make `7` {チャプターその7} Option.none {著者の7}, Option.some(`63`));
+    (TableOfContentsElement.make `8` {チャプターその8} Option.none {著者の8}, Option.some(`203`));
 ]
 in
 let toc-page =

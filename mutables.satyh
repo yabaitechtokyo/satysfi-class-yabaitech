@@ -1,5 +1,3 @@
-@import: lib/table-of-contents
-
 module Mutables : sig
 
     val num-figure : int ref

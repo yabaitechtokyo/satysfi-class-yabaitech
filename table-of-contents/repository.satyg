@@ -4,19 +4,15 @@
 @require: base/ref
 @require: base/string
 
-@import: cross-ref
-@import: label
-
-type toc-element =
-| TOCElementChapter    of string * inline-text * inline-text option * inline-text
-% | TOCElementSection    of string * inline-text
-% | TOCElementSubsection of string * inline-text
+@import: ../lib/cross-ref
+@import: ../lib/label
+@import: data
 
 module TableOfContentsRepository : sig
 
-    val register-element : toc-element -> unit
+    val register-element : TableOfContentsElement.t -> unit
     val register-page : string -> string -> unit
-    val get-element-page-list : unit -> (toc-element * string option) list
+    val get-element-page-list : unit -> (TableOfContentsElement.t * string option) list
 
 end = struct
 
@@ -41,9 +37,8 @@ end = struct
         toc-list-ref
         |> Ref.get
         |> List.map (fun (element) -> (
-            match element with
-            | TOCElementChapter(label, _, _, _) ->
-                (element, get-page-opt label)))
+            let label = TableOfContentsElement.get-label element in
+            (element, get-page-opt label)))
         |> List.reverse
 
 end

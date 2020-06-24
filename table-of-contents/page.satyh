@@ -6,12 +6,14 @@
 
 @import: ../typeset/chapter
 @import: ../lib/chapter-ref
-@import: ../lib/table-of-contents
 @import: ../font-config
+
+@import: data
+@import: repository
 
 module TableOfContentsPage : sig
   
-  val render : ((toc-element * string option) list) -> context -> block-boxes
+  val render : ((TableOfContentsElement.t * string option) list) -> context -> block-boxes
 
 end = struct
 
@@ -32,12 +34,13 @@ end = struct
         toc-list
         |> List.fold-left (fun bbacc tocelem -> (
              match tocelem with
-             | (TOCElementChapter(label, title, subtitle, author), page-opt) ->
+             | (element, page-opt) ->
                  let ctx = ctx |> set-font Latin font-latin-bold
                  in
-                 let ib-title = ctx |> Inline.read {#title;}
+                 let ib-title = ctx |> Inline.read (TableOfContentsElement.get-title element)
                  in
-                 let ib-subtitle = (subtitle
+                 let ib-subtitle = (element
+                   |> TableOfContentsElement.get-subtitle-opt
                    |> Option.map (fun st -> (
                         Inline.concat [
                           inline-skip 10pt;
@@ -58,7 +61,8 @@ end = struct
                      ctx |> set-font Latin font-latin-bold
                          |> set-cjk-font font-cjk-gothic
                  in
-                 let ib-author = inline-skip 30pt ++ read-inline ctx-bf {#author;} in
+                 let author = TableOfContentsElement.get-author element in
+                 let ib-author = inline-skip 30pt ++ read-inline ctx-bf author in
                  let ib-page = inline-skip 3pt ++ read-inline ctx it-page in
                  let ib-middle-dots-line =
                      let width = (get-text-width ctx)
