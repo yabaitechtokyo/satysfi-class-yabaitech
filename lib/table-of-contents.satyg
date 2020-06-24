@@ -43,8 +43,7 @@ end = struct
         |> List.map (fun (element) -> (
             match element with
             | TOCElementChapter(label, _, _, _) ->
-                (element, get-page-opt label)
-        ))
+                (element, get-page-opt label)))
         |> List.reverse
 
 end
