@@ -1,6 +1,6 @@
 % -*- coding: utf-8 -*-
 @require: base/debug
-@import: ../yabaitech
+@import: ../src/yabaitech
 @import: bibliography
 @import: chapter
 @import: figure

@@ -1,10 +1,10 @@
 @require: base/option-ext
 @import: fakedoc
-@import: ../document-config
-@import: ../font-config
-@import: ../lib/chapter-ref
-@import: ../table-of-contents/data
-@import: ../table-of-contents/page
+@import: ../src/document-config
+@import: ../src/font-config
+@import: ../src/lib/chapter-ref
+@import: ../src/table-of-contents/data
+@import: ../src/table-of-contents/page
 
 let toc-list = [
     (TableOfContentsElement.make `1` {チャプターその1} Option.none {著者の1}, Option.some(`3`));

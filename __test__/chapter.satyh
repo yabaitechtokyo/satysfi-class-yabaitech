@@ -1,4 +1,4 @@
-@import: ../yabaitech
+@import: ../src/yabaitech
 @require: base/option-ext
 
 module ChapterTest : sig

@@ -1,7 +1,7 @@
-@import: ../document
-@import: ../document-config
-@import: ../font-config
-@import: ../typeset/page-header
+@import: ../src/document
+@import: ../src/document-config
+@import: ../src/font-config
+@import: ../src/typeset/page-header
 
 module FakeDocument : sig
 
