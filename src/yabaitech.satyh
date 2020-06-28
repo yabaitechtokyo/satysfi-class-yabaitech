@@ -95,7 +95,7 @@ module Book : sig
 
 end = struct
 
-  let document record inner = Document.render record inner
+  let document record inner = Document.compile record inner
 
   let-inline ctx \cite labels = Cite.render-inline ctx labels
 

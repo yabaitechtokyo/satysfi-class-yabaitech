@@ -15,7 +15,7 @@
 
 module Document : sig
 
-    val render : 'a -> block-text -> document
+    val compile : 'a -> block-text -> document
         constraint 'a :: (|
             title: string;
             volume: string;
@@ -70,7 +70,7 @@ end = struct
         line-break false true ctx (ib ++ inline-fil)
             +++ clear-page
 
-    let render record inner =
+    let compile record inner =
         let ctx-doc =
             FontConfig.get-standard-context DocumentConfig.text-width
         in
