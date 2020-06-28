@@ -1,9 +1,0 @@
-module Unit2 : sig
-
-    val discard : 'a -> unit
-
-end = struct
-
-    let discard _ = ()
-
-end

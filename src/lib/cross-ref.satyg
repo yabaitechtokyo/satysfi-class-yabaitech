@@ -1,7 +1,6 @@
-@require: base/option-ext
+@require: base/fn
 @require: base/inline
-
-@import: unit
+@require: base/option-ext
 
 module CrossRef : sig
 
@@ -21,7 +20,7 @@ end = struct
         |> Option.map (fun label ->
             register-cross-reference label value
         )
-        |> Unit2.discard
+        |> Fn.ignore
 
     let get label = get-cross-reference label
 
