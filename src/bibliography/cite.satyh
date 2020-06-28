@@ -1,5 +1,6 @@
 @require: base/list-ext
-@import: ../lib/bibliography
+
+@import: repository
 
 module Cite : sig
 
@@ -11,8 +12,8 @@ end = struct
         let sacc =
             labels
             |> List.fold-left-adjacent (fun sacc label _ opt -> (
-                let s-num = Bibliography.get label
-                            |> Option.unwrap-or `?`
+                let s-num = BibliographyRepository.get label
+                    |> Option.unwrap-or `?`
                 in
                 match opt with
                 | None    -> sacc ^ s-num

@@ -1,0 +1,24 @@
+@require: base/list-ext
+@require: base/tuple
+
+@import: ../lib/cross-ref
+@import: data
+
+module BibliographyRepository : sig
+
+    val register : bib-defs -> unit
+    val get : string -> string option
+
+end = struct
+
+    let register bib-list =
+        bib-list 
+        |> List.map Pair.fst
+        |> List.iteri (fun bib-idx label -> (
+            (`bib:` ^ label)
+            |> CrossRef.register (arabic (bib-idx + 1))
+        ))
+
+    let get label = CrossRef.get (`bib:` ^ label)
+
+end

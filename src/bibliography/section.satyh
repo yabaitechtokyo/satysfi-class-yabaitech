@@ -8,13 +8,12 @@
 @require: base/tuple
 
 @import: ../lib/cross-ref
-@import: ../lib/bibliography
 @import: ../font-config
-
+@import: data
 
 module BibliographySection : sig
 
-    val render-block : context -> bib-defs -> block-boxes
+    val render : context -> bib-defs -> block-boxes
 
 end = struct
 
@@ -112,7 +111,7 @@ end = struct
     let pads = (bib-left-padding, 0pt, 0pt, 0pt) in
     block-frame-breakable ctx pads VDecoSet.empty (fun ctx -> line-break true true ctx ib-bib-item)
 
-    let render-block ctx bib-defs =
+    let render ctx bib-defs =
         bib-defs
         |> List.map Pair.snd
         |> List.fold-lefti (fun idx bbacc bibitem -> (

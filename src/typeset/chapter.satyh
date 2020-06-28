@@ -5,11 +5,11 @@
 
 @import: ../lib/chapter-ref
 @import: ../lib/label
-@import: ../lib/bibliography
-@import: ../typeset/bibliography-section
 @import: ../document-config
 @import: ../font-config
 @import: ../mutables
+@import: ../bibliography/repository
+@import: ../bibliography/section
 @import: ../table-of-contents/data
 @import: ../table-of-contents/repository
 
@@ -58,7 +58,7 @@ end = struct
                 (ib-bib-title ++ inline-fil)
                 |> section-heading ctx-doc
             in
-            let bb-bib-main = BibliographySection.render-block ctx-bib bibliography
+            let bb-bib-main = BibliographySection.render ctx-bib bibliography
             in
             bb-bib-title +++ bb-bib-main
 
@@ -113,7 +113,7 @@ end = struct
         let () = ChapterRef.reset-subsection-num () in
         let () = ChapterRef.register-new-chapter label |> Fn.ignore in
         let title-for-toc = title-for-toc |> Option.unwrap-or title in
-        let () = Bibliography.register bibliography in
+        let () = BibliographyRepository.register bibliography in
         % Render
         let ctx-doc =
             get-standard-context text-width
@@ -145,7 +145,7 @@ end = struct
         let () =
             TableOfContentsElement.make label title-for-toc subtitle author
             |> TableOfContentsRepository.register-element in
-        let () = Bibliography.register bibliography in
+        let () = BibliographyRepository.register bibliography in
         % Render
         let ctx-doc =
             get-standard-context text-width

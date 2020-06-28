@@ -1,7 +1,3 @@
-@require: base/list-ext
-@require: base/tuple
-@import: cross-ref
-
 type bib-in-proceedings = (|
     author    : inline-text list;
     title     : inline-text;
@@ -44,22 +40,3 @@ type bib-item =
 | WebSite       of bib-web-site
 
 type bib-defs = (string * bib-item) list
-
-module Bibliography : sig
-
-    val register : bib-defs -> unit
-    val get : string -> string option
-
-end = struct
-
-    let register bib-list =
-        bib-list 
-        |> List.map Pair.fst
-        |> List.iteri (fun bib-idx label -> (
-            (`bib:` ^ label)
-            |> CrossRef.register (arabic (bib-idx + 1))
-        ))
-
-    let get label = CrossRef.get (`bib:` ^ label)
-
-end

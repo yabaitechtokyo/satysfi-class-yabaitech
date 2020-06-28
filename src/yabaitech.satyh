@@ -1,6 +1,6 @@
 % -*- coding: utf-8 -*-
+@import: bibliography/cite
 @import: typeset/chapter
-@import: typeset/cite
 @import: typeset/figure
 @import: typeset/footnote
 @import: typeset/misc-commands
