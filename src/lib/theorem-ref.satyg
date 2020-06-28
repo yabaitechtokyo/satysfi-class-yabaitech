@@ -28,7 +28,7 @@ end = struct
         let () = Ref.inc num-theorems in
         let num-string = (arabic (Ref.get num-theorems)) in
         let () = label-opt |> Option.iter (fun label -> (
-            let rawlabel = (label |> Label.decorate prefix `num`) in
+            let rawlabel = (label |> Label.prefix-with [prefix; `num`]) in
             register-cross-reference rawlabel num-string)) in
         num-string
 
@@ -55,24 +55,24 @@ end = struct
 
 
     let get-definition label =
-        label |> Label.decorate `definition` `num` |> get-cross-reference
+        label |> Label.prefix-with [`definition`; `num`] |> get-cross-reference
 
     let get-theorem label =
-        label |> Label.decorate `theorem` `num` |> get-cross-reference
+        label |> Label.prefix-with [`theorem`; `num`] |> get-cross-reference
 
     let get-lemma label =
-        label |> Label.decorate `lemma` `num` |> get-cross-reference
+        label |> Label.prefix-with [`lemma`; `num`] |> get-cross-reference
 
     let get-corollary label =
-        label |> Label.decorate `corollary` `num` |> get-cross-reference
+        label |> Label.prefix-with [`corollary`; `num`] |> get-cross-reference
 
     let get-assumption label =
-        label |> Label.decorate `assumption` `num` |> get-cross-reference
+        label |> Label.prefix-with [`assumption`; `num`] |> get-cross-reference
 
     let get-example label =
-        label |> Label.decorate `example` `num` |> get-cross-reference
+        label |> Label.prefix-with [`example`; `num`] |> get-cross-reference
 
     let get-notation label =
-        label |> Label.decorate `notation` `num` |> get-cross-reference
+        label |> Label.prefix-with [`notation`; `num`] |> get-cross-reference
 
 end

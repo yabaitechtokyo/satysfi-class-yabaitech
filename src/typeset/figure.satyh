@@ -54,11 +54,11 @@ end = struct
 
     let render-inline-ref-figure =
         CrossRef.gen-render-inline-ref
-            (Label.decorate `figure` `num`)
+            (Label.prefix-with [`figure`; `num`])
             (fun value -> {図#value;})
 
     let render-inline-ref-table =
         CrossRef.gen-render-inline-ref
-            (Label.decorate `table` `num`)
+            (Label.prefix-with [`table`; `num`])
             (fun value -> {表#value;})
 end

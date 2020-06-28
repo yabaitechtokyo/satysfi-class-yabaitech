@@ -2,6 +2,7 @@
 @require: base/tuple
 
 @import: ../lib/cross-ref
+@import: ../lib/label
 @import: data
 
 module BibliographyRepository : sig
@@ -15,10 +16,13 @@ end = struct
         bib-list 
         |> List.map Pair.fst
         |> List.iteri (fun bib-idx label -> (
-            (`bib:` ^ label)
+            label
+            |> Label.prefix-with [`bib`]
             |> CrossRef.register (arabic (bib-idx + 1))
         ))
 
-    let get label = CrossRef.get (`bib:` ^ label)
+    let get label = label
+        |> Label.prefix-with [`bib`]
+        |> CrossRef.get
 
 end

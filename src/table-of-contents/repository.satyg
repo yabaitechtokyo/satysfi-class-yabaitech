@@ -25,12 +25,12 @@ end = struct
 
     let register-page label page =
         label
-        |> Label.decorate `toc` `page`
+        |> Label.prefix-with [`toc`; `page`]
         |> CrossRef.register page
 
     let get-page-opt label =
         label
-        |> Label.decorate `toc` `page`
+        |> Label.prefix-with [`toc`; `page`]
         |> CrossRef.get
 
     let get-element-page-list () =

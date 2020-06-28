@@ -21,7 +21,7 @@ end = struct
     let num-subsection-ref = Ref.make 0
 
     let get-chapter-num name =
-        name |> Label.decorate `chapter` `num`
+        name |> Label.prefix-with [`chapter`; `num`]
              |> get-cross-reference
     
     let register-new-chapter name =
@@ -30,7 +30,7 @@ end = struct
         let new-num-str = arabic new-num
         in
         let () = register-cross-reference
-                    (name |> Label.decorate `chapter` `num`)
+                    (name |> Label.prefix-with [`chapter`; `num`])
                     new-num-str
         in
         let () = num-chapter-ref |> Ref.set new-num
@@ -45,7 +45,7 @@ end = struct
         let new-num-str = (arabic new-num)
         in
         let () = register-cross-reference
-                    (name |> Label.decorate `section` `num`)
+                    (name |> Label.prefix-with [`section`; `num`])
                     new-num-str
         in
         let () = num-section-ref |> Ref.set new-num
@@ -53,7 +53,7 @@ end = struct
         new-num-str
 
     let get-section-num name = 
-        name |> Label.decorate `section` `num`
+        name |> Label.prefix-with [`section`; `num`]
              |> get-cross-reference
 
 
@@ -66,7 +66,7 @@ end = struct
                           ^ `.` ^ (arabic new-num)
         in
         let () = register-cross-reference
-                    (name |> Label.decorate `subsection` `num`)
+                    (name |> Label.prefix-with [`subsection`; `num`])
                     new-num-str
         in
         let () = num-subsection-ref |> Ref.set new-num
@@ -74,7 +74,7 @@ end = struct
         new-num-str
 
     let get-subsection-num name =
-        name |> Label.decorate `subsection` `num`
+        name |> Label.prefix-with [`subsection`; `num`]
              |> get-cross-reference
 
 end

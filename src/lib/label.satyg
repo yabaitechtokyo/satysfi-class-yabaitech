@@ -1,7 +1,9 @@
+@require: base/list-ext
+
 module Label : sig
 
     val or-fresh : string option -> string
-    val decorate : string -> string -> string -> string
+    val prefix-with : string list -> string -> string
 
 end = struct
 
@@ -17,7 +19,9 @@ end = struct
         | None -> generate-fresh-label ()
         | Some(label) -> label
 
-    let decorate prefix suffix label =
-        prefix ^ `:` ^ label ^ `:` ^ suffix
+    let prefix-with prefix-list label =
+        List.fold-right (fun prefix current-label -> 
+            prefix ^ `:` ^ current-label
+        ) label prefix-list
 
 end
