@@ -1,0 +1,25 @@
+name: build
+on: [push, pull_request]
+
+jobs:
+  regression-test:
+    name: Run regression test
+    runs-on: ubuntu-latest
+    container:
+      image: zeptometer/satysfi-yarn-diff-pdf:latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Install Yarn dependencies
+        run: yarn install
+      - name: Install Satyrographos dependencies
+        run: |
+          export HOME=/root
+          eval $(opam env)
+          opam update
+          opam pin add satysfi-class-yabaitech.opam "file://${PWD}"
+          satyrographos install -l class-yabaitech
+      - name: Run regression tests
+        run: |
+          export HOME=/root
+          eval $(opam env)
+          yarn test
