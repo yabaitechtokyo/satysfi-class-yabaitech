@@ -3,7 +3,6 @@
 @require: base/block
 @require: base/fn
 
-@import: ../lib/chapter-ref
 @import: ../lib/label
 @import: ../document-config
 @import: ../font-config
@@ -12,19 +11,21 @@
 @import: ../bibliography/section
 @import: ../table-of-contents/data
 @import: ../table-of-contents/repository
+@import: repository
 
 module Chapter : sig
 
-    val chapter-heading : context -> inline-boxes option -> inline-boxes -> block-boxes
-    val chapter-scheme : context -> string option -> bib-defs -> inline-text -> inline-text option -> inline-text option -> inline-text -> block-text -> block-boxes
-    val render-pseudo-chapter : context -> string option -> bib-defs -> inline-text -> inline-text option -> inline-text option -> inline-text -> block-text -> block-boxes
-    val section-scheme : context -> string option -> inline-text -> block-text -> block-boxes
-    val subsection-scheme : context -> string option -> inline-text -> block-text -> block-boxes
-    val subsubsection-scheme : context -> string option -> inline-text -> block-text -> block-boxes
+    val render-chapter : context -> string option -> bib-defs -> inline-text -> inline-text option -> inline-text option -> inline-text -> block-text -> block-boxes
+    val render-section : context -> string option -> inline-text -> block-text -> block-boxes
+    val render-subsection : context -> string option -> inline-text -> block-text -> block-boxes
+    val render-subsubsection : context -> string option -> inline-text -> block-text -> block-boxes
 
-    val render-inline-ref-chapter : string -> context -> inline-boxes
-    val render-inline-ref-section : string -> context -> inline-boxes
-    val render-inline-ref-subsection : string -> context -> inline-boxes
+    val write-ref-chapter : string -> context -> inline-boxes
+    val write-ref-section : string -> context -> inline-boxes
+    val write-ref-subsection : string -> context -> inline-boxes
+
+    % TODO: separate this to Heading module
+    val render-chapter-heading : context -> inline-boxes option -> inline-boxes -> block-boxes
 
 end = struct
 
@@ -32,7 +33,7 @@ end = struct
     open Mutables
     open FontConfig
 
-    let chapter-heading ctx ib-num-opt ib-title =
+    let render-chapter-heading ctx ib-num-opt ib-title =
         let bb =
             match ib-num-opt with
             | None         -> block-nil
@@ -106,41 +107,12 @@ end = struct
             Block.skip 18pt
         ]
 
-    let render-pseudo-chapter ctx labelopt bibliography title title-for-toc subtitle author inner =
+    let render-chapter ctx labelopt bibliography title title-for-toc subtitle author inner =
         % Setup
         let label = Label.or-fresh labelopt in
-        let () = ChapterRef.reset-section-num () in
-        let () = ChapterRef.reset-subsection-num () in
-        let () = ChapterRef.register-new-chapter label |> Fn.ignore in
-        let title-for-toc = title-for-toc |> Option.unwrap-or title in
-        let () = BibliographyRepository.register bibliography in
-        % Render
-        let ctx-doc =
-            get-standard-context text-width
-            |> set-font-size 12pt
-            |> set-leading 18pt
-            |> set-hyphen-penalty 1000
-        in
-        let ib-pagehook = hook-page-break (fun pbinfo _ -> 
-            TableOfContentsRepository.register-page label (arabic pbinfo#page-number))
-        in
-        let bb-title = ctx |> render-block-chapter-heading label title subtitle author in
-        let bb-content = read-block ctx inner in
-        let bb-bib-section = render-block-bib-section ctx ctx-doc bibliography
-        in
-        Block.concat [
-            line-break false false ctx ib-pagehook;
-            bb-title;
-            bb-content;
-            bb-bib-section;
-        ]
-
-    let chapter-scheme ctx labelopt bibliography title title-for-toc subtitle author inner =
-        % Setup
-        let label = Label.or-fresh labelopt in
-        let () = ChapterRef.reset-section-num () in
-        let () = ChapterRef.reset-subsection-num () in
-        let () = ChapterRef.register-new-chapter label |> Fn.ignore in
+        let () = ChapterRepository.reset-section-num () in
+        let () = ChapterRepository.reset-subsection-num () in
+        let () = ChapterRepository.register-new-chapter label |> Fn.ignore in
         let title-for-toc = title-for-toc |> Option.unwrap-or title in
         let () =
             TableOfContentsElement.make label title-for-toc subtitle author
@@ -168,20 +140,20 @@ end = struct
             clear-page
         ]
 
-    let section-scheme ctx label-opt title inner =
+    let render-section ctx label-opt title inner =
         let ctx-title = make-section-title ctx in
-        let () = ChapterRef.reset-subsection-num () in
+        let () = ChapterRepository.reset-subsection-num () in
         let label = Label.or-fresh label-opt in
-        let section-num = ChapterRef.register-new-section label in
+        let section-num = ChapterRepository.register-new-section label in
         let ib-num = read-inline ctx-title (embed-string (section-num ^ `.`)) in
         let ib-title = read-inline ctx-title title in
         let bb-title = section-heading ctx (ib-num ++ (inline-skip 10pt) ++ ib-title ++ (inline-fil)) in
         let bb-inner = read-block ctx inner in
         bb-title +++ bb-inner
 
-    let subsection-scheme ctx label-opt title inner =
+    let render-subsection ctx label-opt title inner =
         let label = Label.or-fresh label-opt in
-        let subsection-num = ChapterRef.register-new-subsection label in
+        let subsection-num = ChapterRepository.register-new-subsection label in
         let ctx-title = make-subsection-title ctx in
         let ib-num = read-inline ctx-title (embed-string (subsection-num ^ `.`))
         in
@@ -193,7 +165,7 @@ end = struct
         let bb-inner = read-block ctx inner in
         bb-title +++ bb-inner
 
-    let subsubsection-scheme ctx label-opt title inner =
+    let render-subsubsection ctx label-opt title inner =
         let ib-title =
             let ctx-title = make-subsubsection-title ctx
             in
@@ -205,25 +177,25 @@ end = struct
         bb-title +++ bb-main
 
 
-    let render-inline-ref-chapter label ctx =
+    let write-ref-chapter label ctx =
         let value = label
-                    |> ChapterRef.get-chapter-num
+                    |> ChapterRepository.get-chapter-num
                     |> Option.unwrap-or `?`
                     |> embed-string
         in
         ctx |> Inline.read {第#value;章}
 
-    let render-inline-ref-section label ctx =
+    let write-ref-section label ctx =
         let value = label
-                    |> ChapterRef.get-section-num
+                    |> ChapterRepository.get-section-num
                     |> Option.unwrap-or `?`
                     |> embed-string
         in
         ctx |> Inline.read {#value;節}
 
-    let render-inline-ref-subsection label ctx =
+    let write-ref-subsection label ctx =
         let value = label
-                    |> ChapterRef.get-subsection-num
+                    |> ChapterRepository.get-subsection-num
                     |> Option.unwrap-or `?`
                     |> embed-string
         in

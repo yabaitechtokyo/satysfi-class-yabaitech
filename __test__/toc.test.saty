@@ -2,7 +2,7 @@
 @import: fakedoc
 @import: ../src/document-config
 @import: ../src/font-config
-@import: ../src/lib/chapter-ref
+@import: ../src/chapter/repository
 @import: ../src/table-of-contents/data
 @import: ../src/table-of-contents/page
 

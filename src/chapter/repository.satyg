@@ -1,7 +1,8 @@
 @require: base/ref
-@import: label
 
-module ChapterRef : sig
+@import: ../lib/label
+
+module ChapterRepository : sig
 
     val get-chapter-num : string -> string option
     val register-new-chapter : string -> string

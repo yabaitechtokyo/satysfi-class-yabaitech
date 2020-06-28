@@ -4,9 +4,8 @@
 @require: base/option-ext
 @require: base/ref
 
-@import: ../typeset/chapter
-@import: ../lib/chapter-ref
 @import: ../font-config
+@import: ../chapter/chapter
 
 @import: data
 @import: repository
@@ -94,7 +93,7 @@ end = struct
                 |> Inline.read {目次}
                 |> align-ib-left
         in
-        let bb-toc-title = Chapter.chapter-heading ctx None ib-toc-title
+        let bb-toc-title = Chapter.render-chapter-heading ctx None ib-toc-title
         in
         let bb-toc-main = make-bb toc-list ctx
         in

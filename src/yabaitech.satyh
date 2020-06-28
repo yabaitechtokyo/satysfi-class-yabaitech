@@ -1,6 +1,6 @@
 % -*- coding: utf-8 -*-
 @import: bibliography/cite
-@import: typeset/chapter
+@import: chapter/chapter
 @import: typeset/figure
 @import: typeset/footnote
 @import: typeset/misc-commands
@@ -30,15 +30,6 @@ module Book : sig
 
   % from Chapter
   direct +chapter : [string?; 'a; block-text] block-cmd
-    constraint 'a :: (|
-      title : inline-text;
-      title-for-toc : inline-text option;
-      subtitle : inline-text option;
-      author : inline-text;
-      bibliography : (string * bib-item) list;
-    |)
-
-  direct +pseudo-chapter : [string?; 'a; block-text] block-cmd
     constraint 'a :: (|
       title : inline-text;
       title-for-toc : inline-text option;
@@ -110,23 +101,21 @@ end = struct
 
 
   let-block ctx +chapter ?:labelopt record inner =
-    Chapter.chapter-scheme ctx labelopt record#bibliography record#title record#title-for-toc record#subtitle record#author inner
+    Chapter.render-chapter ctx labelopt record#bibliography record#title record#title-for-toc record#subtitle record#author inner
 
-  let-block ctx +pseudo-chapter ?:labelopt record inner =
-    Chapter.render-pseudo-chapter ctx labelopt record#bibliography record#title record#title-for-toc record#subtitle record#author inner
 
   let-block ctx +section ?:labelopt title inner =
-    Chapter.section-scheme ctx labelopt title inner
+    Chapter.render-section ctx labelopt title inner
 
   let-block ctx +subsection ?:labelopt title inner =
-    Chapter.subsection-scheme ctx labelopt title inner
+    Chapter.render-subsection ctx labelopt title inner
 
   let-block ctx +subsubsection title inner =
-    Chapter.subsubsection-scheme ctx (Option.none) title inner
+    Chapter.render-subsubsection ctx (Option.none) title inner
 
-  let-inline ctx \ref-chapter key = ctx |> Chapter.render-inline-ref-chapter key
-  let-inline ctx \ref-section key = ctx |> Chapter.render-inline-ref-section key
-  let-inline ctx \ref-subsection key = ctx |> Chapter.render-inline-ref-subsection key
+  let-inline ctx \ref-chapter key = ctx |> Chapter.write-ref-chapter key
+  let-inline ctx \ref-section key = ctx |> Chapter.write-ref-section key
+  let-inline ctx \ref-subsection key = ctx |> Chapter.write-ref-subsection key
 
 
   let-block ctx +definition ?:wordopt ?:labelopt inner =

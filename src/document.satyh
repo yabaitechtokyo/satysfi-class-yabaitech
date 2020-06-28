@@ -3,15 +3,15 @@
 @require: base/ref
 @require: base/pager
 
-@import: typeset/chapter
+@import: chapter/chapter
+@import: table-of-contents/page
+@import: table-of-contents/repository
+@import: title/page
 @import: typeset/page-footer
 @import: typeset/page-header
 @import: document-config
 @import: font-config
 @import: mutables
-@import: table-of-contents/page
-@import: table-of-contents/repository
-@import: title/page
 
 module Document : sig
 
