@@ -1,0 +1,5 @@
+type title-info = (|
+    title : string;
+    volume : string;
+    date  : string;
+|)

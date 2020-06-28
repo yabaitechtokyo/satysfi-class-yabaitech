@@ -3,7 +3,6 @@
 @require: base/ref
 @require: base/pager
 
-@import: pages/title
 @import: typeset/chapter
 @import: typeset/page-footer
 @import: typeset/page-header
@@ -12,6 +11,7 @@
 @import: mutables
 @import: table-of-contents/page
 @import: table-of-contents/repository
+@import: title/page
 
 module Document : sig
 
@@ -77,7 +77,7 @@ end = struct
         let front-page =
             ctx-doc |> render-front `front.pdf`
         in
-        let bb-title-pages = ctx-doc |> Title.make-bb (|
+        let bb-title-pages = ctx-doc |> TitlePage.render (|
                 title = record#title;
                 volume = record#volume;
                 date  = record#date;

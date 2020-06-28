@@ -2,16 +2,11 @@
 @require: base/image
 
 @import: ../font-config
+@import: data
 
-type title-info = (|
-    title : string;
-    volume : string;
-    date  : string;
-|)
+module TitlePage : sig
 
-module Title : sig
-
-    val make-bb : title-info -> context -> block-boxes
+    val render : title-info -> context -> block-boxes
 
 end = struct
 
@@ -30,7 +25,7 @@ end = struct
             |> set-cjk-font (`fonts-noto-sans-cjk-jp:NotoSansCJKjp-Light`, 1.0, 0.)
             |> set-font-size 20pt
 
-    let make-bb info ctx = 
+    let render info ctx =
         let render-title ctx =
             Inline.concat [
                 Inline.fil;
