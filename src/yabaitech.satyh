@@ -88,7 +88,7 @@ end = struct
 
   let document record inner = Document.compile record inner
 
-  let-inline ctx \cite labels = Cite.render-inline ctx labels
+  let-inline ctx \cite labels = ctx |> Cite.write labels
 
   let-inline ctx \figure ?:labelopt caption inner =
     ctx |> Figure.write-figure labelopt caption inner

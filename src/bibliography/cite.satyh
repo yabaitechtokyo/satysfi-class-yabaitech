@@ -4,11 +4,11 @@
 
 module Cite : sig
 
-    val render-inline : context -> string list -> inline-boxes
+    val write : string list -> context -> inline-boxes
 
 end = struct
 
-    let render-inline ctx labels =
+    let write labels ctx =
         let sacc =
             labels
             |> List.fold-left-adjacent (fun sacc label _ opt -> (
