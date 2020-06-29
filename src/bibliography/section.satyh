@@ -7,7 +7,6 @@
 @require: base/option-ext
 @require: base/tuple
 
-@import: ../lib/cross-ref
 @import: ../font-config
 @import: data
 

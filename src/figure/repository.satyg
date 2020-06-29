@@ -1,6 +1,6 @@
+@require: base/cross-ref
 @require: base/ref
 
-@import: ../lib/cross-ref
 @import: ../lib/label
 
 module FigureRepository : sig

@@ -1,3 +1,4 @@
+@require: base/cross-ref
 @require: base/ref
 
 @import: ../lib/label
@@ -23,16 +24,16 @@ end = struct
 
     let get-chapter-num name =
         name |> Label.prefix-with [`chapter`; `num`]
-             |> get-cross-reference
+             |> CrossRef.get
     
-    let register-new-chapter name =
+    let register-new-chapter label =
         let new-num = 1 + Ref.get num-chapter-ref
         in
         let new-num-str = arabic new-num
         in
-        let () = register-cross-reference
-                    (name |> Label.prefix-with [`chapter`; `num`])
-                    new-num-str
+        let () = label
+            |> Label.prefix-with [`chapter`; `num`]
+            |> CrossRef.register new-num-str
         in
         let () = num-chapter-ref |> Ref.set new-num
         in
@@ -45,9 +46,9 @@ end = struct
         in
         let new-num-str = (arabic new-num)
         in
-        let () = register-cross-reference
-                    (name |> Label.prefix-with [`section`; `num`])
-                    new-num-str
+        let () = name
+            |> Label.prefix-with [`section`; `num`]
+            |> CrossRef.register new-num-str
         in
         let () = num-section-ref |> Ref.set new-num
         in
@@ -55,20 +56,19 @@ end = struct
 
     let get-section-num name = 
         name |> Label.prefix-with [`section`; `num`]
-             |> get-cross-reference
-
+             |> CrossRef.get
 
     let reset-subsection-num () = num-subsection-ref |> Ref.set 0
     
-    let register-new-subsection name =
+    let register-new-subsection label =
         let new-num = 1 + Ref.get num-subsection-ref
         in
         let new-num-str = (arabic (num-section-ref |> Ref.get)) 
                           ^ `.` ^ (arabic new-num)
         in
-        let () = register-cross-reference
-                    (name |> Label.prefix-with [`subsection`; `num`])
-                    new-num-str
+        let () = label
+            |> Label.prefix-with [`subsection`; `num`]
+            |> CrossRef.register new-num-str
         in
         let () = num-subsection-ref |> Ref.set new-num
         in
@@ -76,6 +76,6 @@ end = struct
 
     let get-subsection-num name =
         name |> Label.prefix-with [`subsection`; `num`]
-             |> get-cross-reference
+             |> CrossRef.get
 
 end

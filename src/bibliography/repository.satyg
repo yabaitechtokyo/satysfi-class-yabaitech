@@ -1,7 +1,7 @@
+@require: base/cross-ref
 @require: base/list-ext
 @require: base/tuple
 
-@import: ../lib/cross-ref
 @import: ../lib/label
 @import: data
 

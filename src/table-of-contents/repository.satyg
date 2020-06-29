@@ -1,10 +1,9 @@
+@require: base/cross-ref
 @require: base/list-ext
-@require: base/map
 @require: base/option-ext
 @require: base/ref
 @require: base/string
 
-@import: ../lib/cross-ref
 @import: ../lib/label
 @import: data
 
@@ -17,7 +16,6 @@ module TableOfContentsRepository : sig
 end = struct
 
     let toc-list-ref = Ref.make []
-    let toc-page-map-ref = Ref.make Map.empty
 
     let register-element element =
         toc-list-ref
