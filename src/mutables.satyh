@@ -2,12 +2,8 @@ module Mutables : sig
 
     val ref-float-boxes : ((int * block-boxes) list) ref
 
-    val show-page-number-ref : (int option) ref
-
 end = struct
 
     let-mutable ref-float-boxes <- []
-
-    let-mutable show-page-number-ref <- None
 
 end

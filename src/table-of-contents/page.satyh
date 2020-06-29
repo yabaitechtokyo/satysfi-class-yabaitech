@@ -102,8 +102,6 @@ end = struct
             bb-toc-title;
             bb-toc-main;
             clear-page;
-            line-break false false (ctx |> set-paragraph-margin 0pt 0pt)
-                  (hook-page-break (fun pbinfo _ -> (Mutables.show-page-number-ref |> Ref.set (Option.some pbinfo#page-number))) ++ inline-fil);
         ]
 
 end

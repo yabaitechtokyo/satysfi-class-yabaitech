@@ -3,11 +3,12 @@
 @require: base/ref
 @require: base/pager
 
+@import: page/page-number
+@import: page/footer
+@import: page/header
 @import: table-of-contents/page
 @import: table-of-contents/repository
 @import: title/page
-@import: typeset/page-footer
-@import: typeset/page-header
 @import: document-config
 @import: font-config
 @import: mutables
@@ -26,9 +27,6 @@ module Document : sig
         |)
 
 end = struct
-    let make-bb-disable-page-number ctx =
-        ctx |> Block.of-inline false false
-                (Fn.const (Pager.make-hook (fun _ _ -> (Mutables.show-page-number-ref |> Ref.set Option.none))))
 
     let height-of-float-boxes pageno =
         (!Mutables.ref-float-boxes) |> List.fold-left (fun h (pn, bb) -> (
@@ -36,7 +34,8 @@ end = struct
         )) 0pt
 
     let make-bb-colophon-page record ctx =
-        ctx |> make-bb-disable-page-number
+        % TODO: Fix this
+        Block.nil
 
     let get-content-area pbinfo =
         let () = FootnoteScheme.start-page () in
@@ -96,7 +95,9 @@ end = struct
                 front-page;
                 bb-title-pages;
                 bb-toc-pages;
+                PageNumber.show-from-here;
                 bb-main-pages;
+                PageNumber.hide-from-here;
                 bb-colophon-pages;
             ])
 

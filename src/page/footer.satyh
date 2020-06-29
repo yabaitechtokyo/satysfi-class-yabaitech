@@ -1,8 +1,10 @@
 @require: base/inline
 @require: base/block
+
 @import: ../document-config
 @import: ../font-config
 @import: ../mutables
+@import: page-number
 
 module PageFooter : sig
 
@@ -11,7 +13,7 @@ module PageFooter : sig
 end = struct
 
     let render-block pageno =
-        match !Mutables.show-page-number-ref with
+        match PageNumber.get-current-page () with
         | Some(pagenolast) ->
             let render-inline ctx =
                 let pageno = embed-string (arabic (pageno - pagenolast + 1)) in
