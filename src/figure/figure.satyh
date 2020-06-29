@@ -1,16 +1,18 @@
 @require: base/inline
 @require: base/block
+
 @import: ../lib/label
 @import: ../font-config
 @import: ../mutables
+@import: repository
 
 module Figure : sig
 
-    val render-inline-figure : string option -> inline-text -> block-text -> context -> inline-boxes
-    val render-inline-table : string option -> inline-text -> block-text -> context -> inline-boxes
+    val write-figure : string option -> inline-text -> block-text -> context -> inline-boxes
+    val write-table : string option -> inline-text -> block-text -> context -> inline-boxes
 
-    val render-inline-ref-figure : string -> context -> inline-boxes
-    val render-inline-ref-table : string -> context -> inline-boxes
+    val write-ref-figure : string -> context -> inline-boxes
+    val write-ref-table : string -> context -> inline-boxes
 
 end = struct
 
@@ -18,13 +20,10 @@ end = struct
     open Mutables
 
     let figure-scheme ctx labelopt prefix category caption inner =
-        let () = num-figure <- !num-figure + 1 in
-        let s-num = arabic !num-figure in
-        let () = labelopt
-            |> Option.map (fun label -> (prefix ^ label ^ `:num`))
-            |> CrossRef.register-if-present s-num
-        in
-        let it-num = embed-string s-num in
+        let it-num = labelopt
+            |> Label.or-fresh
+            |> FigureRepository.register
+            |> embed-string in
         let ctx-category =
           ctx |> set-font Latin font-latin-sans
               |> set-cjk-font font-cjk-gothic in
@@ -46,19 +45,23 @@ end = struct
           ))
 
 
-    let render-inline-figure labelopt caption inner ctx =
+    let write-figure labelopt caption inner ctx =
         figure-scheme ctx labelopt `figure:` {図} caption inner
 
-    let render-inline-table labelopt caption inner ctx =
+    let write-table labelopt caption inner ctx =
         figure-scheme ctx labelopt `table:` {表} caption inner
 
-    let render-inline-ref-figure =
-        CrossRef.gen-render-inline-ref
-            (Label.prefix-with [`figure`; `num`])
-            (fun value -> {図#value;})
+    let write-ref-figure label ctx =
+        let num = label
+            |> FigureRepository.get
+            |> Option.unwrap-or `?`
+            |> embed-string in
+        ctx |> Inline.read {図#num;}
 
-    let render-inline-ref-table =
-        CrossRef.gen-render-inline-ref
-            (Label.prefix-with [`table`; `num`])
-            (fun value -> {表#value;})
-end
+    let write-ref-table label ctx =
+       let num = label
+            |> FigureRepository.get
+            |> Option.unwrap-or `?`
+            |> embed-string in
+        ctx |> Inline.read {表#num;}
+end 

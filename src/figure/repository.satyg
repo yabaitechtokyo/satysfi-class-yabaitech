@@ -1,0 +1,28 @@
+@require: base/ref
+
+@import: ../lib/cross-ref
+@import: ../lib/label
+
+module FigureRepository : sig
+
+    val register : string -> string
+    val get : string -> string option
+
+end = struct
+
+    let num-figure = Ref.make 0
+
+    let register label =
+        let () = Ref.inc num-figure in
+        let num = num-figure |> Ref.get |> arabic in
+        let () = label
+            |> Label.prefix-with [`figure`; `num`]
+            |> CrossRef.register num in
+        num
+
+    let get label =
+        label
+        |> Label.prefix-with [`figure`; `num`]
+        |> CrossRef.get
+
+end

@@ -1,7 +1,7 @@
 % -*- coding: utf-8 -*-
 @import: bibliography/cite
 @import: chapter/chapter
-@import: typeset/figure
+@import: figure/figure
 @import: typeset/footnote
 @import: typeset/misc-commands
 @import: typeset/paragraph
@@ -91,13 +91,13 @@ end = struct
   let-inline ctx \cite labels = Cite.render-inline ctx labels
 
   let-inline ctx \figure ?:labelopt caption inner =
-    ctx |> Figure.render-inline-figure labelopt caption inner
+    ctx |> Figure.write-figure labelopt caption inner
 
   let-inline ctx \table ?:labelopt caption inner =
-    ctx |> Figure.render-inline-table labelopt caption inner
+    ctx |> Figure.write-table labelopt caption inner
 
-  let-inline ctx \ref-figure key = ctx |> Figure.render-inline-ref-figure key
-  let-inline ctx \ref-table key = ctx |> Figure.render-inline-ref-table key
+  let-inline ctx \ref-figure key = ctx |> Figure.write-ref-figure key
+  let-inline ctx \ref-table key = ctx |> Figure.write-ref-table key
 
 
   let-block ctx +chapter ?:labelopt record inner =
