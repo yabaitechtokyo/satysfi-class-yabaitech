@@ -6,7 +6,7 @@
 @import: ../mutables
 @import: repository
 
-module Figure : sig
+module FigureCommands : sig
 
     val write-figure : string option -> inline-text -> block-text -> context -> inline-boxes
     val write-table : string option -> inline-text -> block-text -> context -> inline-boxes

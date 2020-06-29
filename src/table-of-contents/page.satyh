@@ -5,7 +5,8 @@
 @require: base/ref
 
 @import: ../font-config
-@import: ../chapter/chapter
+% depends on render-chapter-heading. It should be separate file
+@import: ../chapter/commands
 
 @import: data
 @import: repository
@@ -93,7 +94,7 @@ end = struct
                 |> Inline.read {目次}
                 |> align-ib-left
         in
-        let bb-toc-title = Chapter.render-chapter-heading ctx None ib-toc-title
+        let bb-toc-title = ChapterCommands.render-chapter-heading ctx None ib-toc-title
         in
         let bb-toc-main = make-bb toc-list ctx
         in

@@ -2,13 +2,13 @@
 
 @import: repository
 
-module Cite : sig
+module BibliographyCommands : sig
 
-    val write : string list -> context -> inline-boxes
+    val write-cite : string list -> context -> inline-boxes
 
 end = struct
 
-    let write labels ctx =
+    let write-cite labels ctx =
         let sacc =
             labels
             |> List.fold-left-adjacent (fun sacc label _ opt -> (

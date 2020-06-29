@@ -3,7 +3,6 @@
 @require: base/ref
 @require: base/pager
 
-@import: chapter/chapter
 @import: table-of-contents/page
 @import: table-of-contents/repository
 @import: title/page

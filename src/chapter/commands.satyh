@@ -13,12 +13,12 @@
 @import: ../table-of-contents/repository
 @import: repository
 
-module Chapter : sig
+module ChapterCommands : sig
 
-    val render-chapter : context -> string option -> bib-defs -> inline-text -> inline-text option -> inline-text option -> inline-text -> block-text -> block-boxes
-    val render-section : context -> string option -> inline-text -> block-text -> block-boxes
-    val render-subsection : context -> string option -> inline-text -> block-text -> block-boxes
-    val render-subsubsection : context -> string option -> inline-text -> block-text -> block-boxes
+    val render-chapter : string option -> bib-defs -> inline-text -> inline-text option -> inline-text option -> inline-text -> block-text -> context -> block-boxes
+    val render-section : string option -> inline-text -> block-text -> context -> block-boxes
+    val render-subsection : string option -> inline-text -> block-text -> context -> block-boxes
+    val render-subsubsection : string option -> inline-text -> block-text -> context -> block-boxes
 
     val write-ref-chapter : string -> context -> inline-boxes
     val write-ref-section : string -> context -> inline-boxes
@@ -107,7 +107,7 @@ end = struct
             Block.skip 18pt
         ]
 
-    let render-chapter ctx labelopt bibliography title title-for-toc subtitle author inner =
+    let render-chapter labelopt bibliography title title-for-toc subtitle author inner ctx =
         % Setup
         let label = Label.or-fresh labelopt in
         let () = ChapterRepository.reset-section-num () in
@@ -140,7 +140,7 @@ end = struct
             clear-page
         ]
 
-    let render-section ctx label-opt title inner =
+    let render-section label-opt title inner ctx =
         let ctx-title = make-section-title ctx in
         let () = ChapterRepository.reset-subsection-num () in
         let label = Label.or-fresh label-opt in
@@ -151,7 +151,7 @@ end = struct
         let bb-inner = read-block ctx inner in
         bb-title +++ bb-inner
 
-    let render-subsection ctx label-opt title inner =
+    let render-subsection label-opt title inner ctx =
         let label = Label.or-fresh label-opt in
         let subsection-num = ChapterRepository.register-new-subsection label in
         let ctx-title = make-subsection-title ctx in
@@ -165,7 +165,7 @@ end = struct
         let bb-inner = read-block ctx inner in
         bb-title +++ bb-inner
 
-    let render-subsubsection ctx label-opt title inner =
+    let render-subsubsection label-opt title inner ctx =
         let ib-title =
             let ctx-title = make-subsubsection-title ctx
             in
@@ -175,7 +175,6 @@ end = struct
         in
         let bb-main = read-block ctx inner in
         bb-title +++ bb-main
-
 
     let write-ref-chapter label ctx =
         let value = label
