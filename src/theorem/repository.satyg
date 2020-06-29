@@ -1,0 +1,96 @@
+@require: base/cross-ref
+@require: base/option-ext
+@require: base/ref
+
+@import: ../lib/label
+
+module TheoremRepository : sig
+
+    val register-definition : string -> string
+    val register-theorem : string -> string
+    val register-lemma : string -> string
+    val register-corollary : string -> string
+    val register-assumption : string -> string
+    val register-example : string -> string
+    val register-notation : string -> string
+
+    val get-definition : string -> string option
+    val get-theorem : string -> string option
+    val get-lemma : string -> string option
+    val get-corollary : string -> string option
+    val get-assumption : string -> string option
+    val get-example : string -> string option
+    val get-notation : string -> string option
+
+end = struct
+
+    let num-theorems = Ref.make 0
+
+    let register-with-prefix prefix label = 
+        let () = Ref.inc num-theorems in
+        let num = num-theorems
+            |> Ref.get
+            |> arabic in
+        let () = label
+            |> Label.prefix-with [prefix; `num`]
+            |> CrossRef.register num in
+        num
+
+    let register-definition label =
+        label |> register-with-prefix `definition`
+
+    let register-theorem label =
+        label |> register-with-prefix `theorem`
+
+    let register-lemma label =
+        label |> register-with-prefix `lemma`
+
+    let register-corollary label =
+        label |> register-with-prefix `corollary`
+
+    let register-assumption label =
+        label |> register-with-prefix `assumption`
+
+    let register-example label =
+        label |> register-with-prefix `example`
+
+    let register-notation label =
+        label |> register-with-prefix `notation`
+
+
+    let get-definition label =
+        label
+        |> Label.prefix-with [`definition`; `num`]
+        |> CrossRef.get
+
+    let get-theorem label =
+        label
+        |> Label.prefix-with [`theorem`; `num`]
+        |> CrossRef.get
+
+    let get-lemma label =
+        label
+        |> Label.prefix-with [`lemma`; `num`]
+        |> CrossRef.get
+
+    let get-corollary label =
+        label
+        |> Label.prefix-with [`corollary`; `num`]
+        |> CrossRef.get
+
+    let get-assumption label =
+        label
+        |> Label.prefix-with [`assumption`; `num`]
+        |> CrossRef.get
+
+    let get-example label =
+        label
+        |> Label.prefix-with [`example`; `num`]
+        |> CrossRef.get
+
+    let get-notation label =
+        label
+        |> Label.prefix-with [`notation`; `num`]
+        |> CrossRef.get
+
+end

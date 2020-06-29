@@ -2,11 +2,11 @@
 @import: bibliography/commands
 @import: chapter/commands
 @import: figure/commands
+@import: theorem/commands
 @import: typeset/footnote
 @import: typeset/misc-commands
 @import: typeset/paragraph
 @import: typeset/review-comment
-@import: typeset/theoremish
 @import: document
 @import: document-config
 @import: font-config
@@ -126,33 +126,33 @@ end = struct
 
 
   let-block ctx +definition ?:wordopt ?:labelopt inner =
-    ctx |> Theoremish.render-block-definition labelopt wordopt inner
+    ctx |> TheoremCommands.render-definition labelopt wordopt inner
 
   let-block ctx +theorem ?:wordopt ?:labelopt inner =
-    ctx |> Theoremish.render-block-theorem labelopt wordopt inner
+    ctx |> TheoremCommands.render-theorem labelopt wordopt inner
 
   let-block ctx +lemma ?:wordopt ?:labelopt inner =
-    ctx |> Theoremish.render-block-lemma labelopt wordopt inner
+    ctx |> TheoremCommands.render-lemma labelopt wordopt inner
 
   let-block ctx +corollary ?:wordopt ?:labelopt inner =
-    ctx |> Theoremish.render-block-corollary labelopt wordopt inner
+    ctx |> TheoremCommands.render-corollary labelopt wordopt inner
 
   let-block ctx +assumption ?:wordopt ?:labelopt inner =
-    ctx |> Theoremish.render-block-assumption labelopt wordopt inner
+    ctx |> TheoremCommands.render-assumption labelopt wordopt inner
 
   let-block ctx +example ?:wordopt ?:labelopt inner =
-    ctx |> Theoremish.render-block-example labelopt wordopt inner
+    ctx |> TheoremCommands.render-example labelopt wordopt inner
 
   let-block ctx +notation ?:wordopt ?:labelopt inner =
-    ctx |> Theoremish.render-block-notation labelopt wordopt inner
+    ctx |> TheoremCommands.render-notation labelopt wordopt inner
 
-  let-inline ctx \ref-definition key = ctx |> Theoremish.render-inline-ref-definition key
-  let-inline ctx \ref-theorem key = ctx |> Theoremish.render-inline-ref-theorem key
-  let-inline ctx \ref-lemma key = ctx |> Theoremish.render-inline-ref-lemma key
-  let-inline ctx \ref-corollary key = ctx |> Theoremish.render-inline-ref-corollary key
-  let-inline ctx \ref-assumption key = ctx |> Theoremish.render-inline-ref-assumption key
-  let-inline ctx \ref-example key = ctx |> Theoremish.render-inline-ref-example key
-  let-inline ctx \ref-notation key = ctx |> Theoremish.render-inline-ref-notation key
+  let-inline ctx \ref-definition key = ctx |> TheoremCommands.write-ref-definition key
+  let-inline ctx \ref-theorem key = ctx |> TheoremCommands.write-ref-theorem key
+  let-inline ctx \ref-lemma key = ctx |> TheoremCommands.write-ref-lemma key
+  let-inline ctx \ref-corollary key = ctx |> TheoremCommands.write-ref-corollary key
+  let-inline ctx \ref-assumption key = ctx |> TheoremCommands.write-ref-assumption key
+  let-inline ctx \ref-example key = ctx |> TheoremCommands.write-ref-example key
+  let-inline ctx \ref-notation key = ctx |> TheoremCommands.write-ref-notation key
 
 
   let-block ctx +p inner = ctx |> Paragraph.render-block-paragraph inner
