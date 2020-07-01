@@ -8,26 +8,26 @@ module PageNumber : sig
 
     val show-from-here : block-boxes
     val hide-from-here : block-boxes
-    val get-current-page : unit -> int option
+    val get-page-count-offset : unit -> int option
 
 end = struct
 
-    let page-number-ref = Ref.make Option.none
+    let page-count-offset = Ref.make Option.none
 
     let any-ctx = get-initial-context 0mm (command \math)
 
     let show-from-here =
-        let page-hook pbinfo _ = page-number-ref
+        let page-hook pbinfo _ = page-count-offset
             |> Ref.set (Option.some pbinfo#page-number) in
         let inline = (page-hook |> Pager.make-hook |> Fn.const) in
         any-ctx |> Block.of-inline false false inline
 
     let hide-from-here =
-        let page-hook _ _ = page-number-ref |> Ref.set Option.none in
+        let page-hook _ _ = page-count-offset |> Ref.set Option.none in
         let inline = (page-hook |> Pager.make-hook |> Fn.const) in
         any-ctx |> Block.of-inline false false inline
 
-    let get-current-page () =
-        page-number-ref |> Ref.get
+    let get-page-count-offset () =
+        page-count-offset |> Ref.get
 
 end

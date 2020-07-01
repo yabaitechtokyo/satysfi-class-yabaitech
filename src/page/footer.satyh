@@ -13,10 +13,12 @@ module PageFooter : sig
 end = struct
 
     let render-block pageno =
-        match PageNumber.get-current-page () with
+        match PageNumber.get-page-count-offset () with
         | Some(pagenolast) ->
             let render-inline ctx =
-                let pageno = embed-string (arabic (pageno - pagenolast + 1)) in
+                let pageno = (pageno - pagenolast + 1)
+                    |> arabic
+                    |> embed-string in
                 Inline.concat [
                     Inline.fil;
                     ctx |> Inline.read pageno;
