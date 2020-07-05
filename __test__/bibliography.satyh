@@ -1,5 +1,7 @@
-@import: ../src/yabaitech
+@require: base/list-ext
 @require: base/option-ext
+
+@import: ../src/yabaitech
 
 module BibliographyTest : sig
 
@@ -67,6 +69,21 @@ end = struct
             subtitle = Option.none;
             author = {著者名};
         |) <
+            +p{
+                引用その1 \cite[`LogicVSI`];。
+                複数個の引用をするこもできます \cite[`Bochman98`;`conf/ijcai/BolligHKL09`;`multiboot1`];。
+            }
+        >+chapter ?:(`bibliography`)
+        (|
+            bibliography = bib |> List.reverse;
+            title = {bibliographyのテスト 2回目};
+            title-for-toc = Option.none;
+            subtitle = Option.none;
+            author = {著者名};
+        |) <
+            +p{
+                異なる章ではbibliographyのカウンタはリセットされます。
+            }
             +p{
                 引用その1 \cite[`LogicVSI`];。
                 複数個の引用をするこもできます \cite[`Bochman98`;`conf/ijcai/BolligHKL09`;`multiboot1`];。
