@@ -5,50 +5,44 @@
 
 module FigureTest : sig
 
-    val article : block-text
+  val article : block-text
 
 end = struct
 
-    let-block ctx +image w path =
-        let image = Image.of-jpeg path in
-        let insert-image = Inline.of-image w image in
-        line-break true true ctx (inline-fil ++ insert-image ++ inline-fil)
+  let-block ctx +image w path =
+    let image = Image.of-jpeg path in
+    let insert-image = Inline.of-image w image in
+    line-break true true ctx (inline-fil ++ insert-image ++ inline-fil)
 
-    let article = '<
-        +chapter ?:(`figure`)
-        (|
-            bibliography = [];
-            title = {図のテスト};
-            title-for-toc = Option.none;
-            subtitle = Option.none;
-            author = {著者名};
-        |)
-        <
-            +p {
-                \figure ?:(`figure-1`) {その1}
-                <
-                    +image(10cm)(`meme.jpg`);
-                >
-                \table ?:(`table-1`) {その2}
-                <
-                    +image(10cm)(`meme.jpg`);
-                >
-            }
+  let article = '<
+    +chapter ?:(`figure`) (|
+      bibliography = [];
+      title = {図のテスト};
+      title-for-toc = Option.none;
+      subtitle = Option.none;
+      author = {著者名};
+    |) <
+      +p {
+        \figure ?:(`figure-1`) {その1} <
+          +image(10cm)(`meme.jpg`);
         >
-        +chapter ?:(`figure-2`)
-        (|
-            bibliography = [];
-            title = {図のテスト2};
-            title-for-toc = Option.none;
-            subtitle = Option.none;
-            author = {著者名};
-        |)
-        <
-            +p {
-                なんかfigureとchapterの相性がよくないらしいです。
-                どうにかならんかね
-            }
+        \table ?:(`table-1`) {その2} <
+          +image(10cm)(`meme.jpg`);
         >
+      }
     >
+    +chapter ?:(`figure-2`) (|
+      bibliography = [];
+      title = {図のテスト2};
+      title-for-toc = Option.none;
+      subtitle = Option.none;
+      author = {著者名};
+    |) <
+      +p {
+        なんかfigureとchapterの相性がよくないらしいです。
+        どうにかならんかね
+      }
+    >
+  >
 
 end

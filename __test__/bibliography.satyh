@@ -5,101 +5,99 @@
 
 module BibliographyTest : sig
 
-    val article :  block-text
+  val article :  block-text
 
 end = struct
 
-    let bib = [
-        (`LogicVSI`, Book(|
-            author = {| Graham Priest |};
-            title = {Logic: A Very Short Introduction};
-            publisher = {Oxford University Press};
-            year = 2017
-        |));
-        (`IntroNC`, Book(|
-            author = {| Graham Priest |};
-            title = {An Introduction to Non-Classical Logic: From If to Is};
-            publisher = {Cambridge University Press};
-            year = 2008
-        |));
-        (`Belnap77`, Article(|
-            author = {| Nuel Belnap|};
-            title = {A Useful Four-Valued Logic};
-            journal = {Modern Uses of Multiple-Valued Logic};
-            volume = Some(2);
-            number = None;
-            pages = (5, 37);
-            year = 1977;
-        |));
-        (`Bochman98`, Article(|
-            author = {| Alexander Bochman|};
-            title = {Biconsequence Relations: A Four-Valued Formalism of Reasoning with Inconsistency and Incompleteness};
-            journal = {Notre Dame Journal of Formal Logic};
-            volume = Some(39);
-            number = Some({1});
-            pages = (47, 73);
-            year = 1998;
-        |));
-        (`conf/ijcai/BolligHKL09`, InProceedings(|
-            author = {|Benedikt Bollig, Peter Habermehl, Carsten Kern, Martin Leucker|};
-            title = {Angluin-Style Learning of NFA.};
-            booktitle = {IJCAI};
-            series = None; 
-            volume = None; 
-            number = None; 
-            pages = (1004,1009);
-            year = 2009;
-        |));
-        (`multiboot1`, WebSite(|
-            author = {| Free Software Foundation, Inc. |};
-            title = {Multiboot Specification version 0.6.96};
-            url = `https://www.gnu.org/software/grub/manual/multiboot/multiboot.html`;
-            year = 2010;
-        |))
-    ]
+  let bib = [
+    (`LogicVSI`, Book(|
+      author = {| Graham Priest |};
+      title = {Logic: A Very Short Introduction};
+      publisher = {Oxford University Press};
+      year = 2017
+    |));
+    (`IntroNC`, Book(|
+      author = {| Graham Priest |};
+      title = {An Introduction to Non-Classical Logic: From If to Is};
+      publisher = {Cambridge University Press};
+      year = 2008
+    |));
+    (`Belnap77`, Article(|
+      author = {| Nuel Belnap|};
+      title = {A Useful Four-Valued Logic};
+      journal = {Modern Uses of Multiple-Valued Logic};
+      volume = Some(2);
+      number = None;
+      pages = (5, 37);
+      year = 1977;
+    |));
+    (`Bochman98`, Article(|
+      author = {| Alexander Bochman|};
+      title = {Biconsequence Relations: A Four-Valued Formalism of Reasoning with Inconsistency and Incompleteness};
+      journal = {Notre Dame Journal of Formal Logic};
+      volume = Some(39);
+      number = Some({1});
+      pages = (47, 73);
+      year = 1998;
+    |));
+    (`conf/ijcai/BolligHKL09`, InProceedings(|
+      author = {|Benedikt Bollig, Peter Habermehl, Carsten Kern, Martin Leucker|};
+      title = {Angluin-Style Learning of NFA.};
+      booktitle = {IJCAI};
+      series = None; 
+      volume = None; 
+      number = None; 
+      pages = (1004,1009);
+      year = 2009;
+    |));
+    (`multiboot1`, WebSite(|
+      author = {| Free Software Foundation, Inc. |};
+      title = {Multiboot Specification version 0.6.96};
+      url = `https://www.gnu.org/software/grub/manual/multiboot/multiboot.html`;
+      year = 2010;
+    |))
+  ]
 
-    let empty-bib = []
+  let empty-bib = []
 
-    let article = '<
-        +chapter ?:(`bibliography`)
-        (|
-            bibliography = bib;
-            title = {bibliographyのテスト};
-            title-for-toc = Option.none;
-            subtitle = Option.none;
-            author = {著者名};
-        |) <
-            +p{
-                引用その1 \cite[`LogicVSI`];。
-                複数個の引用をするこもできます \cite[`Bochman98`;`conf/ijcai/BolligHKL09`;`multiboot1`];。
-            }
-        >+chapter ?:(`bibliography`)
-        (|
-            bibliography = bib |> List.reverse;
-            title = {bibliographyのテスト 2回目};
-            title-for-toc = Option.none;
-            subtitle = Option.none;
-            author = {著者名};
-        |) <
-            +p{
-                異なる章ではbibliographyのカウンタはリセットされます。
-            }
-            +p{
-                引用その1 \cite[`LogicVSI`];。
-                複数個の引用をするこもできます \cite[`Bochman98`;`conf/ijcai/BolligHKL09`;`multiboot1`];。
-            }
-        >
-        +chapter ?:(`bibliography-empty`)
-        (|
-            bibliography = empty-bib;
-            title = {bibliographyが空の場合のテスト};
-            title-for-toc = Option.none;
-            subtitle = Option.none;
-            author = {著者名};
-        |) <
-            +p{
-                bibliographyが空の場合には参考文献の節は表示されません。
-            }
-        >
+  let article = '<
+    +chapter ?:(`bibliography`) (|
+      bibliography = bib;
+      title = {bibliographyのテスト};
+      title-for-toc = Option.none;
+      subtitle = Option.none;
+      author = {著者名};
+    |) <
+      +p{
+        引用その1 \cite[`LogicVSI`];。複数個の引用をするこもできます
+        \cite[`Bochman98`;`conf/ijcai/BolligHKL09`;`multiboot1`];。
+      }
+    >+chapter ?:(`bibliography`) (|
+      bibliography = bib |> List.reverse;
+      title = {bibliographyのテスト 2回目};
+      title-for-toc = Option.none;
+      subtitle = Option.none;
+      author = {著者名};
+    |) <
+      +p{
+        異なる章ではbibliographyのカウンタはリセットされます。
+      }
+      +p{
+        今回は逆順にbibliographyを与えています。
+        \cite[`Bochman98`;`conf/ijcai/BolligHKL09`;`multiboot1`];。
+      }
     >
+    +chapter ?:(`bibliography-empty`) (|
+      bibliography = empty-bib;
+      title = {bibliographyが空の場合のテスト};
+      title-for-toc = Option.none;
+      subtitle = Option.none;
+      author = {著者名};
+    |) <
+      +p{
+        bibliographyが空の場合には参考文献の節は表示されません。
+      }
+    >
+  >
+
 end

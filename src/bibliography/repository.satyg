@@ -9,25 +9,24 @@
 
 module BibliographyRepository : sig
 
-    val register : bib-defs -> unit
-    val get : string -> string option
+  val register : bib-defs -> unit
+  val get : string -> string option
 
 end = struct
 
-    let bib-map-ref = Ref.make Map.empty
+  let bib-map-ref = Ref.make Map.empty
 
-    let register bib-list =
-        let bib-map = bib-list 
-            |> List.map Pair.fst
-            |> List.mapi (fun bib-idx label -> (
-                (label, bib-idx + 1)))
-            |> Map.of-list in
-        bib-map-ref
-        |> Ref.set bib-map
+  let register bib-list =
+    let bib-map = bib-list 
+      |> List.map Pair.fst
+      |> List.mapi (fun bib-idx label -> (
+        (label, bib-idx + 1)))
+      |> Map.of-list in
+    bib-map-ref |> Ref.set bib-map
 
-    let get label = bib-map-ref
-        |> Ref.get
-        |> Map.of- String.eq label
-        |> Option.map String.of-int
+  let get label = bib-map-ref
+    |> Ref.get
+    |> Map.of- String.eq label
+    |> Option.map String.of-int
 
 end

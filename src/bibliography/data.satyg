@@ -1,36 +1,36 @@
 type bib-in-proceedings = (|
-    author    : inline-text list;
-    title     : inline-text;
-    booktitle : inline-text;
-    series    : inline-text option;
-    volume    : int option;
-    number    : inline-text option;
-    pages     : int * int;
-    year      : int;
+  author    : inline-text list;
+  title     : inline-text;
+  booktitle : inline-text;
+  series    : inline-text option;
+  volume    : int option;
+  number    : inline-text option;
+  pages     : int * int;
+  year      : int;
 |)
 
 type bib-article = (|
-    author  : inline-text list;
-    title   : inline-text;
-    journal : inline-text;
-    volume  : int option;
-    number  : inline-text option;
-    pages   : int * int;
-    year    : int;
+  author  : inline-text list;
+  title   : inline-text;
+  journal : inline-text;
+  volume  : int option;
+  number  : inline-text option;
+  pages   : int * int;
+  year    : int;
 |)
 
 type bib-book = (|
-    author    : inline-text list;
-    title     : inline-text;
-    publisher : inline-text;
-    year      : int;
+  author    : inline-text list;
+  title     : inline-text;
+  publisher : inline-text;
+  year      : int;
 |)
 
 type bib-web-site = (|
-    author : inline-text list;
-    title  : inline-text;
-    url    : string;
-    year   : int;
+  author : inline-text list;
+  title  : inline-text;
+  url    : string;
+  year   : int;
 |)
 
 type bib-item =
