@@ -1,16 +1,16 @@
 % -*- coding: utf-8 -*-
 @import: bibliography/commands
 @import: chapter/commands
+@import: document
+@import: document-config
 @import: figure/commands
+@import: font-config
+@import: mutables
+@import: paragraph/commands
 @import: theorem/commands
 @import: typeset/footnote
 @import: typeset/misc-commands
-@import: typeset/paragraph
 @import: typeset/review-comment
-@import: document
-@import: document-config
-@import: font-config
-@import: mutables
 
 module Book : sig
 
@@ -155,22 +155,22 @@ end = struct
   let-inline ctx \ref-notation key = ctx |> TheoremCommands.write-ref-notation key
 
 
-  let-block ctx +p inner = ctx |> Paragraph.render-block-paragraph inner
+  let-block ctx +p inner = ctx |> ParagraphCommands.render-paragraph inner
 
   let-block ctx +topic topic inner =
-    ctx |> Paragraph.render-block-topic topic inner
+    ctx |> ParagraphCommands.render-topic topic inner
 
   let-block ctx +proof ?:wordopt inner =
-    ctx |> Paragraph.render-block-proof wordopt inner
+    ctx |> ParagraphCommands.render-proof wordopt inner
 
-  let-inline ctx \emph inner = ctx |> MiscCommands.make-ib-emph inner
-  let-inline ctx \dfn inner = ctx |> MiscCommands.make-ib-dfn inner
-  let-inline ctx \br = ctx |> MiscCommands.make-ib-br
+  let-inline ctx \emph inner = ctx |> MiscCommands.write-emph inner
+  let-inline ctx \dfn inner = ctx |> MiscCommands.write-dfn inner
+  let-inline ctx \br = ctx |> MiscCommands.write-br
 
-  let-inline ctx \footnote it = ctx |> Footnote.render-block it
+  let-inline ctx \footnote it = ctx |> Footnote.write it
 
-  let-inline ctx \review-comment reviewer comment = ctx |> ReviewComment.render-inline reviewer comment
-  let-block ctx +review-comment reviewer comment = ctx |> ReviewComment.render-block reviewer comment
+  let-inline ctx \review-comment reviewer comment = ctx |> ReviewComment.write reviewer comment
+  let-block ctx +review-comment reviewer comment = ctx |> ReviewComment.render reviewer comment
 
 end
 

@@ -24,23 +24,10 @@ module ChapterCommands : sig
   val write-ref-section : string -> context -> inline-boxes
   val write-ref-subsection : string -> context -> inline-boxes
 
-  % TODO: separate this to Heading module
-  val render-chapter-heading : context -> inline-boxes option -> inline-boxes -> block-boxes
-
 end = struct
 
   open DocumentConfig
-  open Mutables
   open FontConfig
-
-  let render-chapter-heading ctx ib-num-opt ib-title =
-    let bb =
-      match ib-num-opt with
-      | None         -> block-nil
-      | Some(ib-num) -> line-break false false ctx (ib-num ++ inline-fil) in
-      bb
-      +++ line-break false false ctx (ib-title ++ inline-fil)
-      +++ block-skip 36pt
 
   let section-heading ctx ib-heading =
     line-break true false (
@@ -48,7 +35,7 @@ end = struct
       |> set-paragraph-margin section-top-margin section-bottom-margin
     ) ib-heading
 
-  let render-block-bib-section ctx-bib ctx-doc bibliography =
+  let render-bib-section ctx-bib ctx-doc bibliography =
     match bibliography with
     | [] -> Block.nil
     | bibliography -> 
@@ -60,11 +47,11 @@ end = struct
       let bb-bib-main = BibliographySection.render ctx-bib bibliography in
       bb-bib-title +++ bb-bib-main
 
-  let render-block-chapter-title title ctx = ctx
+  let render-chapter-title title ctx = ctx
     |> FontConfig.make-chapter-title
     |> Block.of-inline ?:true false false (Inline.read title)
 
-  let render-block-chapter-subtitle subtitle ctx =
+  let render-chapter-subtitle subtitle ctx =
     let render-inline ctx =
       let ctx-subtitle = ctx |> make-chapter-subtitle in
       Inline.concat [
@@ -75,7 +62,7 @@ end = struct
     |> FontConfig.make-chapter-subtitle
     |> Block.of-inline false false render-inline
   
-  let render-block-chapter-author author ctx =
+  let render-chapter-author author ctx =
     let render-inline ctx =
       Inline.concat [
         Inline.fil;
@@ -88,12 +75,12 @@ end = struct
     |> make-chapter-author
     |> Block.of-inline false false render-inline
 
-  let render-block-chapter-heading label title subtitle-opt author ctx =
-    let bb-title = ctx |> render-block-chapter-title title in
+  let render-chapter-heading label title subtitle-opt author ctx =
+    let bb-title = ctx |> render-chapter-title title in
     let bb-subtitle = subtitle-opt
-      |> Option.map (fun subtitle -> render-block-chapter-subtitle subtitle ctx)
+      |> Option.map (fun subtitle -> render-chapter-subtitle subtitle ctx)
       |> Option.unwrap-or Block.nil in
-    let bb-author = ctx |> render-block-chapter-author author in
+    let bb-author = ctx |> render-chapter-author author in
     Block.concat [
       Block.skip 18pt;
       bb-title;
@@ -124,9 +111,9 @@ end = struct
         label
         (arabic pbinfo#page-number)) in
     let bb-title = ctx
-      |> render-block-chapter-heading label title subtitle author in
+      |> render-chapter-heading label title subtitle author in
     let bb-content = read-block ctx inner in
-    let bb-bib-section = render-block-bib-section ctx ctx-doc bibliography in
+    let bb-bib-section = render-bib-section ctx ctx-doc bibliography in
     Block.concat [
       line-break false false ctx ib-pagehook;
       bb-title;

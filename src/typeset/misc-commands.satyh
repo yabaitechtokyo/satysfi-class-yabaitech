@@ -3,21 +3,21 @@
 
 module MiscCommands : sig
 
-  val make-ib-emph : inline-text -> context -> inline-boxes
-  val make-ib-dfn : inline-text -> context -> inline-boxes
-  val make-ib-br : context -> inline-boxes
+  val write-emph : inline-text -> context -> inline-boxes
+  val write-dfn : inline-text -> context -> inline-boxes
+  val write-br : context -> inline-boxes
 
 end = struct
 
-  let make-ib-emph content ctx =
+  let write-emph content ctx =
     let ctx-emph =
       ctx |> FontConfig.make-emph
     in
     read-inline ctx-emph content
 
-  let make-ib-dfn = make-ib-emph
+  let write-dfn = write-emph
 
-  let make-ib-br ctx =
+  let write-br ctx =
     discretionary 0 (inline-skip (get-text-width ctx *' 2.)) inline-fil inline-nil
 
 end

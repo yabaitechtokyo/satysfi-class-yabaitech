@@ -5,11 +5,11 @@
 
 module Footnote : sig
 
-  val render-block : inline-text -> context -> inline-boxes
+  val write : inline-text -> context -> inline-boxes
 
 end = struct
 
-  let render-block content ctx =
+  let write content ctx =
     let ibf num =
       let it-num = embed-string (arabic num) in
       let ctx =

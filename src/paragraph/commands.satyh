@@ -3,15 +3,15 @@
 
 @import: ../font-config
 
-module Paragraph : sig
+module ParagraphCommands : sig
 
-  val render-block-paragraph : inline-text -> context -> block-boxes
-  val render-block-topic : inline-text -> inline-text -> context -> block-boxes
-  val render-block-proof : inline-text option -> inline-text -> context -> block-boxes
+  val render-paragraph : inline-text -> context -> block-boxes
+  val render-topic : inline-text -> inline-text -> context -> block-boxes
+  val render-proof : inline-text option -> inline-text -> context -> block-boxes
 
 end = struct
 
-  let render-block-paragraph content ctx =
+  let render-paragraph content ctx =
     let len = get-font-size ctx *' FontConfig.font-ratio-cjk in
     let render-inline ctx = Inline.concat [
       Inline.skip len;
@@ -22,7 +22,7 @@ end = struct
     |> FontConfig.make-paragraph
     |> Block.of-inline ?:true true true render-inline
 
-  let render-block-topic topic-name content ctx =
+  let render-topic topic-name content ctx =
     let len = get-font-size ctx *' FontConfig.font-ratio-cjk in
     let render-inline ctx = Inline.concat [
       ctx 
@@ -38,7 +38,7 @@ end = struct
   
   let-math \QED = math-char MathOrd `∎`
 
-  let render-block-proof name-opt content ctx =
+  let render-proof name-opt content ctx =
     let render-inline ctx =
       let heading = match name-opt with
         | None    -> {証明}

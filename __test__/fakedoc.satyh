@@ -23,9 +23,9 @@ end = struct
     let pageno = pbinfo#page-number in
     (|
       header-origin  = DocumentConfig.header-origin;
-      header-content = PageHeader.render-block pageno;
+      header-content = PageHeader.render pageno;
       footer-origin  = DocumentConfig.footer-origin;
-      footer-content = PageFooter.render-block pageno;
+      footer-content = PageFooter.render pageno;
     |)
 
   let render content =

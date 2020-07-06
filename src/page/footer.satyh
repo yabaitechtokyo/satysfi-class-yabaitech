@@ -6,11 +6,11 @@
 
 module PageFooter : sig
 
-  val render-block : int -> block-boxes
+  val render : int -> block-boxes
 
 end = struct
 
-  let render-block pageno =
+  let render pageno =
     match PageNumber.get-page-count-offset () with
     | Some(pagenolast) ->
       let render-inline ctx =

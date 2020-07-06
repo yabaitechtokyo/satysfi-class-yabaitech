@@ -5,11 +5,11 @@
 
 module PageHeader : sig
 
-  val render-block : int -> block-boxes
+  val render : int -> block-boxes
 
 end = struct
 
-  let render-block pageno =
+  let render pageno =
     let ctx =
       FontConfig.get-standard-context DocumentConfig.header-width
       |> set-paragraph-margin 0pt 0pt

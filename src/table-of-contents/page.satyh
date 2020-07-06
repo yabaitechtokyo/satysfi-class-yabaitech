@@ -4,7 +4,6 @@
 @require: base/option-ext
 
 @import: ../font-config
-% TODO: depends on render-chapter-heading. It should be separate file
 @import: ../chapter/commands
 @import: data
 @import: repository
@@ -14,6 +13,15 @@ module TableOfContentsPage : sig
   val render : ((TableOfContentsElement.t * string option) list) -> context -> block-boxes
 
 end = struct
+
+  let render-chapter-heading ctx ib-num-opt ib-title =
+    let bb =
+      match ib-num-opt with
+      | None         -> block-nil
+      | Some(ib-num) -> line-break false false ctx (ib-num ++ inline-fil) in
+      bb
+      +++ line-break false false ctx (ib-title ++ inline-fil)
+      +++ block-skip 36pt
   
   let-rec repeat-inline n ib =
     if n <= 0 then inline-nil else
@@ -86,7 +94,7 @@ end = struct
         |> Inline.read {目次}
         |> align-ib-left in
       let bb-toc-title =
-        ChapterCommands.render-chapter-heading ctx None ib-toc-title in
+        render-chapter-heading ctx None ib-toc-title in
       let bb-toc-main = make-bb toc-list ctx in
       Block.concat [
         bb-toc-title;
