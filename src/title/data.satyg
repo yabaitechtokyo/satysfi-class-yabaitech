@@ -1,5 +1,5 @@
 type title-info = (|
-    title : string;
-    volume : string;
-    date  : string;
+  title : string;
+  volume : string;
+  date  : string;
 |)

@@ -5,41 +5,43 @@
 
 module Footnote : sig
 
-    val render-block : inline-text -> context -> inline-boxes
+  val render-block : inline-text -> context -> inline-boxes
 
 end = struct
 
-    let render-block content ctx =
-        let ibf num =
-            let it-num = embed-string (arabic num) in
-            let ctx =
-                let size = get-font-size ctx in
-                ctx |> set-font-size (size *' 0.75)
-                |> set-manual-rising (size *' 0.25)
-            in
-            read-inline ctx {\*#it-num;}
-        in
-        let bbf num =
-            let ib-num = read-inline ctx (embed-string (arabic num)) in
-            let ctx =
-                let size = 12pt in
-                FontConfig.get-standard-context DocumentConfig.text-width
-                |> set-font-size (size *' 0.9)
-                |> set-leading (size *' 1.2)
-                |> set-paragraph-margin (size *' 0.5) (size *' 0.5)
-            in
-            let len =
-                let (w, _, _) = get-natural-metrics ib-num in
-                DocumentConfig.footnote-indent -' w
-            in
-            let ib =
-                ib-num ++ inline-skip len ++
-                    embed-block-top ctx (DocumentConfig.text-width -' DocumentConfig.footnote-indent) (fun ctx -> (
-                        line-break false false ctx (read-inline ctx content ++ inline-fil)
-                    ))
-            in
-            line-break false false ctx (ib ++ inline-fil)
-            in
-            FootnoteScheme.main ctx ibf bbf
+  let render-block content ctx =
+    let ibf num =
+      let it-num = embed-string (arabic num) in
+      let ctx =
+        let size = get-font-size ctx in
+        ctx
+        |> set-font-size (size *' 0.75)
+        |> set-manual-rising (size *' 0.25) in
+      read-inline ctx { \*#it-num; } in
+    let bbf num =
+      let ib-num = read-inline ctx (embed-string (arabic num)) in
+      let ctx =
+        let size = 12pt in
+        FontConfig.get-standard-context DocumentConfig.text-width
+        |> set-font-size (size *' 0.9)
+        |> set-leading (size *' 1.2)
+        |> set-paragraph-margin (size *' 0.5) (size *' 0.5) in
+      let len =
+        let (w, _, _) = get-natural-metrics ib-num in
+        DocumentConfig.footnote-indent -' w in
+      let ib =
+        ib-num
+        ++ inline-skip len
+        ++ embed-block-top
+          ctx
+          (DocumentConfig.text-width -' DocumentConfig.footnote-indent)
+          (fun ctx -> (
+            line-break
+              false
+              false
+              ctx
+              (read-inline ctx content ++ inline-fil))) in
+      line-break false false ctx (ib ++ inline-fil) in
+    FootnoteScheme.main ctx ibf bbf
 
 end

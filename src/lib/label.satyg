@@ -1,27 +1,30 @@
 @require: base/list-ext
+@require: base/option-ext
+@require: base/ref
+@require: base/string
 
 module Label : sig
 
-    val or-fresh : string option -> string
-    val prefix-with : string list -> string -> string
+  val or-fresh : string option -> string
+  val prefix-with : string list -> string -> string
 
 end = struct
 
-    let generate-fresh-label =
-        let-mutable count <- 0 in
-        (fun () -> (
-            let () = count <- !count + 1 in
-            `generated:` ^ (arabic (!count))
-        ))
+  let fresh-label-count-ref = Ref.make 0
 
-    let or-fresh label-opt =
-        match label-opt with
-        | None -> generate-fresh-label ()
-        | Some(label) -> label
+  let generate-fresh-label () =
+    let () = Ref.inc fresh-label-count-ref in
+    let count = fresh-label-count-ref |> Ref.get |> String.of-int in
+    `generated:` ^ count
 
-    let prefix-with prefix-list label =
-        List.fold-right (fun prefix current-label -> 
-            prefix ^ `:` ^ current-label
-        ) label prefix-list
+  let or-fresh label-opt =
+    match label-opt with
+    | None -> generate-fresh-label ()
+    | Some(label) -> label
+
+  let prefix-with prefix-list label =
+    List.fold-right (fun prefix current-label -> 
+        prefix ^ `:` ^ current-label
+    ) label prefix-list
 
 end

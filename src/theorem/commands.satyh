@@ -1,144 +1,169 @@
-@require: base/typeset/font
 @require: base/inline
 @require: base/option-ext
+@require: base/typeset/font
 
 @import: ../font-config
-@import: ../mutables
 @import: repository
 
 module TheoremCommands : sig
 
-    val render-definition : string option -> inline-text option -> inline-text -> context -> block-boxes
-    val render-theorem : string option -> inline-text option -> inline-text -> context -> block-boxes
-    val render-lemma : string option -> inline-text option -> inline-text -> context -> block-boxes
-    val render-corollary : string option -> inline-text option -> inline-text -> context -> block-boxes
-    val render-assumption : string option -> inline-text option -> inline-text -> context -> block-boxes
-    val render-example : string option -> inline-text option -> inline-text -> context -> block-boxes
-    val render-notation : string option -> inline-text option -> inline-text -> context -> block-boxes
+  val render-definition : string option -> inline-text option -> inline-text -> context -> block-boxes
+  val render-theorem : string option -> inline-text option -> inline-text -> context -> block-boxes
+  val render-lemma : string option -> inline-text option -> inline-text -> context -> block-boxes
+  val render-corollary : string option -> inline-text option -> inline-text -> context -> block-boxes
+  val render-assumption : string option -> inline-text option -> inline-text -> context -> block-boxes
+  val render-example : string option -> inline-text option -> inline-text -> context -> block-boxes
+  val render-notation : string option -> inline-text option -> inline-text -> context -> block-boxes
 
-    val write-ref-definition : string -> context -> inline-boxes
-    val write-ref-theorem : string -> context -> inline-boxes
-    val write-ref-lemma : string -> context -> inline-boxes
-    val write-ref-corollary : string -> context -> inline-boxes
-    val write-ref-assumption : string -> context -> inline-boxes
-    val write-ref-example : string -> context -> inline-boxes
-    val write-ref-notation : string -> context -> inline-boxes
+  val write-ref-definition : string -> context -> inline-boxes
+  val write-ref-theorem : string -> context -> inline-boxes
+  val write-ref-lemma : string -> context -> inline-boxes
+  val write-ref-corollary : string -> context -> inline-boxes
+  val write-ref-assumption : string -> context -> inline-boxes
+  val write-ref-example : string -> context -> inline-boxes
+  val write-ref-notation : string -> context -> inline-boxes
 
 end = struct
 
-    open FontConfig
-    open Mutables
+  let theorem-scheme ctx ctxf s-num category wordopt inner =
+    let it-num = embed-string s-num in
+    let ib-dfn =
+    let ctx = ctx
+      |> FontConfig.set-latin-font FontConfig.font-latin-sans
+      |> FontConfig.set-cjk-font FontConfig.font-cjk-gothic in
+    read-inline ctx { #category; #it-num; } in
+    let ib-word =
+      match wordopt with
+      | None       -> inline-nil
+      | Some(word) -> read-inline ctx { \ (#word;) } in
+    let ib-inner = read-inline (ctxf ctx) inner in
+    let ib-diamond = read-inline (ctxf ctx) { \force-font(`ipaexg`){ ◇ } } in
+    let ib-glue = discretionary 0 inline-fil inline-nil inline-nil in
+    line-break
+      true
+      true
+      ctx
+      (ib-dfn
+        ++ ib-word
+        ++ inline-skip (get-font-size ctx)
+        ++ ib-inner
+        ++ inline-fil
+        ++ ib-glue
+        ++ ib-diamond)
 
-    let theorem-scheme ctx ctxf s-num category wordopt inner =
-        let it-num = embed-string s-num in
-        let ib-dfn =
-        let ctx =
-            ctx |> set-latin-font font-latin-sans
-                |> set-cjk-font font-cjk-gothic
-        in
-            read-inline ctx {#category; #it-num;}
-        in
-        let ib-word =
-        match wordopt with
-        | None       -> inline-nil
-        | Some(word) -> read-inline ctx {\ (#word;)}
-        in
-        let ib-inner = read-inline (ctxf ctx) inner in
-        let ib-diamond = read-inline (ctxf ctx) {\force-font(`ipaexg`){◇}} in
-        let ib-glue = discretionary 0 inline-fil inline-nil inline-nil in
-        line-break true true ctx
-        (ib-dfn ++ ib-word ++ inline-skip (get-font-size ctx) ++ ib-inner ++ inline-fil
-        ++ ib-glue ++ ib-diamond)
+  let render-definition label-opt name-opt content ctx =
+    let num = label-opt
+      |> Label.or-fresh
+      |> TheoremRepository.register-definition in
+    theorem-scheme ctx (fun x -> x) num { 定義 } name-opt content
 
-    let render-definition label-opt name-opt content ctx =
-        let num = label-opt
-            |> Label.or-fresh
-            |> TheoremRepository.register-definition in
-        theorem-scheme ctx (fun x -> x) num {定義} name-opt content
-    
-    let render-theorem label-opt name-opt content ctx =
-        let num = label-opt
-            |> Label.or-fresh
-            |> TheoremRepository.register-theorem in
-        theorem-scheme ctx (set-latin-font font-latin-italic) num {定理} name-opt content
+  let render-theorem label-opt name-opt content ctx =
+    let num = label-opt
+      |> Label.or-fresh
+      |> TheoremRepository.register-theorem in
+    theorem-scheme
+      ctx
+      (FontConfig.set-latin-font FontConfig.font-latin-italic)
+      num
+      { 定理 }
+      name-opt
+      content
 
-    let render-lemma label-opt name-opt content ctx =
-        let num = label-opt
-            |> Label.or-fresh
-            |> TheoremRepository.register-lemma in
-        theorem-scheme ctx (set-latin-font font-latin-italic) num {補題} name-opt content
+  let render-lemma label-opt name-opt content ctx =
+    let num = label-opt
+      |> Label.or-fresh
+      |> TheoremRepository.register-lemma in
+    theorem-scheme
+      ctx
+      (FontConfig.set-latin-font FontConfig.font-latin-italic)
+      num
+      { 補題 }
+      name-opt
+      content
 
-    let render-corollary label-opt name-opt content ctx =
-        let num = label-opt
-            |> Label.or-fresh
-            |> TheoremRepository.register-corollary in
-        theorem-scheme ctx (set-latin-font font-latin-italic) num {系} name-opt content
+  let render-corollary label-opt name-opt content ctx =
+    let num = label-opt
+      |> Label.or-fresh
+      |> TheoremRepository.register-corollary in
+    theorem-scheme
+      ctx
+      (FontConfig.set-latin-font FontConfig.font-latin-italic)
+      num
+      { 系 }
+      name-opt
+      content
 
-    let render-assumption label-opt name-opt content ctx =
-        let num = label-opt
-            |> Label.or-fresh
-            |> TheoremRepository.register-assumption in
-        theorem-scheme ctx (set-latin-font font-latin-italic) num {仮定} name-opt content
+  let render-assumption label-opt name-opt content ctx =
+    let num = label-opt
+      |> Label.or-fresh
+      |> TheoremRepository.register-assumption in
+    theorem-scheme
+      ctx
+      (FontConfig.set-latin-font FontConfig.font-latin-italic)
+      num
+      { 仮定 }
+      name-opt
+      content
 
-    let render-example label-opt name-opt content ctx =
-        let num = label-opt
-            |> Label.or-fresh
-            |> TheoremRepository.register-example in
-        theorem-scheme ctx (fun x -> x) num {例} name-opt content
+  let render-example label-opt name-opt content ctx =
+    let num = label-opt
+      |> Label.or-fresh
+      |> TheoremRepository.register-example in
+    theorem-scheme ctx (fun x -> x) num { 例 } name-opt content
 
-    let render-notation label-opt name-opt content ctx =
-        let num = label-opt
-            |> Label.or-fresh
-            |> TheoremRepository.register-notation in
-        theorem-scheme ctx (fun x -> x) num {記法} name-opt content
+  let render-notation label-opt name-opt content ctx =
+    let num = label-opt
+      |> Label.or-fresh
+      |> TheoremRepository.register-notation in
+    theorem-scheme ctx (fun x -> x) num { 記法 } name-opt content
 
-    let write-ref-definition label ctx =
-        let value = label
-            |> TheoremRepository.get-definition
-            |> Option.unwrap-or `?`
-            |> embed-string in
-        ctx |> Inline.read {定義 #value;}
+  let write-ref-definition label ctx =
+    let value = label
+      |> TheoremRepository.get-definition
+      |> Option.unwrap-or `?`
+      |> embed-string in
+    ctx |> Inline.read { 定義 #value; }
 
-    let write-ref-theorem label ctx =
-        let value = label
-            |> TheoremRepository.get-theorem
-            |> Option.unwrap-or `?`
-            |> embed-string in
-        ctx |> Inline.read {定理 #value;}
+  let write-ref-theorem label ctx =
+    let value = label
+      |> TheoremRepository.get-theorem
+      |> Option.unwrap-or `?`
+      |> embed-string in
+    ctx |> Inline.read { 定理 #value; }
 
-    let write-ref-lemma label ctx =
-        let value = label
-            |> TheoremRepository.get-lemma
-            |> Option.unwrap-or `?`
-            |> embed-string in
-        ctx |> Inline.read {補題 #value;}
+  let write-ref-lemma label ctx =
+    let value = label
+      |> TheoremRepository.get-lemma
+      |> Option.unwrap-or `?`
+      |> embed-string in
+    ctx |> Inline.read { 補題 #value; }
 
-    let write-ref-corollary label ctx =
-        let value = label
-            |> TheoremRepository.get-corollary
-            |> Option.unwrap-or `?`
-            |> embed-string in
-        ctx |> Inline.read {系 #value;}
+  let write-ref-corollary label ctx =
+    let value = label
+      |> TheoremRepository.get-corollary
+      |> Option.unwrap-or `?`
+      |> embed-string in
+    ctx |> Inline.read { 系 #value; }
 
-    let write-ref-assumption label ctx =
-        let value = label
-            |> TheoremRepository.get-assumption
-            |> Option.unwrap-or `?`
-            |> embed-string  in
-        ctx |> Inline.read {仮定 #value;}
+  let write-ref-assumption label ctx =
+    let value = label
+      |> TheoremRepository.get-assumption
+      |> Option.unwrap-or `?`
+      |> embed-string  in
+    ctx |> Inline.read { 仮定 #value; }
 
-    let write-ref-example label ctx =
-        let value = label
-            |> TheoremRepository.get-example
-            |> Option.unwrap-or `?`
-            |> embed-string in
-        ctx |> Inline.read {例 #value;}
+  let write-ref-example label ctx =
+    let value = label
+      |> TheoremRepository.get-example
+      |> Option.unwrap-or `?`
+      |> embed-string in
+    ctx |> Inline.read { 例 #value; }
 
-    let write-ref-notation label ctx =
-        let value = label
-            |> TheoremRepository.get-notation
-            |> Option.unwrap-or `?`
-            |> embed-string in
-        ctx |> Inline.read {記法 #value;}
+  let write-ref-notation label ctx =
+    let value = label
+      |> TheoremRepository.get-notation
+      |> Option.unwrap-or `?`
+      |> embed-string in
+    ctx |> Inline.read { 記法 #value; }
 
 end

@@ -6,28 +6,28 @@
 
 module PageNumber : sig
 
-    val show-from-here : block-boxes
-    val hide-from-here : block-boxes
-    val get-page-count-offset : unit -> int option
+  val show-from-here : block-boxes
+  val hide-from-here : block-boxes
+  val get-page-count-offset : unit -> int option
 
 end = struct
 
-    let page-count-offset = Ref.make Option.none
+  let page-count-offset = Ref.make Option.none
 
-    let any-ctx = get-initial-context 0mm (command \math)
+  let any-ctx = get-initial-context 0mm (command \math)
 
-    let show-from-here =
-        let page-hook pbinfo _ = page-count-offset
-            |> Ref.set (Option.some pbinfo#page-number) in
-        let inline = (page-hook |> Pager.make-hook |> Fn.const) in
-        any-ctx |> Block.of-inline false false inline
+  let show-from-here =
+    let page-hook pbinfo _ = page-count-offset
+      |> Ref.set (Option.some pbinfo#page-number) in
+    let inline = (page-hook |> Pager.make-hook |> Fn.const) in
+    any-ctx |> Block.of-inline false false inline
 
-    let hide-from-here =
-        let page-hook _ _ = page-count-offset |> Ref.set Option.none in
-        let inline = (page-hook |> Pager.make-hook |> Fn.const) in
-        any-ctx |> Block.of-inline false false inline
+  let hide-from-here =
+    let page-hook _ _ = page-count-offset |> Ref.set Option.none in
+    let inline = (page-hook |> Pager.make-hook |> Fn.const) in
+    any-ctx |> Block.of-inline false false inline
 
-    let get-page-count-offset () =
-        page-count-offset |> Ref.get
+  let get-page-count-offset () =
+    page-count-offset |> Ref.get
 
 end

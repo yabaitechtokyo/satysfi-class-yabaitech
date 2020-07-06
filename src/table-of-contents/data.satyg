@@ -1,36 +1,36 @@
 module TableOfContentsElement : sig
 
-    type t
+  type t
 
-    val make : string -> inline-text -> inline-text option -> inline-text -> t
+  val make : string -> inline-text -> inline-text option -> inline-text -> t
 
-    val get-label : t -> string
-    val get-title : t -> inline-text
-    val get-subtitle-opt : t -> inline-text option
-    val get-author : t -> inline-text
+  val get-label : t -> string
+  val get-title : t -> inline-text
+  val get-subtitle-opt : t -> inline-text option
+  val get-author : t -> inline-text
 
 end = struct
 
-    type t =
-    | TOCElementChapter    of string * inline-text * inline-text option * inline-text
+  type t =
+  | TOCElementChapter of string * inline-text * inline-text option * inline-text
 
-    let make label title subtitle-opt author =
-        TOCElementChapter(label, title, subtitle-opt, author)
+  let make label title subtitle-opt author =
+    TOCElementChapter(label, title, subtitle-opt, author)
 
-    let get-label element =
-        match element with
-        | TOCElementChapter(label, _, _, _) -> label
+  let get-label element =
+    match element with
+    | TOCElementChapter(label, _, _, _) -> label
 
-    let get-title element =
-        match element with
-        | TOCElementChapter(_, title, _, _) -> title
+  let get-title element =
+    match element with
+    | TOCElementChapter(_, title, _, _) -> title
 
-    let get-subtitle-opt element =
-        match element with
-        | TOCElementChapter(_, _, subtitle, _) -> subtitle
+  let get-subtitle-opt element =
+    match element with
+    | TOCElementChapter(_, _, subtitle, _) -> subtitle
 
-    let get-author element =
-        match element with
-        | TOCElementChapter(_, _, _, author) -> author
+  let get-author element =
+    match element with
+    | TOCElementChapter(_, _, _, author) -> author
 
 end

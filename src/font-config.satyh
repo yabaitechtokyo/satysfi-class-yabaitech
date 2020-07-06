@@ -1,191 +1,199 @@
 @require: math
+
 @import: document-config
 
 module FontConfig : sig
 
-    val font-latin-italic : string * float * float
-    val font-latin-bold   : string * float * float
-    val font-latin-sans   : string * float * float
-    val font-latin-mono   : string * float * float
-    val font-cjk-mincho   : string * float * float
-    val font-cjk-gothic   : string * float * float
-    val font-otherscript-roman : string * float * float
+  val font-latin-italic : string * float * float
+  val font-latin-bold   : string * float * float
+  val font-latin-sans   : string * float * float
+  val font-latin-mono   : string * float * float
+  val font-cjk-mincho   : string * float * float
+  val font-cjk-gothic   : string * float * float
+  val font-otherscript-roman : string * float * float
 
-    val font-ratio-latin : float
-    val font-ratio-cjk : float
+  val font-ratio-latin : float
+  val font-ratio-cjk : float
 
-    val set-latin-font : (string * float * float) -> context -> context
-    val set-cjk-font   : (string * float * float) -> context -> context
+  val set-latin-font : (string * float * float) -> context -> context
+  val set-cjk-font   : (string * float * float) -> context -> context
 
-    val get-latin-font-size : context -> length
-    val get-cjk-font-size : context -> length
+  val get-latin-font-size : context -> length
+  val get-cjk-font-size : context -> length
 
-    val get-standard-context : length -> context
+  val get-standard-context : length -> context
 
-    val make-chapter-title : context -> context
-    val make-chapter-subtitle : context -> context
-    val make-chapter-author : context -> context
-    val make-section-title : context -> context
-    val make-subsection-title : context -> context
-    val make-subsubsection-title : context -> context
+  val make-chapter-title : context -> context
+  val make-chapter-subtitle : context -> context
+  val make-chapter-author : context -> context
+  val make-section-title : context -> context
+  val make-subsection-title : context -> context
+  val make-subsubsection-title : context -> context
 
-    val make-paragraph : context -> context
-    val make-topic-name : context -> context
-    val make-proof-header : context -> context
+  val make-paragraph : context -> context
+  val make-topic-name : context -> context
+  val make-proof-header : context -> context
 
-    val make-emph : context -> context
+  val make-emph : context -> context
 
-    val page-footer : context
+  val page-footer : context
 
 end = struct
 
-    let font-size-title   = 32pt
-    let font-size-author  = 16pt
+  let font-size-title   = 32pt
+  let font-size-author  = 16pt
 
-    let font-ratio-latin = 1.
-    let font-ratio-cjk = 0.88
+  let font-ratio-latin = 1.
+  let font-ratio-cjk = 0.88
 
-    let font-latin-roman  = (`Junicode`   , font-ratio-latin, 0.)
-    let font-latin-italic = (`Junicode-it`, font-ratio-latin, 0.)
-    let font-latin-bold   = (`Junicode-b` , font-ratio-latin, 0.)
-    let font-latin-sans   = (`lmsans`    , font-ratio-latin, 0.)
-    let font-latin-mono   = (`lmmono`    , font-ratio-latin, 0.)
-    let font-cjk-mincho   = (`ipaexm`    , font-ratio-cjk  , 0.)
-    let font-cjk-gothic   = (`ipaexg`    , font-ratio-cjk  , 0.)
-    let font-otherscript-roman = (`Junicode` , font-ratio-latin, 0.)
+  let font-latin-roman  = (`Junicode`   , font-ratio-latin, 0.)
+  let font-latin-italic = (`Junicode-it`, font-ratio-latin, 0.)
+  let font-latin-bold   = (`Junicode-b` , font-ratio-latin, 0.)
+  let font-latin-sans   = (`lmsans`    , font-ratio-latin, 0.)
+  let font-latin-mono   = (`lmmono`    , font-ratio-latin, 0.)
+  let font-cjk-mincho   = (`ipaexm`    , font-ratio-cjk  , 0.)
+  let font-cjk-gothic   = (`ipaexg`    , font-ratio-cjk  , 0.)
+  let font-otherscript-roman = (`Junicode` , font-ratio-latin, 0.)
 
-    let set-latin-font font ctx =
-        ctx |> set-font Latin font
-    
-    let set-cjk-font font ctx =
-        ctx |> set-font HanIdeographic font
-            |> set-font Kana           font
-    
-    let get-latin-font-size ctx =
-        get-font-size ctx *' font-ratio-latin
-    
-    let get-cjk-font-size ctx =
-        get-font-size ctx *' font-ratio-cjk
-    
-    %% chapter-title
-    let font-size-chapter-title = 24pt
-    let font-latin-chapter-title = (`fonts-noto-sans:NotoSans-Medium`, 1.0, 0.)
-    let font-cjk-chapter-title  = (`fonts-noto-sans-cjk-jp:NotoSansCJKjp-Medium`, 1.00, 0.)
-    let leading-chapter-title = 28pt
+  let set-latin-font font ctx =
+    ctx |> set-font Latin font
+  
+  let set-cjk-font font ctx = ctx
+    |> set-font HanIdeographic font
+    |> set-font Kana font
+  
+  let get-latin-font-size ctx =
+    get-font-size ctx *' font-ratio-latin
+  
+  let get-cjk-font-size ctx =
+    get-font-size ctx *' font-ratio-cjk
+  
+  %% chapter-title
+  let font-size-chapter-title = 24pt
+  let font-latin-chapter-title = (`fonts-noto-sans:NotoSans-Medium`, 1.0, 0.)
+  let font-cjk-chapter-title =
+    (`fonts-noto-sans-cjk-jp:NotoSansCJKjp-Medium`, 1.00, 0.)
+  let leading-chapter-title = 28pt
 
-    let make-chapter-title ctx =
-        ctx |> set-font-size font-size-chapter-title
-            |> set-font Latin font-latin-chapter-title
-            |> set-cjk-font font-cjk-chapter-title
-            |> set-leading leading-chapter-title
+  let make-chapter-title ctx = ctx
+    |> set-font-size font-size-chapter-title
+    |> set-font Latin font-latin-chapter-title
+    |> set-cjk-font font-cjk-chapter-title
+    |> set-leading leading-chapter-title
 
-    %% chapter-subtitle
-    let font-latin-chapter-subtitle = (`fonts-noto-sans:NotoSans-Light`, 1.0, 0.)
-    let font-cjk-chapter-subtitle  = (`fonts-noto-sans-cjk-jp:NotoSansCJKjp-Light`, 1.0, 0.)
-    let font-size-chapter-subtitle = 18pt
+  %% chapter-subtitle
+  let font-latin-chapter-subtitle = (`fonts-noto-sans:NotoSans-Light`, 1.0, 0.)
+  let font-cjk-chapter-subtitle =
+    (`fonts-noto-sans-cjk-jp:NotoSansCJKjp-Light`, 1.0, 0.)
+  let font-size-chapter-subtitle = 18pt
 
-    let make-chapter-subtitle ctx =
-        ctx |> set-font-size font-size-chapter-subtitle
-            |> set-font Latin font-latin-chapter-subtitle
-            |> set-cjk-font font-cjk-chapter-subtitle
+  let make-chapter-subtitle ctx = ctx
+    |> set-font-size font-size-chapter-subtitle
+    |> set-font Latin font-latin-chapter-subtitle
+    |> set-cjk-font font-cjk-chapter-subtitle
 
-    %% chapter-author    
-    let font-size-chapter-author = 18pt
-    let font-latin-chapter-author = (`fonts-noto-sans:NotoSans-Regular`, 1.0, 0.)
-    let font-cjk-chapter-author  = (`fonts-noto-sans-cjk-jp:NotoSansCJKjp-Regular`, 1.0, 0.)
-    
-    let make-chapter-author ctx =
-        ctx |> set-font-size font-size-chapter-author
-            |> set-font Latin font-latin-chapter-author
-            |> set-cjk-font font-cjk-chapter-author
-    
-    %% section-title
-    let font-size-section-title = 18pt
-    let font-latin-section-title = (`fonts-noto-sans:NotoSans-Medium`, 1.0, 0.)
-    let font-cjk-section-title  = (`fonts-noto-sans-cjk-jp:NotoSansCJKjp-Medium`, 1.0, 0.)
+  %% chapter-author    
+  let font-size-chapter-author = 18pt
+  let font-latin-chapter-author = (`fonts-noto-sans:NotoSans-Regular`, 1.0, 0.)
+  let font-cjk-chapter-author =
+    (`fonts-noto-sans-cjk-jp:NotoSansCJKjp-Regular`, 1.0, 0.)
+  
+  let make-chapter-author ctx = ctx
+    |> set-font-size font-size-chapter-author
+    |> set-font Latin font-latin-chapter-author
+    |> set-cjk-font font-cjk-chapter-author
+  
+  %% section-title
+  let font-size-section-title = 18pt
+  let font-latin-section-title = (`fonts-noto-sans:NotoSans-Medium`, 1.0, 0.)
+  let font-cjk-section-title =
+    (`fonts-noto-sans-cjk-jp:NotoSansCJKjp-Medium`, 1.0, 0.)
 
-    let make-section-title ctx =
-        ctx |> set-font-size font-size-section-title
-            |> set-font Latin font-latin-section-title
-            |> set-cjk-font font-cjk-section-title
+  let make-section-title ctx = ctx
+    |> set-font-size font-size-section-title
+    |> set-font Latin font-latin-section-title
+    |> set-cjk-font font-cjk-section-title
 
-    %% subsection-title
-    let font-size-subsection = 14pt
-    let font-latin-subsection-title = font-latin-section-title
-    let font-cjk-subsection-title = font-cjk-section-title 
+  %% subsection-title
+  let font-size-subsection = 14pt
+  let font-latin-subsection-title = font-latin-section-title
+  let font-cjk-subsection-title = font-cjk-section-title 
 
-    let make-subsection-title ctx =
-        ctx |> set-font-size font-size-subsection
-            |> set-font Latin font-latin-subsection-title
-            |> set-cjk-font font-cjk-subsection-title
+  let make-subsection-title ctx = ctx
+    |> set-font-size font-size-subsection
+    |> set-font Latin font-latin-subsection-title
+    |> set-cjk-font font-cjk-subsection-title
 
-    %% subsubsection-title
-    let font-size-subsubsection = 12pt
-    let font-latin-subsubsection-title = (`fonts-noto-sans:NotoSans-Regular`, 1.0, 0.)
-    let font-cjk-subsubsection-title = (`fonts-noto-sans-cjk-jp:NotoSansCJKjp-Regular`, 1.0, 0.)
+  %% subsubsection-title
+  let font-size-subsubsection = 12pt
+  let font-latin-subsubsection-title =
+    (`fonts-noto-sans:NotoSans-Regular`, 1.0, 0.)
+  let font-cjk-subsubsection-title =
+    (`fonts-noto-sans-cjk-jp:NotoSansCJKjp-Regular`, 1.0, 0.)
 
-    let make-subsubsection-title ctx =
-        ctx |> set-font-size font-size-subsubsection
-            |> set-font Latin font-latin-subsubsection-title
-            |> set-cjk-font font-cjk-subsubsection-title
-    
-    %% paragraph
-    let font-size-paragraph  = 10pt
-    let font-latin-paragraph = (`fonts-noto-serif:NotoSerif-Regular`, 1.0, 0.)
-    let font-cjk-paragraph  = (`fonts-noto-serif-cjk-jp:NotoSerifCJKjp-Regular`, 1.0, 0.)
-    let leading-paragraph = 18pt
+  let make-subsubsection-title ctx = ctx
+    |> set-font-size font-size-subsubsection
+    |> set-font Latin font-latin-subsubsection-title
+    |> set-cjk-font font-cjk-subsubsection-title
+  
+  %% paragraph
+  let font-size-paragraph  = 10pt
+  let font-latin-paragraph = (`fonts-noto-serif:NotoSerif-Regular`, 1.0, 0.)
+  let font-cjk-paragraph =
+    (`fonts-noto-serif-cjk-jp:NotoSerifCJKjp-Regular`, 1.0, 0.)
+  let leading-paragraph = 18pt
 
-    let make-paragraph ctx = 
-        ctx |> set-font-size font-size-paragraph
-            |> set-latin-font font-latin-paragraph
-            |> set-cjk-font font-cjk-paragraph
-            |> set-leading leading-paragraph
+  let make-paragraph ctx =  ctx
+    |> set-font-size font-size-paragraph
+    |> set-latin-font font-latin-paragraph
+    |> set-cjk-font font-cjk-paragraph
+    |> set-leading leading-paragraph
 
-    %% topic
-    let font-size-topic-name  = font-size-paragraph
-    let font-latin-topic-name = (`fonts-noto-sans:NotoSans-Medium`, 1.0, 0.)
-    let font-cjk-topic-name  = (`fonts-noto-sans-cjk-jp:NotoSansCJKjp-Medium`, 1.00, 0.)
+  %% topic
+  let font-size-topic-name  = font-size-paragraph
+  let font-latin-topic-name = (`fonts-noto-sans:NotoSans-Medium`, 1.0, 0.)
+  let font-cjk-topic-name  = (`fonts-noto-sans-cjk-jp:NotoSansCJKjp-Medium`, 1.00, 0.)
 
-    let make-topic-name ctx = 
-        ctx |> set-font-size font-size-topic-name
-            |> set-latin-font font-latin-topic-name
-            |> set-cjk-font font-cjk-topic-name
-    
-    %% proof
-    let font-size-topic-name  = font-size-paragraph
-    let font-latin-topic-name = (`fonts-noto-serif:NotoSerif-Regular`, 1.0, 0.)
-    let font-cjk-topic-name  = (`fonts-noto-sans-cjk-jp:NotoSansCJKjp-Regular`, 1.00, 0.)
+  let make-topic-name ctx = ctx
+    |> set-font-size font-size-topic-name
+    |> set-latin-font font-latin-topic-name
+    |> set-cjk-font font-cjk-topic-name
+  
+  %% proof
+  let font-size-topic-name  = font-size-paragraph
+  let font-latin-topic-name = (`fonts-noto-serif:NotoSerif-Regular`, 1.0, 0.)
+  let font-cjk-topic-name  = (`fonts-noto-sans-cjk-jp:NotoSansCJKjp-Regular`, 1.00, 0.)
 
-    let make-proof-header ctx =
-        ctx |> set-latin-font font-latin-topic-name
-            |> set-cjk-font font-cjk-topic-name
+  let make-proof-header ctx = ctx
+    |> set-latin-font font-latin-topic-name
+    |> set-cjk-font font-cjk-topic-name
 
-    %% standard-context
-    let get-standard-context wid =
-        get-initial-context wid (command \math)
-            |> set-dominant-wide-script Kana
-            |> set-language Kana Japanese
-            |> set-language HanIdeographic Japanese
-            |> set-dominant-narrow-script Latin
-            |> set-language Latin English
-            |> set-font OtherScript    font-otherscript-roman
-            |> set-math-font `fonts-asana-math:AsanaMath`
-            |> set-hyphen-penalty 1000
-            |> set-space-ratio 0.275 0.08 0.12
-            |> make-paragraph
+  %% standard-context
+  let get-standard-context wid =
+    get-initial-context wid (command \math)
+    |> set-dominant-wide-script Kana
+    |> set-language Kana Japanese
+    |> set-language HanIdeographic Japanese
+    |> set-dominant-narrow-script Latin
+    |> set-language Latin English
+    |> set-font OtherScript    font-otherscript-roman
+    |> set-math-font `fonts-asana-math:AsanaMath`
+    |> set-hyphen-penalty 1000
+    |> set-space-ratio 0.275 0.08 0.12
+    |> make-paragraph
 
-    let font-latin-emph = (`fonts-noto-sans:NotoSans-Medium`, 1.0, 0.)
-    let font-cjk-emph  = (`fonts-noto-sans-cjk-jp:NotoSansCJKjp-Medium`, 1.00, 0.)
-    let make-emph ctx =
-        ctx |> set-latin-font font-latin-emph
-            |> set-cjk-font font-cjk-emph
+  let font-latin-emph = (`fonts-noto-sans:NotoSans-Medium`, 1.0, 0.)
+  let font-cjk-emph  = (`fonts-noto-sans-cjk-jp:NotoSansCJKjp-Medium`, 1.00, 0.)
+  let make-emph ctx = ctx
+    |> set-latin-font font-latin-emph
+    |> set-cjk-font font-cjk-emph
 
-    %% page-footer
-    let font-size-page-footer = 10pt
-    let font-latin-page-footer = (`fonts-noto-serif:NotoSerif-Regular`, 1.0, 0.)
+  %% page-footer
+  let font-size-page-footer = 10pt
+  let font-latin-page-footer = (`fonts-noto-serif:NotoSerif-Regular`, 1.0, 0.)
 
-    let page-footer = get-standard-context DocumentConfig.footer-width
-        |> set-font-size font-size-page-footer
-        |> set-latin-font font-latin-page-footer
+  let page-footer = get-standard-context DocumentConfig.footer-width
+    |> set-font-size font-size-page-footer
+    |> set-latin-font font-latin-page-footer
 
 end

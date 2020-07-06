@@ -1,32 +1,30 @@
 @require: base/inline
 @require: base/block
 
-@import: ../document-config
 @import: ../font-config
-@import: ../mutables
 @import: page-number
 
 module PageFooter : sig
 
-    val render-block : int -> block-boxes
+  val render-block : int -> block-boxes
 
 end = struct
 
-    let render-block pageno =
-        match PageNumber.get-page-count-offset () with
-        | Some(pagenolast) ->
-            let render-inline ctx =
-                let pageno = (pageno - pagenolast + 1)
-                    |> arabic
-                    |> embed-string in
-                Inline.concat [
-                    Inline.fil;
-                    ctx |> Inline.read pageno;
-                    Inline.fil;
-                ]
-            in
-            FontConfig.page-footer |> Block.of-inline ?:false true true render-inline 
-        | None ->
-            block-nil
+  let render-block pageno =
+    match PageNumber.get-page-count-offset () with
+    | Some(pagenolast) ->
+      let render-inline ctx =
+        let pageno = (pageno - pagenolast + 1)
+          |> arabic
+          |> embed-string in
+        Inline.concat [
+          Inline.fil;
+          ctx |> Inline.read pageno;
+          Inline.fil;
+        ] in
+      FontConfig.page-footer
+      |> Block.of-inline ?:false true true render-inline 
+    | None ->
+      block-nil
 
 end

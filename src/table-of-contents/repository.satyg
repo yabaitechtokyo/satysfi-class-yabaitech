@@ -1,42 +1,37 @@
 @require: base/cross-ref
 @require: base/list-ext
-@require: base/option-ext
 @require: base/ref
-@require: base/string
 
 @import: ../lib/label
 @import: data
 
 module TableOfContentsRepository : sig
 
-    val register-element : TableOfContentsElement.t -> unit
-    val register-page : string -> string -> unit
-    val get-element-page-list : unit -> (TableOfContentsElement.t * string option) list
+  val register-element : TableOfContentsElement.t -> unit
+  val register-page : string -> string -> unit
+  val get-element-page-list : unit -> (TableOfContentsElement.t * string option) list
 
 end = struct
 
-    let toc-list-ref = Ref.make []
+  let toc-list-ref = Ref.make []
 
-    let register-element element =
-        toc-list-ref
-        |> Ref.set (element :: Ref.get toc-list-ref)
+  let register-element element =
+    toc-list-ref
+    |> Ref.set (element :: Ref.get toc-list-ref)
 
-    let register-page label page =
-        label
-        |> Label.prefix-with [`toc`; `page`]
-        |> CrossRef.register page
+  let register-page label page = label
+    |> Label.prefix-with [`toc`; `page`]
+    |> CrossRef.register page
 
-    let get-page-opt label =
-        label
-        |> Label.prefix-with [`toc`; `page`]
-        |> CrossRef.get
+  let get-page-opt label = label
+    |> Label.prefix-with [`toc`; `page`]
+    |> CrossRef.get
 
-    let get-element-page-list () =
-        toc-list-ref
-        |> Ref.get
-        |> List.map (fun (element) -> (
-            let label = TableOfContentsElement.get-label element in
-            (element, get-page-opt label)))
-        |> List.reverse
+  let get-element-page-list () = toc-list-ref
+    |> Ref.get
+    |> List.map (fun (element) -> (
+        let label = TableOfContentsElement.get-label element in
+        (element, get-page-opt label)))
+    |> List.reverse
 
 end

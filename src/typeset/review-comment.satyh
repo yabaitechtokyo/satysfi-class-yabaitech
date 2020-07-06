@@ -3,12 +3,12 @@
 
 module ReviewComment : sig
 
-    val render-inline : string -> inline-text -> context -> inline-boxes
-    val render-block : string -> inline-text -> context -> block-boxes
+  val render-inline : string -> inline-text -> context -> inline-boxes
+  val render-block : string -> inline-text -> context -> block-boxes
 
 end = struct
 
-    let render-inline reviewer comment ctx = Inline.nil
-    let render-block reviewer comment ctx = Block.nil
+  let render-inline reviewer comment ctx = Inline.nil
+  let render-block reviewer comment ctx = Block.nil
 
 end
