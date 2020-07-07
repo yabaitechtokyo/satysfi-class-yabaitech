@@ -27,78 +27,76 @@ end = struct
     if n <= 0 then inline-nil else
       ib ++ (repeat-inline (n - 1) ib)
 
-  let make-dots-line ctx w =
+  let write-dots-line ctx w =
     let ib = read-inline ctx {.} ++ inline-skip 1pt in
     let wdot = get-natural-width ib in
     let n = round (w /' wdot) in
       inline-fil ++ (repeat-inline n ib)
 
-  let make-bb toc-list ctx =
-    let bb-toc-main =
-      toc-list
-      |> List.fold-left (fun bbacc tocelem -> (
-        match tocelem with
-        | (element, page-opt) ->
-          let ctx = ctx
-            |> set-font Latin FontConfig.font-latin-bold in
-          let ib-title = ctx
-            |> Inline.read (TableOfContentsElement.get-title element) in
-          let ib-subtitle = (element
-            |> TableOfContentsElement.get-subtitle-opt
-            |> Option.map (fun st -> (
-              Inline.concat [
-                inline-skip 10pt;
-                ctx |> Inline.read {― #st; ―};
-              ]))
-            |> Option.unwrap-or inline-nil)
-            ++ inline-skip 3pt in
-          let it-page = page-opt
-            |> Option.map (fun page-num ->
-              (arabic (Int.of-string page-num - 2)))
-            |> Option.unwrap-or `?`
-            |> embed-string in
-          let ctx-bf = ctx
-            |> set-font Latin FontConfig.font-latin-bold
-            |> FontConfig.set-cjk-font FontConfig.font-cjk-gothic in
-          let author = TableOfContentsElement.get-author element in
-          let ib-author = inline-skip 30pt ++ read-inline ctx-bf author in
-          let ib-page = inline-skip 3pt ++ read-inline ctx it-page in
-          let ib-middle-dots-line =
-            let width = (get-text-width ctx)
-              -' (get-natural-width ib-title)
-              -' (get-natural-width ib-subtitle)
-              -' (get-natural-width ib-page) in
-            if width <' 0pt
-            then inline-fil
-            else make-dots-line ctx width
-          in
-          Block.concat [
-            bbacc;
-            line-break true true ctx
-              (Inline.concat [
-                ib-title;
-                ib-subtitle;
-                ib-middle-dots-line;
-                ib-page
-              ]);
-            line-break true true ctx ib-author;
-          ]
-      )) Block.nil in
-    bb-toc-main
+  let render-toc-list toc-list ctx =
+    toc-list
+    |> List.fold-left (fun bbacc tocelem -> (
+      match tocelem with
+      | (element, page-opt) ->
+        let ctx = ctx
+          |> set-font Latin FontConfig.font-latin-bold in
+        let ib-title = ctx
+          |> Inline.read (TableOfContentsElement.get-title element) in
+        let ib-subtitle = (element
+          |> TableOfContentsElement.get-subtitle-opt
+          |> Option.map (fun st -> (
+            Inline.concat [
+              inline-skip 10pt;
+              ctx |> Inline.read {― #st; ―};
+            ]))
+          |> Option.unwrap-or inline-nil)
+          ++ inline-skip 3pt in
+        let it-page = page-opt
+          |> Option.map (fun page-num ->
+            (arabic (Int.of-string page-num - 2)))
+          |> Option.unwrap-or `?`
+          |> embed-string in
+        let ctx-bf = ctx
+          |> set-font Latin FontConfig.font-latin-bold
+          |> FontConfig.set-cjk-font FontConfig.font-cjk-gothic in
+        let author = TableOfContentsElement.get-author element in
+        let ib-author = inline-skip 30pt ++ read-inline ctx-bf author in
+        let ib-page = inline-skip 3pt ++ read-inline ctx it-page in
+        let ib-middle-dots-line =
+          let width = (get-text-width ctx)
+            -' (get-natural-width ib-title)
+            -' (get-natural-width ib-subtitle)
+            -' (get-natural-width ib-page) in
+          if width <' 0pt
+          then inline-fil
+          else write-dots-line ctx width
+        in
+        Block.concat [
+          bbacc;
+          line-break true true ctx
+            (Inline.concat [
+              ib-title;
+              ib-subtitle;
+              ib-middle-dots-line;
+              ib-page
+            ]);
+          line-break true true ctx ib-author;
+        ]
+    )) Block.nil
 
-    let align-ib-left ib = ib ++ inline-fil
+    let align-left ib = ib ++ inline-fil
 
     let render toc-list ctx =
       let ib-toc-title = ctx
         |> FontConfig.make-chapter-title
         |> Inline.read {目次}
-        |> align-ib-left in
-      let bb-toc-title =
+        |> align-left in
+      let block-title =
         render-chapter-heading ctx None ib-toc-title in
-      let bb-toc-main = make-bb toc-list ctx in
+      let block-main = render-toc-list toc-list ctx in
       Block.concat [
-        bb-toc-title;
-        bb-toc-main;
+        block-title;
+        block-main;
         clear-page;
       ]
 
