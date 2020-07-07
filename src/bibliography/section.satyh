@@ -34,7 +34,7 @@ end = struct
     | it :: []           -> it
     | it2 :: it1 :: []   -> { #it1; and #it2; }
     | it-last :: it-rest ->
-      let it = it-rest 
+      let it = it-rest
         |> List.reverse
         |> List.fold-left (fun itacc it -> (
           { #itacc; #it;,\  }
@@ -52,7 +52,7 @@ end = struct
         let it-volume = embed-string (arabic v)
         in { #it-volume; #it-series; }
       | (Some(v), Some(n)) ->
-        let it-volume = embed-string (arabic v) 
+        let it-volume = embed-string (arabic v)
         in { #it-volume; (#n;) #it-series; }
 
     let make-it-bib-pages (p1, p2) =

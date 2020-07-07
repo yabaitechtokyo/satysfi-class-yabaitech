@@ -38,7 +38,7 @@ end = struct
   let render-bib-section ctx-bib ctx-doc bibliography =
     match bibliography with
     | [] -> Block.nil
-    | bibliography -> 
+    | bibliography ->
       let ib-bib-title = ctx-doc
           |> make-chapter-title
           |> Inline.read { 参考文献 } in
@@ -61,7 +61,7 @@ end = struct
     ctx
     |> FontConfig.make-chapter-subtitle
     |> Block.of-inline false false render-inline
-  
+
   let render-chapter-author author ctx =
     let render-inline ctx =
       Inline.concat [
@@ -106,7 +106,7 @@ end = struct
       |> set-font-size 12pt
       |> set-leading 18pt
       |> set-hyphen-penalty 1000 in
-    let ib-pagehook = hook-page-break (fun pbinfo _ -> 
+    let ib-pagehook = hook-page-break (fun pbinfo _ ->
       TableOfContentsRepository.register-page
         label
         (arabic pbinfo#page-number)) in

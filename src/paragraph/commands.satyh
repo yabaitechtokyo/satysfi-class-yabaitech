@@ -25,7 +25,7 @@ end = struct
   let render-topic topic-name content ctx =
     let len = get-font-size ctx *' FontConfig.font-ratio-cjk in
     let render-inline ctx = Inline.concat [
-      ctx 
+      ctx
       |> FontConfig.make-topic-name
       |> Inline.read topic-name;
       Inline.skip len;
@@ -35,7 +35,7 @@ end = struct
     ctx
     |> FontConfig.make-paragraph
     |> Block.of-inline ?:true true true render-inline
-  
+
   let-math \QED = math-char MathOrd `∎`
 
   let render-proof name-opt content ctx =
@@ -51,7 +51,7 @@ end = struct
         ctx |> Inline.read content;
         Inline.fil;
         Inline.skip (get-font-size ctx);
-        ctx |> Inline.read {${\QED}} 
+        ctx |> Inline.read {${\QED}}
       ] in
     ctx
     |> FontConfig.make-paragraph

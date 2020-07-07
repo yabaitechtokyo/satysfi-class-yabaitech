@@ -44,9 +44,9 @@ end = struct
       author = {|Benedikt Bollig, Peter Habermehl, Carsten Kern, Martin Leucker|};
       title = {Angluin-Style Learning of NFA.};
       booktitle = {IJCAI};
-      series = None; 
-      volume = None; 
-      number = None; 
+      series = None;
+      volume = None;
+      number = None;
       pages = (1004,1009);
       year = 2009;
     |));

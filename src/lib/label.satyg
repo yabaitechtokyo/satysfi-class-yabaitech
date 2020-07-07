@@ -23,7 +23,7 @@ end = struct
     | Some(label) -> label
 
   let prefix-with prefix-list label =
-    List.fold-right (fun prefix current-label -> 
+    List.fold-right (fun prefix current-label ->
         prefix ^ `:` ^ current-label
     ) label prefix-list
 

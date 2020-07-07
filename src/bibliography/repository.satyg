@@ -17,7 +17,7 @@ end = struct
   let bib-map-ref = Ref.make Map.empty
 
   let register bib-list =
-    let bib-map = bib-list 
+    let bib-map = bib-list
       |> List.map Pair.fst
       |> List.mapi (fun bib-idx label -> (
         (label, bib-idx + 1)))

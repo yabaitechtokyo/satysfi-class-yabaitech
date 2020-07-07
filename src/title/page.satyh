@@ -13,7 +13,7 @@ end = struct
   let of-title ctx = ctx
     |> FontConfig.set-latin-font (`fonts-noto-sans:NotoSans-Regular`, 1.0, 0.)
     |> set-font-size 48pt
-  
+
   let of-volume ctx = ctx
     |> FontConfig.set-latin-font (`fonts-noto-sans:NotoSans-Light`, 1.0, 0.)
     |> set-font-size 32pt
@@ -45,7 +45,7 @@ end = struct
     Block.concat [
       Block.skip 200pt;
       ctx
-      |> of-title 
+      |> of-title
       |> Block.of-inline ?:false false false render-title;
       ctx
       |> of-volume

@@ -37,7 +37,7 @@ end = struct
 
       +example ?:({ 例の名前 }) ?:(`example-label`) {
         例も書けるよ
-      } 
+      }
 
       +notation ?:({ 記法の名前 }) ?:(`notation-label`) {
         記法も書けるよ

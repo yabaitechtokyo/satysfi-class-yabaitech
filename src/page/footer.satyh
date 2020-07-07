@@ -23,7 +23,7 @@ end = struct
           Inline.fil;
         ] in
       FontConfig.page-footer
-      |> Block.of-inline ?:false true true render-inline 
+      |> Block.of-inline ?:false true true render-inline
     | None ->
       block-nil
 

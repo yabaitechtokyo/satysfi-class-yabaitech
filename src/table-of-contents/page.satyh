@@ -9,7 +9,7 @@
 @import: repository
 
 module TableOfContentsPage : sig
-  
+
   val render : ((TableOfContentsElement.t * string option) list) -> context -> block-boxes
 
 end = struct
@@ -22,7 +22,7 @@ end = struct
       bb
       +++ line-break false false ctx (ib-title ++ inline-fil)
       +++ block-skip 36pt
-  
+
   let-rec repeat-inline n ib =
     if n <= 0 then inline-nil else
       ib ++ (repeat-inline (n - 1) ib)

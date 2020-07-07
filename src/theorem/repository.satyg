@@ -25,7 +25,7 @@ end = struct
 
   let num-theorems = Ref.make 0
 
-  let register-with-prefix prefix label = 
+  let register-with-prefix prefix label =
     let () = Ref.inc num-theorems in
     let num = num-theorems
       |> Ref.get

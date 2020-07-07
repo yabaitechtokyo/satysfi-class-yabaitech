@@ -25,7 +25,7 @@ end = struct
   let get-chapter-num name = name
     |> Label.prefix-with [`chapter`; `num`]
     |> CrossRef.get
-    
+
   let register-new-chapter label =
     let new-num = 1 + Ref.get num-chapter-ref in
     let new-num-str = arabic new-num in
@@ -51,11 +51,11 @@ end = struct
     |> CrossRef.get
 
   let reset-subsection-num () = num-subsection-ref |> Ref.set 0
-    
+
   let register-new-subsection label =
     let new-num = 1 + Ref.get num-subsection-ref in
     let new-num-str =
-      (arabic (num-section-ref |> Ref.get)) 
+      (arabic (num-section-ref |> Ref.get))
       ^ `.`
       ^ (arabic new-num) in
     let () = label

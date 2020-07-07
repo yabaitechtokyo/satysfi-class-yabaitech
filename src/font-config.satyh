@@ -57,17 +57,17 @@ end = struct
 
   let set-latin-font font ctx =
     ctx |> set-font Latin font
-  
+
   let set-cjk-font font ctx = ctx
     |> set-font HanIdeographic font
     |> set-font Kana font
-  
+
   let get-latin-font-size ctx =
     get-font-size ctx *' font-ratio-latin
-  
+
   let get-cjk-font-size ctx =
     get-font-size ctx *' font-ratio-cjk
-  
+
   %% chapter-title
   let font-size-chapter-title = 24pt
   let font-latin-chapter-title = (`fonts-noto-sans:NotoSans-Medium`, 1.0, 0.)
@@ -92,17 +92,17 @@ end = struct
     |> set-font Latin font-latin-chapter-subtitle
     |> set-cjk-font font-cjk-chapter-subtitle
 
-  %% chapter-author    
+  %% chapter-author
   let font-size-chapter-author = 18pt
   let font-latin-chapter-author = (`fonts-noto-sans:NotoSans-Regular`, 1.0, 0.)
   let font-cjk-chapter-author =
     (`fonts-noto-sans-cjk-jp:NotoSansCJKjp-Regular`, 1.0, 0.)
-  
+
   let make-chapter-author ctx = ctx
     |> set-font-size font-size-chapter-author
     |> set-font Latin font-latin-chapter-author
     |> set-cjk-font font-cjk-chapter-author
-  
+
   %% section-title
   let font-size-section-title = 18pt
   let font-latin-section-title = (`fonts-noto-sans:NotoSans-Medium`, 1.0, 0.)
@@ -117,7 +117,7 @@ end = struct
   %% subsection-title
   let font-size-subsection = 14pt
   let font-latin-subsection-title = font-latin-section-title
-  let font-cjk-subsection-title = font-cjk-section-title 
+  let font-cjk-subsection-title = font-cjk-section-title
 
   let make-subsection-title ctx = ctx
     |> set-font-size font-size-subsection
@@ -135,7 +135,7 @@ end = struct
     |> set-font-size font-size-subsubsection
     |> set-font Latin font-latin-subsubsection-title
     |> set-cjk-font font-cjk-subsubsection-title
-  
+
   %% paragraph
   let font-size-paragraph  = 10pt
   let font-latin-paragraph = (`fonts-noto-serif:NotoSerif-Regular`, 1.0, 0.)
@@ -158,7 +158,7 @@ end = struct
     |> set-font-size font-size-topic-name
     |> set-latin-font font-latin-topic-name
     |> set-cjk-font font-cjk-topic-name
-  
+
   %% proof
   let font-size-topic-name  = font-size-paragraph
   let font-latin-topic-name = (`fonts-noto-serif:NotoSerif-Regular`, 1.0, 0.)
