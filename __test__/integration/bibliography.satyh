@@ -1,7 +1,7 @@
 @require: base/list-ext
 @require: base/option-ext
 
-@import: ../src/yabaitech
+@import: ../../src/yabaitech
 
 module BibliographyTest : sig
 

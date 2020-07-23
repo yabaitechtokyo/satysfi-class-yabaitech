@@ -1,7 +1,8 @@
 @require: base/inline
 @require: base/image
 @require: base/option-ext
-@import: ../src/yabaitech
+
+@import: ../../src/yabaitech
 
 module FigureTest : sig
 

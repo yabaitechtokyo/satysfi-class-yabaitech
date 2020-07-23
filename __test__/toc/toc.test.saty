@@ -1,11 +1,11 @@
 @require: base/option-ext
 
-@import: ../src/chapter/repository
-@import: ../src/document-config
-@import: ../src/font-config
-@import: ../src/table-of-contents/data
-@import: ../src/table-of-contents/page
-@import: fakedoc
+@import: ../../src/chapter/repository
+@import: ../../src/document-config
+@import: ../../src/font-config
+@import: ../../src/table-of-contents/data
+@import: ../../src/table-of-contents/page
+@import: ../fakedoc
 
 let toc-list = [
   (TableOfContentsElement.make

@@ -1,10 +1,10 @@
 @require: base/option-ext
 
-@import: ../src/yabaitech
+@import: ../../src/yabaitech
 
 module MiscCommandsTest : sig
 
-    val article : block-text
+  val article : block-text
 
 end = struct
 

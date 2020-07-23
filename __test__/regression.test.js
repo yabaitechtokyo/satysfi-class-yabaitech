@@ -14,16 +14,16 @@ test('Confirm that satysfi is installed', () => {
 
 describe(`yabaitech SATySFi class file`, () => {
   it(`Generates table-of-contents pages as expected`, () => {
-    const code = shell.exec(`satysfi toc.test.saty -o toc.test.pdf`, {silent: true}).code;
+    const code = shell.exec(`satysfi toc/toc.test.saty -o toc.test.pdf`, {silent: true}).code;
 
     expect(code).toBe(0);
     expect('toc.test.pdf').toMatchPdfSnapshot();
   });
 
   it(`Generates the whole pages as expected`, () => {
-    const code = shell.exec(`satysfi test.saty -o test.pdf`, {silent: true}).code;
+    const code = shell.exec(`satysfi integration/integration.test.saty -o integration.test.pdf`, {silent: true}).code;
 
     expect(code).toBe(0);
-    expect('test.pdf').toMatchPdfSnapshot();
+    expect('integration.test.pdf').toMatchPdfSnapshot();
   });
 })
