@@ -7,11 +7,11 @@ expect.extend({ toMatchPdfSnapshot });
 shell.cd("__test__");
 
 function compileSatysfi(src, dst) {
-  const { code } = shell.exec(`satysfi ${src} -o ${dst}`, {
+  const { code: exitCode } = shell.exec(`satysfi ${src} -o ${dst}`, {
     silent: true,
   });
 
-  return code;
+  return exitCode;
 }
 
 afterAll(() => {
@@ -24,19 +24,19 @@ test("Satysfi is installed", () => {
 
 describe(`yabaitech SATySFi class file`, () => {
   it(`Generates table-of-contents pages as expected`, () => {
-    const code = compileSatysfi("toc/toc.test.saty", "toc.test.pdf");
+    const exitCode = compileSatysfi("toc/toc.test.saty", "toc.test.pdf");
 
-    expect(code).toBe(0);
+    expect(exitCode).toBe(0);
     expect("toc.test.pdf").toMatchPdfSnapshot();
   });
 
   it(`Integrates each components as expected`, () => {
-    const code = compileSatysfi(
+    const exitCode = compileSatysfi(
       "integration/integration.test.saty",
       "integration.test.pdf"
     );
 
-    expect(code).toBe(0);
+    expect(exitCode).toBe(0);
     expect("integration.test.pdf").toMatchPdfSnapshot();
   });
 });
