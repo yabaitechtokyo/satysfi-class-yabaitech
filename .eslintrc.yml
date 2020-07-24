@@ -1,0 +1,14 @@
+env:
+  browser: true
+  commonjs: true
+  es2020: true
+plugins:
+  - jest
+extends:
+  - airbnb-base
+  - plugin:jest/recommended
+  - plugin:jest/style
+  - prettier
+parserOptions:
+  ecmaVersion: 11
+rules: {}
