@@ -18,7 +18,7 @@ afterAll(() => {
   shell.rm("*test.pdf", "*test.satysfi-aux");
 });
 
-test("Confirm that satysfi is installed", () => {
+test("Satysfi is installed", () => {
   expect(shell.exec("satysfi -v").code).toBe(0);
 });
 
@@ -30,7 +30,7 @@ describe(`yabaitech SATySFi class file`, () => {
     expect("toc.test.pdf").toMatchPdfSnapshot();
   });
 
-  it(`Generates the whole pages as expected`, () => {
+  it(`Integrates each components as expected`, () => {
     const code = compileSatysfi(
       "integration/integration.test.saty",
       "integration.test.pdf"
