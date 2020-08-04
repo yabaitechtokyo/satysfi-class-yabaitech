@@ -1,4 +1,6 @@
+const fs = require("fs");
 const shell = require("shelljs");
+const tmp = require("tmp");
 
 const { toMatchPdfSnapshot } = require("jest-pdf-snapshot");
 
@@ -6,16 +8,24 @@ expect.extend({ toMatchPdfSnapshot });
 
 shell.cd("__test__");
 
-function compileSatysfi(src, dst) {
-  const { code: exitCode } = shell.exec(`satysfi ${src} -o ${dst}`, {
+function compileSatysfi(src) {
+  const tmpFile = tmp.fileSync();
+
+  const { code: exitCode } = shell.exec(`satysfi ${src} -o ${tmpFile.name}`, {
     silent: true,
   });
 
-  return exitCode;
+  const pdfBuffer = fs.readFileSync(tmpFile.name);
+  tmpFile.removeCallback();
+
+  return {
+    exitCode,
+    pdfBuffer
+  };
 }
 
 afterAll(() => {
-  shell.rm("*test.pdf", "*test.satysfi-aux");
+  shell.rm("*test.satysfi-aux");
 });
 
 test("Satysfi is installed", () => {
@@ -24,19 +34,16 @@ test("Satysfi is installed", () => {
 
 describe(`yabaitech SATySFi class file`, () => {
   it(`Generates table-of-contents pages as expected`, () => {
-    const exitCode = compileSatysfi("toc/toc.test.saty", "toc.test.pdf");
+    const result = compileSatysfi("toc/toc.test.saty");
 
-    expect(exitCode).toBe(0);
-    expect("toc.test.pdf").toMatchPdfSnapshot();
+    expect(result.exitCode).toBe(0);
+    expect(result.pdfBuffer).toMatchPdfSnapshot();
   });
 
   it(`Integrates each components as expected`, () => {
-    const exitCode = compileSatysfi(
-      "integration/integration.test.saty",
-      "integration.test.pdf"
-    );
+    const result = compileSatysfi("integration/integration.test.saty");
 
-    expect(exitCode).toBe(0);
-    expect("integration.test.pdf").toMatchPdfSnapshot();
+    expect(result.exitCode).toBe(0);
+    expect(result.pdfBuffer).toMatchPdfSnapshot();
   });
 });
