@@ -2628,14 +2628,15 @@ jest-mock@^26.2.0:
     "@jest/types" "^26.2.0"
     "@types/node" "*"
 
-jest-pdf-snapshot@^0.5.2:
-  version "0.5.2"
-  resolved "https://registry.yarnpkg.com/jest-pdf-snapshot/-/jest-pdf-snapshot-0.5.2.tgz#ef9d59043ad22bfc97df4f08f8334f3885b72862"
-  integrity sha512-6WSmTC2seAw1k/gK5rgzjycZ13kUq2Iv3Dcl0nKvAD2leBMtp3wO3O5Oo4BftHj4k8MR1M6L2qqfqt8MY0zvGg==
+jest-pdf-snapshot@^0.5.4:
+  version "0.5.4"
+  resolved "https://registry.yarnpkg.com/jest-pdf-snapshot/-/jest-pdf-snapshot-0.5.4.tgz#5d091f179284cd0c7d8bac87a433fb34aa75cc00"
+  integrity sha512-VhcS2OQZPdzNlKVfUWCPs1phoFZfM2XRCOIITpXlxvkHpbrxGevMJJ+r5/u0MgRTMkMI8Bw7e9YneQDw4+BiGw==
   dependencies:
     chalk "^4.0.0"
     lodash "^4.17.15"
     shelljs "^0.8.4"
+    tmp "^0.2.1"
 
 jest-pnp-resolver@^1.2.2:
   version "1.2.2"
@@ -4157,6 +4158,13 @@ throat@^5.0.0:
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/throat/-/throat-5.0.0.tgz#c5199235803aad18754a667d659b5e72ce16764b"
   integrity sha512-fcwX4mndzpLQKBS1DVYhGAcYaYt7vsHNIvQV+WXMvnow5cgjPphq5CaayLaGsjRdSCKZFNGt7/GYAuXaNOiYCA==
+
+tmp@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/tmp/-/tmp-0.2.1.tgz#8457fc3037dcf4719c251367a1af6500ee1ccf14"
+  integrity sha512-76SUhtfqR2Ijn+xllcI5P1oyannHNHByD80W1q447gU3mp9G9PSpGdWmjUOHRDPiHYacIk66W7ubDTuPF3BEtQ==
+  dependencies:
+    rimraf "^3.0.0"
 
 tmpl@1.0.x:
   version "1.0.4"
