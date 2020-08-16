@@ -8,6 +8,7 @@
 @import: footnote
 @import: misc-commands
 @import: theorem
+@import: todo
 
 let () = Debug.log ``
 =====================
@@ -36,4 +37,5 @@ document (|
     #MiscCommandsTest.article;
     #FigureTest.article;
     #FootnoteTest.article;
+    #TodoTest.article;
 >

@@ -11,6 +11,7 @@
 @import: typeset/footnote
 @import: typeset/misc-commands
 @import: typeset/review-comment
+@import: typeset/todo
 
 module Book : sig
 
@@ -83,6 +84,10 @@ module Book : sig
   % from ReviewComment
   direct \review-comment : [string; inline-text] inline-cmd
   direct +review-comment : [string; inline-text] block-cmd
+
+  % from TodoCommands
+  direct \NEEDSREF : [] inline-cmd
+  direct \REMAINS : [inline-text] inline-cmd
 
 end = struct
 
@@ -171,6 +176,9 @@ end = struct
 
   let-inline ctx \review-comment reviewer comment = ctx |> ReviewComment.write reviewer comment
   let-block ctx +review-comment reviewer comment = ctx |> ReviewComment.render reviewer comment
+
+  let-inline ctx \NEEDSREF = ctx |> TodoCommands.write-NEEDSREF
+  let-inline ctx \REMAINS content = ctx |> TodoCommands.write-REMAINS content
 
 end
 

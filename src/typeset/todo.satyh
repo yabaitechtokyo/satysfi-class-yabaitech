@@ -1,0 +1,23 @@
+@require: color
+@require: hdecoset
+
+module TodoCommands : sig
+
+  val write-NEEDSREF : context -> inline-boxes
+  val write-REMAINS : inline-text -> context -> inline-boxes
+
+end = struct
+
+  let write-TODO ctx content =
+    let ctx = ctx |> set-text-color Color.red in
+    let pads = (2pt, 2pt, 2pt, 2pt) in
+    let decoset = HDecoSet.simple-frame-stroke 1pt Color.red in
+    inline-frame-breakable pads decoset (read-inline ctx content)
+
+  let write-NEEDSREF ctx =
+    write-TODO ctx {引用}
+
+  let write-REMAINS content ctx =
+    write-TODO ctx {要加筆： #content;}
+
+end
