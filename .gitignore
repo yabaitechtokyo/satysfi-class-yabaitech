@@ -2,3 +2,4 @@
 node_modules
 __test__/test.pdf
 __test__/__pdf_snapshots__/__diff_output__
+*.test.pdf

@@ -4,6 +4,14 @@
 
 module FontConfig : sig
 
+  % New config
+  type font-family
+  val gothic-medium : font-family
+  val gothic-regular : font-family
+
+  val set-font-family : font-family -> context -> context
+
+  % Legacy config
   val font-latin-italic : string * float * float
   val font-latin-bold   : string * float * float
   val font-latin-sans   : string * float * float
@@ -40,6 +48,26 @@ module FontConfig : sig
 
 end = struct
 
+  type font-family = (|
+    latin : string * float * float;
+    cjk : string * float * float;
+  |)
+
+  let gothic-medium = (|
+    latin = (`fonts-noto-sans:NotoSans-Medium`, 1.0, 0.);
+    cjk = (`fonts-noto-sans-cjk-jp:NotoSansCJKjp-Medium`, 1.0, 0.)
+  |)
+
+  let gothic-regular = (|
+    latin = (`fonts-noto-sans:NotoSans-Regular`, 1.0, 0.);
+    cjk = (`fonts-noto-sans-cjk-jp:NotoSansCJKjp-Regular`, 1.0, 0.)
+  |)
+
+  let set-font-family font-family ctx = ctx
+    |> set-font Latin font-family#latin
+    |> set-font HanIdeographic font-family#cjk
+    |> set-font Kana font-family#cjk
+
   let font-size-title   = 32pt
   let font-size-author  = 16pt
 
@@ -70,9 +98,9 @@ end = struct
 
   %% chapter-title
   let font-size-chapter-title = 24pt
-  let font-latin-chapter-title = (`fonts-noto-sans:NotoSans-Medium`, 1.0, 0.)
+  let font-latin-chapter-title = (`fonts-noto-sans:NotoSans-Bold`, 1.0, 0.)
   let font-cjk-chapter-title =
-    (`fonts-noto-sans-cjk-jp:NotoSansCJKjp-Medium`, 1.00, 0.)
+    (`fonts-noto-sans-cjk-jp:NotoSansCJKjp-Bold`, 1.00, 0.)
   let leading-chapter-title = 28pt
 
   let make-chapter-title ctx = ctx
