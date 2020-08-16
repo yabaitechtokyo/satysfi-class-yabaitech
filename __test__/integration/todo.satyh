@@ -1,0 +1,28 @@
+@require: base/option-ext
+
+@import: ../../src/yabaitech
+
+module TodoTest : sig
+
+  val article : block-text
+
+end = struct
+
+  let article = '<
+    +chapter ?:(`theorem`) (|
+      bibliography = [];
+      title = {TODOのテスト};
+      title-for-toc = Option.none;
+      subtitle = Option.none;
+      author = {著者名};
+    |) <
+      +p {
+        既知の事実について話す際にはその知識の出典を示した方がよいとされています\NEEDSREF;。
+      }
+      +p {
+          色々書きたいがそれには余白が足りない\REMAINS{色々}
+      }
+    >
+  >
+
+end
