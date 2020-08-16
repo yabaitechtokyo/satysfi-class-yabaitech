@@ -34,20 +34,20 @@ let toc-list = [
     Option.some(`33`));
   (TableOfContentsElement.make
     `5`
-    { チャプターその5とちょっと眺めのタイトル }
+    { チャプターその5とちょっと長めのタイトル }
     Option.none
     { 著者の5 },
     Option.some(`43`));
   (TableOfContentsElement.make
     `6`
-    { チャプターその6 }
+    { 日本語と English sentence の入るタイトル }
     Option.none
     { 著者の6 },
     Option.some(`53`));
   (TableOfContentsElement.make
     `7`
     { チャプターその7 }
-    Option.none
+    (Option.some { Subtitle にいい感じに欧文フォントをまぜる} )
     { 著者の7 },
     Option.some(`63`));
   (TableOfContentsElement.make

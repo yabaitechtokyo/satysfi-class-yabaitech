@@ -35,7 +35,7 @@ end = struct
   %% Title
   let make-chapter-title ctx = ctx
     |> set-font-size 10.5pt
-    |> FontConfig.set-font-family FontConfig.gothic-medium
+    |> FontConfig.set-fontset FontConfig.gothic-medium
 
   let write-title element ctx =
     ctx
@@ -45,7 +45,7 @@ end = struct
   %% Subtitle
   let make-subtitle ctx = ctx
     |> set-font-size 10.5pt
-    |> FontConfig.set-font-family FontConfig.gothic-regular
+    |> FontConfig.set-fontset FontConfig.gothic-regular
 
   let write-subtitle element ctx =
     element
@@ -62,7 +62,7 @@ end = struct
   %% Author
   let make-author ctx = ctx
     |> set-font-size 9pt
-    |> FontConfig.set-font-family FontConfig.gothic-medium
+    |> FontConfig.set-fontset FontConfig.gothic-medium
 
   let write-author element ctx =
     let author = TableOfContentsElement.get-author element in
@@ -73,7 +73,7 @@ end = struct
   %% Page number
   let make-page ctx = ctx
     |> set-font-size 10.5pt
-    |> FontConfig.set-font-family FontConfig.gothic-medium
+    |> FontConfig.set-fontset FontConfig.gothic-medium
 
   let write-page page-opt ctx =
     let page-str = page-opt

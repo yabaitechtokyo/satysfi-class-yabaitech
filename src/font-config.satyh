@@ -5,11 +5,11 @@
 module FontConfig : sig
 
   % New config
-  type font-family
-  val gothic-medium : font-family
-  val gothic-regular : font-family
+  type fontset
+  val gothic-medium : fontset
+  val gothic-regular : fontset
 
-  val set-font-family : font-family -> context -> context
+  val set-fontset : fontset -> context -> context
 
   % Legacy config
   val font-latin-italic : string * float * float
@@ -48,7 +48,7 @@ module FontConfig : sig
 
 end = struct
 
-  type font-family = (|
+  type fontset = (|
     latin : string * float * float;
     cjk : string * float * float;
   |)
@@ -63,10 +63,10 @@ end = struct
     cjk = (`fonts-noto-sans-cjk-jp:NotoSansCJKjp-Regular`, 1.0, 0.)
   |)
 
-  let set-font-family font-family ctx = ctx
-    |> set-font Latin font-family#latin
-    |> set-font HanIdeographic font-family#cjk
-    |> set-font Kana font-family#cjk
+  let set-fontset fontset ctx = ctx
+    |> set-font Latin fontset#latin
+    |> set-font HanIdeographic fontset#cjk
+    |> set-font Kana fontset#cjk
 
   let font-size-title   = 32pt
   let font-size-author  = 16pt
