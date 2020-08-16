@@ -6,6 +6,7 @@
 @require: gr
 @require: pervasives
 @require: vdecoset
+@require: annot
 
 @import: ../font-config
 @import: data
@@ -104,7 +105,7 @@ end = struct
         | WebSite(r) ->
           let it-authors = join-it-authors r#author in
           let it-title = r#title in
-          let it-url = embed-string r#url in
+          let it-url = {\href(r#url)(embed-string r#url);} in
           let it-year = embed-string (arabic r#year) in
           {
             #it-authors;.
