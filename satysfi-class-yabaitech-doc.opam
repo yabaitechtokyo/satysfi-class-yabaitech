@@ -16,7 +16,7 @@ dev-repo: "git+https://github.com/yabaitechtokyo/satysfi-class-yabaitech.git"
 depends: [
   "satysfi" {>= "0.0.4" & < "0.0.6"}
   "satyrographos" {>= "0.0.2" & < "0.0.3"}
-  "satysfi-class-yabaitech" {= "0.0.1"}
+  "satysfi-class-yabaitech" {= "0.0.2"}
 ]
 build: [
   ["satyrographos" "opam" "build"
