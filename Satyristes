@@ -1,7 +1,7 @@
 (version "0.0.2")
 (library
   (name "class-yabaitech")
-  (version "0.0.1")
+  (version "0.0.2")
   (sources
     ((packageDir "src")))
   (opam "satysfi-class-yabaitech.opam")
@@ -14,9 +14,9 @@
       (fonts-asana-math ()))))
 (libraryDoc
   (name "class-yabaitech-doc")
-  (version "0.0.1")
+  (version "0.0.2")
   (build
-    ((satysfi "__test__/test.saty" "-o" "yabaitech-demo.pdf")))
+    ((satysfi "__test__/integration/integration.test.saty" "-o" "yabaitech-demo.pdf")))
   (sources
     ((doc "yabaitech-demo.pdf" "./yabaitech-demo.pdf")))
   (opam "satysfi-class-yabaitech-doc.opam")
