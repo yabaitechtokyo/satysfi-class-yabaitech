@@ -8,6 +8,7 @@ module FontConfig : sig
   type fontset
   val gothic-medium : fontset
   val gothic-regular : fontset
+  val serif-regular : fontset
 
   val set-fontset : fontset -> context -> context
 
@@ -61,6 +62,11 @@ end = struct
   let gothic-regular = (|
     latin = (`fonts-noto-sans:NotoSans-Regular`, 1.0, 0.);
     cjk = (`fonts-noto-sans-cjk-jp:NotoSansCJKjp-Regular`, 1.0, 0.)
+  |)
+
+  let serif-regular = (|
+    latin = (`fonts-noto-serif:NotoSerif-Regular`, 1.0, 0.);
+    cjk = (`fonts-noto-serif-cjk-jp:NotoSerifCJKjp-Regular`, 1.0, 0.)
   |)
 
   let set-fontset fontset ctx = ctx

@@ -9,6 +9,13 @@ module Footnote : sig
 
 end = struct
 
+  %% paragraph
+  let make-footnote ctx =  ctx
+    |> set-font-size 8pt
+    |> set-leading 10pt
+    |> set-paragraph-margin 4pt 4pt
+    |> FontConfig.set-fontset FontConfig.serif-regular
+
   let write content ctx =
     let ibf num =
       let it-num = embed-string (arabic num) in
@@ -20,12 +27,7 @@ end = struct
       read-inline ctx { \*#it-num; } in
     let bbf num =
       let ib-num = read-inline ctx (embed-string (arabic num)) in
-      let ctx =
-        let size = 12pt in
-        FontConfig.get-standard-context DocumentConfig.text-width
-        |> set-font-size (size *' 0.9)
-        |> set-leading (size *' 1.2)
-        |> set-paragraph-margin (size *' 0.5) (size *' 0.5) in
+      let ctx = ctx |> make-footnote  in
       let len =
         let (w, _, _) = get-natural-metrics ib-num in
         DocumentConfig.footnote-indent -' w in

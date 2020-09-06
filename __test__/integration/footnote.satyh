@@ -28,13 +28,13 @@ end = struct
     |) <
       +p{
         #lorem;\footnote{ 脚注その1 }
-        #lorem;\footnote{ 脚注その2はちょっと長め #lorem; }
+        #lorem;\footnote{ 脚注その2はちょっと長め #lorem;#lorem; }
       }
       +p{
         pohe!\footnote{
           脚注の組版アルゴリズムって同じページに組版されるように保証されてるっぽくて、
           こんな風にページが空き空きになってしまうこともあるらしい。
-          まあクソ長い脚注を書く方が悪いね。#lorem;
+          まあクソ長い脚注を書く方が悪いね。#lorem;#lorem;
         } #lorem;
       }
       +p{
