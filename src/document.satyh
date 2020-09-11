@@ -58,8 +58,8 @@ end = struct
     |)
 
   let render-front path ctx =
-    let width = 188mm in
-    let lower-left-corner = (-3mm, -3mm) in
+    let width = 182mm in
+    let lower-left-corner = (0mm, 0mm) in
     let img = load-pdf-image path 1 in
     let ib =
       inline-graphics 0pt 0pt 0pt (fun _ ->
