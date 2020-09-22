@@ -29,7 +29,8 @@ document (|
   author = `yabaitech.tokyo`;
   email = `admin@yabaitech.tokyo`;
   website = `http://yabaitech.tokyo`;
-  publisher = `どこかの出版社`
+  publisher = `どこかの出版社`;
+  front = Option.some(`front.pdf`);
   |) '<
     #ChapterTest.article;
     #BibliographyTest.article;

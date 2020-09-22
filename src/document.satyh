@@ -1,4 +1,5 @@
 @require: footnote-scheme
+@require: base/block
 @require: base/option-ext
 @require: base/ref
 @require: base/pager
@@ -24,6 +25,7 @@ module Document : sig
       email: string;
       website: string;
       publisher: string;
+      front: string option;
     |)
 
 end = struct
@@ -74,8 +76,9 @@ end = struct
   let compile record inner =
     let ctx-doc =
       FontConfig.get-standard-context DocumentConfig.text-width in
-    let front-page =
-      ctx-doc |> render-front `front.pdf` in
+    let front-page = record#front
+      |> Option.map (fun (path) -> (render-front path ctx-doc))
+      |> Option.unwrap-or Block.nil in
     let bb-title-pages = ctx-doc |> TitlePage.render
       (|
         title = record#title;
