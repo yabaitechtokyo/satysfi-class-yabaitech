@@ -1,0 +1,95 @@
+@require: gr
+@require: table
+@require: base/block
+@require: base/graphics
+@require: base/inline
+
+@import: ../font-config
+
+@import: data
+
+module ColophonPage : sig
+
+  val render : ColophonData.t -> context -> block-boxes
+
+end = struct
+
+  let title = {yabaitech.tokyo vol.5}
+  let history = {2020年12月1日 初版第一刷 発行}
+
+  let render-title title ctx =
+    let write-title ctx = ctx |> Inline.of-string title in
+    open FontConfig in ctx
+    |> set-font-size 14pt
+    |> set-fontset gothic-regular
+    |> Block.of-inline ?:true false false write-title 
+
+  let render-history history ctx =
+    let write-history ctx = Inline.concat [
+      Inline.skip 8pt;
+      ctx |> Inline.of-string history;
+    ] in
+    open FontConfig in ctx
+    |> set-font-size 10pt
+    |> set-fontset serif-regular
+    |> Block.of-inline ?:true false false write-history
+
+  let publisher = { yabaitech.tokyo }
+  let website = { https://yabaitech.tokyo }
+  let email = { admin\@yabaitech.tokyo }
+  let printer = { 株式会社 ポプルス }
+
+  let table-scheme cellssf ctx =
+    let nc ib = NormalCell((4pt, 2pt, 4pt, 2pt), ib) in
+    let cellss =
+      cellssf (|
+        name = (fun it ->
+              nc (Inline.fil ++ Inline.read it ctx ++ Inline.fil));
+        content = (fun str ->
+              nc (Inline.of-string str ctx ++ Inline.fil));
+      |)
+    in
+    tabular cellss (fun xs ys -> [])
+
+  let render-table data ctx =
+    let write-table ctx = [
+      Inline.skip 14pt;
+      ctx |> table-scheme
+        (fun t -> (
+          let (name, content) = (t#name, t#content) in
+          [
+            [name {発行者}; content (data |> ColophonData.get-pulisher)];
+            [name {Webサイト}; content (data |> ColophonData.get-website)];
+            [name {連絡先}; content (data |> ColophonData.get-email)];
+            [name {印刷所}; content (data |> ColophonData.get-printer)];
+          ]
+      ))
+     ] |> Inline.concat in
+    open FontConfig in ctx
+    |> set-font-size 10pt
+    |> set-fontset serif-regular
+    |> Block.of-inline ?: true false false write-table
+
+  let line ctx =
+    let write-line ctx =
+    inline-graphics DocumentConfig.text-width 1pt 0pt (fun (x, y) -> (
+      [
+        Gr.line (x, y) (x +' DocumentConfig.text-width, y)
+        |> Graphics.stroke 1pt Color.black
+      ]
+    )) in
+    ctx |> Block.of-inline ?:true false false write-line
+
+  let render data ctx =
+    let ctx = ctx
+     |> set-paragraph-margin 0pt 10pt in
+    [
+      Block.skip 15cm;
+      ctx |> render-title (data |> ColophonData.get-title);
+      ctx |> line;
+      ctx |> render-history (data |> ColophonData.get-history);
+      ctx |> render-table data;
+      ctx |> line;
+    ] |> Block.concat
+
+end

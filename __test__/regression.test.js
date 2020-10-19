@@ -40,6 +40,13 @@ describe(`yabaitech SATySFi class file`, () => {
     expect(result.pdfBuffer).toMatchPdfSnapshot();
   });
 
+  it(`Generates a colophon page as expected`, () => {
+    const result = compileSatysfi("colophon/colophon.test.saty");
+
+    expect(result.exitCode).toBe(0);
+    expect(result.pdfBuffer).toMatchPdfSnapshot();
+  });
+
   it(`Integrates each components as expected`, () => {
     const result = compileSatysfi("integration/integration.test.saty");
 

@@ -4,6 +4,8 @@
 @require: base/ref
 @require: base/pager
 
+@import: colophon/data
+@import: colophon/page
 @import: page/page-number
 @import: page/footer
 @import: page/header
@@ -26,6 +28,7 @@ module Document : sig
       website: string;
       publisher: string;
       front: string option;
+      history: string;
     |)
 
 end = struct
@@ -38,8 +41,14 @@ end = struct
     )) 0pt
 
   let make-bb-colophon-page record ctx =
-    % TODO: Fix this
-    Block.nil
+    ctx |> ColophonPage.render (ColophonData.make (|
+    email = record#email;
+    history = record#history;
+    printer = record#publisher;
+    publisher = record#author;
+    title = record#title;
+    website = record#website;
+  |))
 
   let get-content-area pbinfo =
     let () = FootnoteScheme.start-page () in

@@ -1,0 +1,41 @@
+module ColophonData : sig
+
+  type t
+
+  val make : (|
+    title: string;
+    history: string;
+    publisher: string;
+    website: string;
+    email: string;
+    printer: string;
+  |) -> t
+
+  val get-title: t -> string
+  val get-pulisher: t -> string
+  val get-history: t -> string
+  val get-website: t -> string
+  val get-email: t -> string
+  val get-printer: t -> string
+
+end = struct
+
+  type t = (|
+    title: string;
+    history: string;
+    publisher: string;
+    website: string;
+    email: string;
+    printer: string;
+  |)
+
+  let make data = data
+
+  let get-title data = data#title
+  let get-pulisher data = data#publisher
+  let get-history data = data#history
+  let get-email data = data#email
+  let get-website date = date#website
+  let get-printer date = date#printer
+
+end

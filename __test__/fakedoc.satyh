@@ -8,9 +8,13 @@
 
 module FakeDocument : sig
 
+  val ctx : context
+
   val render : block-boxes -> document
 
 end = struct
+
+  let ctx = FontConfig.get-standard-context DocumentConfig.text-width
 
   let get-content-area pbinfo =
     let (text-origin-x, text-origin-y) = DocumentConfig.text-origin in
