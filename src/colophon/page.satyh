@@ -14,9 +14,6 @@ module ColophonPage : sig
 
 end = struct
 
-  let title = {yabaitech.tokyo vol.5}
-  let history = {2020年12月1日 初版第一刷 発行}
-
   let render-title title ctx =
     let write-title ctx = ctx |> Inline.of-string title in
     open FontConfig in ctx
@@ -25,19 +22,19 @@ end = struct
     |> Block.of-inline ?:true false false write-title 
 
   let render-history history ctx =
-    let write-history ctx = Inline.concat [
-      Inline.skip 8pt;
-      ctx |> Inline.of-string history;
-    ] in
-    open FontConfig in ctx
-    |> set-font-size 10pt
-    |> set-fontset serif-regular
-    |> Block.of-inline ?:true false false write-history
-
-  let publisher = { yabaitech.tokyo }
-  let website = { https://yabaitech.tokyo }
-  let email = { admin\@yabaitech.tokyo }
-  let printer = { 株式会社 ポプルス }
+    let history-ctx = open FontConfig in ctx
+      |> set-font-size 10pt
+      |> set-fontset serif-regular in
+    let write-item item ctx = Inline.concat [
+        Inline.skip 8pt;
+        ctx |> Inline.of-string item;
+      ] in
+    let render-item item =
+      history-ctx
+      |> Block.of-inline ?:true false false (write-item item) in
+    history
+    |> List.map render-item
+    |> Block.concat
 
   let table-scheme cellssf ctx =
     let nc ib = NormalCell((4pt, 2pt, 4pt, 2pt), ib) in

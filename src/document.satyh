@@ -28,7 +28,7 @@ module Document : sig
       website: string;
       publisher: string;
       front: string option;
-      history: string;
+      history: string list;
     |)
 
 end = struct

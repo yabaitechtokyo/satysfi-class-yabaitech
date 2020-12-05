@@ -4,7 +4,10 @@
 let colophon-page = FakeDocument.ctx
   |> ColophonPage.render (ColophonData.make (|
     email = `email@email.com`;
-    history = `2020年10月19日 第一刷 発行`;
+    history = [
+      `2020年10月19日 第一刷 発行`;
+      `2020年12月5日 第二刷 発行`;
+    ];
     printer = `ぽへぽへ印刷`;
     publisher = `yabaitech.tokyo`;
     title = `奥付ページ`;

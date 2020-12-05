@@ -4,7 +4,7 @@ module ColophonData : sig
 
   val make : (|
     title: string;
-    history: string;
+    history: string list;
     publisher: string;
     website: string;
     email: string;
@@ -13,7 +13,7 @@ module ColophonData : sig
 
   val get-title: t -> string
   val get-pulisher: t -> string
-  val get-history: t -> string
+  val get-history: t -> string list
   val get-website: t -> string
   val get-email: t -> string
   val get-printer: t -> string
@@ -22,7 +22,7 @@ end = struct
 
   type t = (|
     title: string;
-    history: string;
+    history: string list;
     publisher: string;
     website: string;
     email: string;

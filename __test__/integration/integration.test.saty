@@ -30,7 +30,10 @@ document (|
   email = `admin@yabaitech.tokyo`;
   website = `http://yabaitech.tokyo`;
   publisher = `どこかの出版社`;
-  history = `2020年10月19日 第一刷 発行`;
+  history = [
+    `2020年10月19日 第一刷 発行`;
+    `2020年11月20日 第二刷 発行`;
+  ];
   front = Option.some(`front.pdf`);
   |) '<
     #ChapterTest.article;

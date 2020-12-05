@@ -24,7 +24,7 @@ module Book : sig
       email: string;
       website: string;
       publisher: string;
-      history: string;
+      history: string list;
       front: string option;
     |)
 
