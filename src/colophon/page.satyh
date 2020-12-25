@@ -55,11 +55,17 @@ end = struct
         (fun t -> (
           let (name, content) = (t#name, t#content) in
           [
-            [name {発行者}; content (data |> ColophonData.get-pulisher)];
-            [name {Webサイト}; content (data |> ColophonData.get-website)];
-            [name {連絡先}; content (data |> ColophonData.get-email)];
-            [name {印刷所}; content (data |> ColophonData.get-printer)];
+            data |> ColophonData.get-pulisher
+              |> Option.map (fun item -> ([name {発行者}; content item]));
+            data |> ColophonData.get-website
+              |> Option.map (fun item -> ([name {Webサイト}; content item]));
+            data |> ColophonData.get-email
+              |> Option.map (fun item -> ([name {連絡先}; content item]));
+            data |> ColophonData.get-printer
+              |> Option.map (fun item -> ([name {印刷所}; content item]));
           ]
+          |> List.filter Option.is-some
+          |> List.map Option.unwrap
       ))
      ] |> Inline.concat in
     open FontConfig in ctx

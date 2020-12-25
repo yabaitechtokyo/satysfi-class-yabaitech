@@ -21,20 +21,24 @@ YABAITECH.TOKYO vol.4
 
 =====================
 `` in
-
-document (|
+let colophon = ColophonData.make (|
   title = `YABAITECH.TOKYO vol.4 class file`;
-  volume = `(no volume)`;
-  date = `Feb 29th 2020`;
-  author = `yabaitech.tokyo`;
-  email = `admin@yabaitech.tokyo`;
-  website = `http://yabaitech.tokyo`;
-  publisher = `どこかの出版社`;
   history = [
     `2020年10月19日 第一刷 発行`;
     `2020年11月20日 第二刷 発行`;
   ];
+  publisher = (Option.some `yabaitech.tokyo`);
+  website = (Option.some `http://yabaitech.tokyo`);
+  email = (Option.some `admin@yabaitech.tokyo`);
+  printer = (Option.some `どこかの出版社`);
+|)
+in
+document (|
+  title = `YABAITECH.TOKYO vol.4 class file`;
+  volume = `(no volume)`;
+  date = `Feb 29th 2020`;
   front = Option.some(`front.pdf`);
+  colophon = colophon;
   |) '<
     #ChapterTest.article;
     #BibliographyTest.article;

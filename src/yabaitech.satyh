@@ -20,12 +20,8 @@ module Book : sig
       title: string;
       volume: string;
       date: string;
-      author: string;
-      email: string;
-      website: string;
-      publisher: string;
-      history: string list;
       front: string option;
+      colophon: ColophonData.t;
     |)
 
   % from Bibliography

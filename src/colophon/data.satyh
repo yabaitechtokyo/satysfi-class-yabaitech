@@ -5,28 +5,28 @@ module ColophonData : sig
   val make : (|
     title: string;
     history: string list;
-    publisher: string;
-    website: string;
-    email: string;
-    printer: string;
+    publisher: string option;
+    website: string option;
+    email: string option;
+    printer: string option;
   |) -> t
 
   val get-title: t -> string
-  val get-pulisher: t -> string
   val get-history: t -> string list
-  val get-website: t -> string
-  val get-email: t -> string
-  val get-printer: t -> string
+  val get-pulisher: t -> string option
+  val get-website: t -> string option
+  val get-email: t -> string option
+  val get-printer: t -> string option
 
 end = struct
 
   type t = (|
     title: string;
     history: string list;
-    publisher: string;
-    website: string;
-    email: string;
-    printer: string;
+    publisher: string option;
+    website: string option;
+    email: string option;
+    printer: string option;
   |)
 
   let make data = data

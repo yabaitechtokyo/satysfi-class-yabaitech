@@ -23,12 +23,8 @@ module Document : sig
       title: string;
       volume: string;
       date: string;
-      author: string;
-      email: string;
-      website: string;
-      publisher: string;
       front: string option;
-      history: string list;
+      colophon: ColophonData.t;
     |)
 
 end = struct
@@ -41,14 +37,7 @@ end = struct
     )) 0pt
 
   let make-bb-colophon-page record ctx =
-    ctx |> ColophonPage.render (ColophonData.make (|
-    email = record#email;
-    history = record#history;
-    printer = record#publisher;
-    publisher = record#author;
-    title = record#title;
-    website = record#website;
-  |))
+    ctx |> ColophonPage.render record#colophon
 
   let get-content-area pbinfo =
     let () = FootnoteScheme.start-page () in
