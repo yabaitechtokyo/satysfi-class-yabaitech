@@ -1,6 +1,6 @@
 opam-version: "2.0"
 name: "satysfi-class-yabaitech-doc"
-version: "0.0.7"
+version: "0.0.8"
 synopsis: "Document: The yabaitech.tokyo SATySFi class file"
 description: """
 Document: The yabaitech.tokyo SATySFi class file.
@@ -16,7 +16,7 @@ dev-repo: "git+https://github.com/yabaitechtokyo/satysfi-class-yabaitech.git"
 depends: [
   "satysfi" {>= "0.0.6" & < "0.0.7"}
   "satyrographos" {>= "0.0.2.6" & < "0.0.3"}
-  "satysfi-class-yabaitech" {= "0.0.7"}
+  "satysfi-class-yabaitech" {= "0.0.8"}
 ]
 build: [
   ["satyrographos" "opam" "build"
