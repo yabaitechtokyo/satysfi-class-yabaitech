@@ -12,7 +12,7 @@ function compileSatysfi(src) {
   const tmpFile = tmp.fileSync();
 
   const { code: exitCode } = shell.exec(`satysfi ${src} -o ${tmpFile.name}`, {
-    silent: true,
+    silent: false,
   });
 
   const pdfBuffer = fs.readFileSync(tmpFile.name);
@@ -42,6 +42,13 @@ describe(`yabaitech SATySFi class file`, () => {
 
   it(`Generates a colophon page as expected`, () => {
     const result = compileSatysfi("colophon/colophon.test.saty");
+
+    expect(result.exitCode).toBe(0);
+    expect(result.pdfBuffer).toMatchPdfSnapshot();
+  });
+
+  it(`Generates a bibligraphy section as expected`, () => {
+    const result = compileSatysfi("bibliography/bibliography.test.saty");
 
     expect(result.exitCode).toBe(0);
     expect(result.pdfBuffer).toMatchPdfSnapshot();

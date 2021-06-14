@@ -1,0 +1,148 @@
+@import: ../../src/bibliography/data
+@import: ../../src/bibliography/section
+@import: ../fakedoc
+
+let bibs = [
+
+  (`latex入門`, WebSite(|
+    author = {|TeX wiki contributors|};
+    title = {LaTeX入門 - TeX Wiki};
+    url = `https://texwiki.texjp.org/?LaTeX%E5%85%A5%E9%96%80`;
+    year = 2020;
+  |));
+
+  (`2020年代のEmacs入門`, WebSite(|
+    author = {|conao3|};
+    title = {2020年代のEmacs入門 \| Emacs JP};
+    url = `https://emacs-jp.github.io/tips/emacs-in-2020`;
+    year = 2020;
+  |));
+
+  (`package.el`, WebSite(|
+    author = {|syohex|};
+    title = {package: パッケージ管理ツール \| Emacs JP};
+    url = `https://emacs-jp.github.io/packages/package`;
+    year = 2020;
+  |));
+
+  (`use-package`, WebSite(|
+    author = {|John Wiegley|};
+    title = {jwiegley/use-package: A use-package declaration for simplifying your .emacs};
+    url = `https://github.com/jwiegley/use-package`;
+    year = 2020;
+  |));
+
+  (`leaf.el`, WebSite(|
+    author = {|conao3|};
+    title = {conao3/leaf.el: Flexible, declarative, and modern init.el package configuration};
+    url = `https://github.com/conao3/leaf.el`;
+    year = 2020;
+  |));
+
+  (`YaTeX`, WebSite(|
+    author = {|Hirose Yuuji|};
+    title = {Yet Another LaTeX mode for Emacs};
+    url = `https://www.yatex.org/`;
+    year = 2019;
+  |));
+
+  (`YaTeX-completion`, WebSite(|
+    author = {|Hirose Yuuji|};
+    title = {Info Node: (yatexj)Completion};
+    url = `https://www.yatex.org/~yuuji/bin/info2www.cgi?(yatexj)Completion`;
+    year = 2019;
+  |));
+
+  (`YaTeX-invocation`, WebSite(|
+    author = {|Hirose Yuuji|};
+    title = {Info Node: (yatexj)Invocation};
+    url = `https://www.yatex.org/~yuuji/bin/info2www.cgi?(yatexj)Invocation`;
+    year = 2019;
+  |));
+
+  (`reftex`, WebSite(|
+    author = {|AUC\TeX; project|};
+    title = {RefTeX - References, labels, citations};
+    url = `https://www.gnu.org/software/auctex/reftex.html`;
+    year = 2013;
+  |));
+
+  (`reftex-manual`, WebSite(|
+    author = {|Free Software Foundation|};
+    title = {RefTeX Manual - GNU Project - Free Software Foundation (FSF)};
+    url = `https://www.gnu.org/software/auctex/manual/reftex.index.html`;
+    year = 2009;
+  |));
+
+  (`biblio.el`, WebSite(|
+    author = {|Clément Pit-Claudel|};
+    title = {cpitclaudel/biblio.el: Browse and import bibliographic references from CrossRef, DBLP, HAL, arXiv, Dissemin, and doi.org from Emacs};
+    url = `https://github.com/cpitclaudel/biblio.el`;
+    year = 2020;
+  |));
+
+  (`bibtex`, WebSite(|
+    author = {|Alexander Feder|};
+    title = {BibTeX};
+    url = `http://www.bibtex.org/`;
+    year = 2006;
+  |));
+
+  (`company`, WebSite(|
+    author = {|Dmitry Gutov, company-mode contributors|};
+    title = {company-mode for Emacs};
+    url = `https://company-mode.github.io/`;
+    year = 2020;
+  |));
+
+
+  (`ispell`, WebSite(|
+    author = {|Ayanokoji Takesi|};
+    title = {GNU Emacs Manual(Japanese Translation): Spelling};
+    url = `https://ayatakesi.github.io/emacs/24.5/Spelling.html`;
+    year = 2016;
+  |));
+
+  (`flyspell`, WebSite(|
+    author = {|Emacs Wiki contributors|};
+    title = {[Home] Fly Spell};
+    url = `https://www.emacswiki.org/emacs/FlySpell`;
+    year = 2019;
+  |));
+
+  (`ace-jump-mode`, WebSite(|
+    author = {|winterTTr|};
+    title = {winterTTr/ace-jump-mode: a quick cursor jump mode for emacs};
+    url = `https://github.com/winterTTr/ace-jump-mode`;
+    year = 2014;
+  |));
+
+  (`register`, WebSite(|
+    author = {|Ayanokoji Takesi|};
+    title = {GNU Emacs Manual(Japanese Translation): Registers};
+    url = `https://ayatakesi.github.io/emacs/25.1/Registers.html`;
+    year = 2016;
+  |));
+
+  (`flycheck`, WebSite(|
+    author = {|Sebastian Wiesner, Flycheck contributors|};
+    title = {Flycheck — Syntax checking for GNU Emacs — Flycheck 32-cvs documentation};
+    url = `https://www.flycheck.org/en/latest/`;
+    year = 2017;
+  |));
+
+  % (`conf/rtss/AlurKV98`, InProceedings(|
+  %   author = {|Rajeev Alur, Robert P. Kurshan, Mahesh Viswanathan|};
+  %   title = {Membership Questions for Timed and Hybrid Automata.};
+  %   booktitle = {RTSS};
+  %   series = None; 
+  %   volume = None; 
+  %   number = None; 
+  %   pages = (254,263);
+  %   year = 1998;
+  % |));
+] in
+
+let bib-page =
+  BibliographySection.render FakeDocument.ctx bibs in
+FakeDocument.render bib-page
