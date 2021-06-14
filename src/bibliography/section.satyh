@@ -8,6 +8,7 @@
 @require: vdecoset
 @require: annot
 
+@import: ../lib/url
 @import: ../font-config
 @import: data
 
@@ -20,10 +21,6 @@ end = struct
   open FontConfig
 
   let bib-left-padding = 20pt
-
-  let-inline ctx \url it = ctx
-    |> set-font Latin font-latin-mono
-    |> Inline.read it
 
   let-inline ctx \book-title it = ctx
     |> set-font Latin font-latin-italic
@@ -58,6 +55,9 @@ end = struct
 
     let make-it-bib-pages (p1, p2) =
       embed-string ((arabic p1) ^ `–` ^ (arabic p2))
+
+    let-inline ctx \embed-url url-string =
+      Url.embed-url url-string ctx
 
     let make-ib-bib-item-content ctx bibitem = ctx
       |> Inline.read (match bibitem with
@@ -105,12 +105,12 @@ end = struct
         | WebSite(r) ->
           let it-authors = join-it-authors r#author in
           let it-title = r#title in
-          let it-url = {\href(r#url)(embed-string r#url);} in
+          let it-url = {\embed-url(r#url);} in
           let it-year = embed-string (arabic r#year) in
           {
             #it-authors;.
             \book-title{ #it-title; }.
-            \url{ #it-url; },
+            #it-url;,
             #it-year;.
           })
 
