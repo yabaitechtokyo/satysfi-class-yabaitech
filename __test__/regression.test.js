@@ -12,7 +12,7 @@ function compileSatysfi(src) {
   const tmpFile = tmp.fileSync();
 
   const { code: exitCode } = shell.exec(`satysfi ${src} -o ${tmpFile.name}`, {
-    silent: false,
+    silent: true,
   });
 
   const pdfBuffer = fs.readFileSync(tmpFile.name);
