@@ -105,12 +105,12 @@ end = struct
         | WebSite(r) ->
           let it-authors = join-it-authors r#author in
           let it-title = r#title in
-          let it-url = {\href(r#url)(embed-string r#url);} in
+          let it-url = r#url |> Url.get-inline-text in
           let it-year = embed-string (arabic r#year) in
           {
             #it-authors;.
             \book-title{ #it-title; }.
-            \url{ #it-url; },
+            \url{ \href(r#url |> Url.get-string)(it-url); },
             #it-year;.
           })
 

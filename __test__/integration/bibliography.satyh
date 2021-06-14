@@ -1,6 +1,7 @@
 @require: base/list-ext
 @require: base/option-ext
 
+@import: ../../src/lib/url
 @import: ../../src/yabaitech
 
 module BibliographyTest : sig
@@ -53,7 +54,7 @@ end = struct
     (`multiboot1`, WebSite(|
       author = {| Free Software Foundation, Inc. |};
       title = {Multiboot Specification version 0.6.96};
-      url = `https://www.gnu.org/software/grub/manual/multiboot/multiboot.html`;
+      url = Url.make `https://www.gnu.org/software/grub/manual/multiboot/multiboot.html`;
       year = 2010;
     |))
   ]

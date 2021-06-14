@@ -19,7 +19,7 @@ end = struct
     open FontConfig in ctx
     |> set-font-size 14pt
     |> set-fontset gothic-regular
-    |> Block.of-inline ?:true false false write-title 
+    |> Block.of-inline ?:true false false write-title
 
   let render-history history ctx =
     let history-ctx = open FontConfig in ctx

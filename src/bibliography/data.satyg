@@ -1,3 +1,5 @@
+@import: ../lib/url
+
 type bib-in-proceedings = (|
   author    : inline-text list;
   title     : inline-text;
@@ -29,7 +31,7 @@ type bib-book = (|
 type bib-web-site = (|
   author : inline-text list;
   title  : inline-text;
-  url    : string;
+  url    : Url.t;
   year   : int;
 |)
 

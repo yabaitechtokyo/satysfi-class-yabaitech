@@ -1,0 +1,29 @@
+@require: base/option-ext
+@require: base/inline
+@require: base/list-ext
+@require: base/string
+
+module Url : sig
+
+  type t
+
+  val make : inline-text ?-> string -> t
+
+  val get-string : t -> string
+
+  val get-inline-text : t -> inline-text
+
+end = struct
+
+  type t = inline-text * string
+
+  let make ?:it-opt str =
+    (it-opt |> Option.unwrap-or (embed-string str), str)
+
+  let get-string url = match url with
+    (_, str) -> str
+
+  let get-inline-text url = match url with
+    (it, str) -> it
+
+end
