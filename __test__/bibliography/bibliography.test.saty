@@ -143,6 +143,6 @@ let bibs = [
   % |));
 ] in
 
-let bib-page =
-  BibliographySection.render FakeDocument.ctx bibs in
+let bib-page = FakeDocument.ctx
+  |> BibliographySection.render bibs in
 FakeDocument.render bib-page

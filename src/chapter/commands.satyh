@@ -44,7 +44,8 @@ end = struct
           |> Inline.read { 参考文献 } in
       let bb-bib-title = (ib-bib-title ++ inline-fil)
         |> section-heading ctx-doc in
-      let bb-bib-main = BibliographySection.render ctx-bib bibliography in
+      let bb-bib-main = ctx-bib
+        |> BibliographySection.render bibliography in
       bb-bib-title +++ bb-bib-main
 
   let render-chapter-title title ctx = ctx

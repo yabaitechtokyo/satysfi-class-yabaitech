@@ -13,7 +13,7 @@
 
 module BibliographySection : sig
 
-  val render : context -> bib-defs -> block-boxes
+  val render : bib-defs -> context -> block-boxes
 
 end = struct
 
@@ -128,7 +128,7 @@ end = struct
       VDecoSet.empty
       (fun ctx -> line-break true true ctx ib-bib-item)
 
-  let render ctx bib-defs =
+  let render bib-defs ctx =
     bib-defs
     |> List.map Pair.snd
     |> List.fold-lefti (fun idx bbacc bibitem -> (
