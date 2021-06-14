@@ -6,7 +6,7 @@ jobs:
     name: Check sanity of opam/Satyristes
     runs-on: ubuntu-latest
     container:
-      image: amutake/satysfi:0.0.5
+      image: amutake/satysfi:0.0.6
     steps:
       - uses: actions/checkout@v1
       - name: Try install class-yabaitech and class-yabaitech-doc
