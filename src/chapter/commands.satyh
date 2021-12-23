@@ -95,7 +95,7 @@ end = struct
     let label = Label.or-fresh labelopt in
     let () = ChapterRepository.reset-section-num () in
     let () = ChapterRepository.reset-subsection-num () in
-    let () = ChapterRepository.register-new-chapter label |> Fn.ignore in
+    let () = ChapterRepository.register-new-chapter label (ctx |> Inline.read title |> extract-string) |> Fn.ignore in
     let title-for-toc = title-for-toc |> Option.unwrap-or title in
     let () =
       TableOfContentsElement.make label title-for-toc subtitle author
@@ -127,7 +127,7 @@ end = struct
     let ctx-title = make-section-title ctx in
     let () = ChapterRepository.reset-subsection-num () in
     let label = Label.or-fresh label-opt in
-    let section-num = ChapterRepository.register-new-section label in
+    let section-num = ChapterRepository.register-new-section label (ctx |> Inline.read title |> extract-string) in
     let ib-num = read-inline ctx-title (embed-string (section-num ^ `.`)) in
     let ib-title = read-inline ctx-title title in
     let bb-title = section-heading

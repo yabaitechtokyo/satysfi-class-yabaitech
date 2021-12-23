@@ -1,3 +1,4 @@
+@require: base/list-ext
 @require: base/cross-ref
 @require: base/ref
 
@@ -6,15 +7,23 @@
 module ChapterRepository : sig
 
   val get-chapter-num : string -> string option
-  val register-new-chapter : string -> string
+  %% [register-new-chapter label outline-text] returns a string for the new
+  %% Chapter number.
+  val register-new-chapter : string -> string -> string
 
   val reset-section-num : unit -> unit
-  val register-new-section : string -> string
+  %% [register-new-section label outline-text] returns a string for the new
+  %% Section number.
+  val register-new-section : string -> string -> string
   val get-section-num : string -> string option
 
   val reset-subsection-num : unit -> unit
   val get-subsection-num : string -> string option
   val register-new-subsection : string -> string
+
+  %% [register-outline] registers list of chapter/sections as pdf bookmarks.
+  %% This function needs to be called at the end of the document generation.
+  val register-outline : unit -> unit
 
 end = struct
 
@@ -22,28 +31,32 @@ end = struct
   let num-section-ref = Ref.make 0
   let num-subsection-ref = Ref.make 0
 
+  let outline-ref = Ref.make []
+
   let get-chapter-num name = name
     |> Label.prefix-with [`chapter`; `num`]
     |> CrossRef.get
 
-  let register-new-chapter label =
+  let register-new-chapter label outline-text =
     let new-num = 1 + Ref.get num-chapter-ref in
     let new-num-str = arabic new-num in
-    let () = label
-      |> Label.prefix-with [`chapter`; `num`]
-      |> CrossRef.register new-num-str in
+    let raw-label = label |> Label.prefix-with [`chapter`; `num`] in
+    let () = raw-label |> CrossRef.register new-num-str in
     let () = num-chapter-ref |> Ref.set new-num in
+    let outline-entry = (0, outline-text, label, false) in
+    let () = outline-ref |> Ref.set (outline-entry :: (outline-ref |> Ref.get)) in
     new-num-str
 
   let reset-section-num () = num-section-ref |> Ref.set 0
 
-  let register-new-section name =
+  let register-new-section name outline-text =
     let new-num = 1 + Ref.get num-section-ref in
     let new-num-str = (arabic new-num) in
-    let () = name
-      |> Label.prefix-with [`section`; `num`]
-      |> CrossRef.register new-num-str in
+    let raw-label = name |> Label.prefix-with [`section`; `num`] in
+    let () = raw-label |> CrossRef.register new-num-str in
     let () = num-section-ref |> Ref.set new-num in
+    let outline-entry = (1, outline-text, name, false) in
+    let () = outline-ref |> Ref.set (outline-entry :: (outline-ref |> Ref.get)) in
     new-num-str
 
   let get-section-num name = name
@@ -67,5 +80,7 @@ end = struct
   let get-subsection-num name = name
     |> Label.prefix-with [`subsection`; `num`]
     |> CrossRef.get
+
+  let register-outline () = register-outline (outline-ref |> Ref.get |> List.reverse)
 
 end
