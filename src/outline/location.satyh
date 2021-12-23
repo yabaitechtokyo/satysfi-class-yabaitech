@@ -1,0 +1,28 @@
+@require: annot
+@require: base/option-ext
+
+@import: ../outline/label
+
+module OutlineLocation : sig
+
+  %% [link-to-location outline-label content] annotets [content] with the location
+  %% where [outline-label] is registered
+  val register-current-location : OutlineLabel.t -> inline-boxes -> inline-boxes
+
+  %% [link-to-location outline-label content] annotets [content] with the location
+  %% where [outline-label] is registered
+  val link-to-location : OutlineLabel.t -> inline-boxes -> inline-boxes
+
+end = struct
+
+  let no-pads = (0pt, 0pt, 0pt, 0pt)
+
+  let register-current-location outline-label content =
+    let deco = outline-label |> OutlineLabel.unwrap |> Annot.register-location-frame in
+    inline-frame-breakable no-pads deco content
+
+  let link-to-location outline-label content =
+    let deco = Annot.link-to-location-frame (outline-label |> OutlineLabel.unwrap) Option.none in
+    inline-frame-breakable no-pads deco content
+
+end

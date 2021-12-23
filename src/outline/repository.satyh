@@ -1,0 +1,29 @@
+@import: label
+
+module OutlineRepository : sig
+
+  %% [register-chapter chapter-title outline-label]
+  val register-chapter : string -> OutlineLabel.t -> unit
+
+  %% [register-section section-title outline-label]
+  val register-section : string -> OutlineLabel.t -> unit
+
+  %% [commit] registers list of chapter/sections as pdf bookmarks.
+  %% This function needs to be called once at the end of the document generation.
+  val commit : unit -> unit
+
+end = struct
+
+  let outline-ref = Ref.make []
+
+  let register-chapter text outline-label =
+    let outline-entry = (0, text, outline-label |> OutlineLabel.unwrap, false) in
+    outline-ref |> Ref.set (outline-entry :: (outline-ref |> Ref.get))
+
+  let register-section text outline-label =
+    let outline-entry = (1, text, outline-label |> OutlineLabel.unwrap, false) in
+    outline-ref |> Ref.set (outline-entry :: (outline-ref |> Ref.get))
+
+  let commit () = register-outline (outline-ref |> Ref.get |> List.reverse)
+
+end

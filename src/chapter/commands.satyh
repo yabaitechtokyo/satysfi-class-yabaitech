@@ -10,6 +10,8 @@
 @import: ../font-config
 @import: ../lib/label
 @import: ../mutables
+@import: ../outline/location
+@import: ../outline/repository
 @import: ../table-of-contents/data
 @import: ../table-of-contents/repository
 @import: repository
@@ -51,10 +53,12 @@ end = struct
         |> BibliographySection.render bibliography in
       bb-bib-title +++ bb-bib-main
 
-  let render-chapter-title label title ctx =
+  let render-chapter-title outline-label title ctx =
     let render-inline ctx =
-      let ib = Inline.read title ctx in
-      inline-frame-breakable no-pads (Annot.register-location-frame label) ib in
+      let ib =
+        Inline.read title ctx |> OutlineLocation.register-current-location outline-label in
+      let () = outline-label |> OutlineRepository.register-chapter (extract-string ib) in
+      ib in
     ctx
     |> FontConfig.make-chapter-title
     |> Block.of-inline ?:true false false render-inline
@@ -83,8 +87,8 @@ end = struct
     |> make-chapter-author
     |> Block.of-inline false false render-inline
 
-  let render-chapter-heading label title subtitle-opt author ctx =
-    let bb-title = ctx |> render-chapter-title label title in
+  let render-chapter-heading outline-label title subtitle-opt author ctx =
+    let bb-title = ctx |> render-chapter-title outline-label title in
     let bb-subtitle = subtitle-opt
       |> Option.map (fun subtitle -> render-chapter-subtitle subtitle ctx)
       |> Option.unwrap-or Block.nil in
@@ -102,10 +106,11 @@ end = struct
     let label = Label.or-fresh labelopt in
     let () = ChapterRepository.reset-section-num () in
     let () = ChapterRepository.reset-subsection-num () in
-    let (_, outline-label) = ChapterRepository.register-new-chapter label (ctx |> Inline.read title |> extract-string) in
+    let _ = ChapterRepository.register-new-chapter label (ctx |> Inline.read title |> extract-string) in
     let title-for-toc = title-for-toc |> Option.unwrap-or title in
+    let outline-label = OutlineLabel.of-chapter label in
     let () =
-      TableOfContentsElement.make label title-for-toc subtitle author
+      TableOfContentsElement.make label outline-label title-for-toc subtitle author
       |> TableOfContentsRepository.register-element in
     let () = BibliographyRepository.register bibliography in
     % Render
@@ -134,8 +139,10 @@ end = struct
     let ctx-title = make-section-title ctx in
     let ib-num =
       read-inline ctx-title (embed-string (section-num ^ `.`))
-      |> inline-frame-breakable no-pads (Annot.register-location-frame outline-label) in
+      |> OutlineLocation.register-current-location outline-label in
     let ib-title = read-inline ctx-title title in
+    let outline-text = section-num ^ `. `# ^ (extract-string ib-title) in
+    let () = outline-label |> OutlineRepository.register-section outline-text in
     section-heading
       ctx
       (ib-num ++ (inline-skip 10pt) ++ ib-title ++ (inline-fil))
@@ -143,8 +150,9 @@ end = struct
   let render-section label-opt title inner ctx =
     let () = ChapterRepository.reset-subsection-num () in
     let label = Label.or-fresh label-opt in
-    let (section-num, outline-label) =
+    let section-num =
       ChapterRepository.register-new-section label (ctx |> Inline.read title |> extract-string) in
+    let outline-label = label |> OutlineLabel.of-section in
     let bb-title = render-section-title outline-label section-num title ctx in
     let bb-inner = read-block ctx inner in
     bb-title +++ bb-inner

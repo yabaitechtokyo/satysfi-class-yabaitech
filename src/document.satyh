@@ -89,7 +89,7 @@ end = struct
       ctx-doc
       |> TableOfContentsPage.render toc-list in
     let bb-colophon-pages = make-bb-colophon-page record ctx-doc in
-    let () = ChapterRepository.register-outline () in
+    let () = OutlineRepository.commit () in
     page-break
       DocumentConfig.paper-size
       get-content-area

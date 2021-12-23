@@ -100,7 +100,7 @@ end = struct
             author;
             Inline.fil;
             page
-          ])
+          ] |> OutlineLocation.link-to-location (element |> TableOfContentsElement.get-outline-label))
 
   let render-toc-list toc-list ctx =
     toc-list
