@@ -72,7 +72,7 @@ end = struct
         引用その1 \cite[`LogicVSI`];。複数個の引用をするこもできます
         \cite[`Bochman98`;`conf/ijcai/BolligHKL09`;`multiboot1`];。
       }
-    >+chapter ?:(`bibliography`) (|
+    >+chapter ?:(`bibliography2`) (|
       bibliography = bib |> List.reverse;
       title = {bibliographyのテスト 2回目};
       title-for-toc = Option.none;

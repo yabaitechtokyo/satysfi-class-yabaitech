@@ -1,3 +1,4 @@
+@require: annot
 @require: base/inline
 @require: base/block
 @require: base/fn
@@ -29,6 +30,8 @@ end = struct
   open DocumentConfig
   open FontConfig
 
+  let no-pads = (0pt, 0pt, 0pt, 0pt)
+
   let section-heading ctx ib-heading =
     line-break true false (
       ctx
@@ -48,9 +51,13 @@ end = struct
         |> BibliographySection.render bibliography in
       bb-bib-title +++ bb-bib-main
 
-  let render-chapter-title title ctx = ctx
+  let render-chapter-title label title ctx =
+    let render-inline ctx =
+      let ib = Inline.read title ctx in
+      inline-frame-breakable no-pads (Annot.register-location-frame label) ib in
+    ctx
     |> FontConfig.make-chapter-title
-    |> Block.of-inline ?:true false false (Inline.read title)
+    |> Block.of-inline ?:true false false render-inline
 
   let render-chapter-subtitle subtitle ctx =
     let render-inline ctx =
@@ -77,7 +84,7 @@ end = struct
     |> Block.of-inline false false render-inline
 
   let render-chapter-heading label title subtitle-opt author ctx =
-    let bb-title = ctx |> render-chapter-title title in
+    let bb-title = ctx |> render-chapter-title label title in
     let bb-subtitle = subtitle-opt
       |> Option.map (fun subtitle -> render-chapter-subtitle subtitle ctx)
       |> Option.unwrap-or Block.nil in
@@ -95,7 +102,7 @@ end = struct
     let label = Label.or-fresh labelopt in
     let () = ChapterRepository.reset-section-num () in
     let () = ChapterRepository.reset-subsection-num () in
-    let () = ChapterRepository.register-new-chapter label (ctx |> Inline.read title |> extract-string) |> Fn.ignore in
+    let (_, outline-label) = ChapterRepository.register-new-chapter label (ctx |> Inline.read title |> extract-string) in
     let title-for-toc = title-for-toc |> Option.unwrap-or title in
     let () =
       TableOfContentsElement.make label title-for-toc subtitle author
@@ -112,7 +119,7 @@ end = struct
         label
         (arabic pbinfo#page-number)) in
     let bb-title = ctx
-      |> render-chapter-heading label title subtitle author in
+      |> render-chapter-heading outline-label title subtitle author in
     let bb-content = read-block ctx inner in
     let bb-bib-section = render-bib-section ctx ctx-doc bibliography in
     Block.concat [
@@ -123,16 +130,22 @@ end = struct
       clear-page
     ]
 
-  let render-section label-opt title inner ctx =
+  let render-section-title outline-label section-num title ctx =
     let ctx-title = make-section-title ctx in
+    let ib-num =
+      read-inline ctx-title (embed-string (section-num ^ `.`))
+      |> inline-frame-breakable no-pads (Annot.register-location-frame outline-label) in
+    let ib-title = read-inline ctx-title title in
+    section-heading
+      ctx
+      (ib-num ++ (inline-skip 10pt) ++ ib-title ++ (inline-fil))
+
+  let render-section label-opt title inner ctx =
     let () = ChapterRepository.reset-subsection-num () in
     let label = Label.or-fresh label-opt in
-    let section-num = ChapterRepository.register-new-section label (ctx |> Inline.read title |> extract-string) in
-    let ib-num = read-inline ctx-title (embed-string (section-num ^ `.`)) in
-    let ib-title = read-inline ctx-title title in
-    let bb-title = section-heading
-      ctx
-      (ib-num ++ (inline-skip 10pt) ++ ib-title ++ (inline-fil)) in
+    let (section-num, outline-label) =
+      ChapterRepository.register-new-section label (ctx |> Inline.read title |> extract-string) in
+    let bb-title = render-section-title outline-label section-num title ctx in
     let bb-inner = read-block ctx inner in
     bb-title +++ bb-inner
 

@@ -7,14 +7,16 @@
 module ChapterRepository : sig
 
   val get-chapter-num : string -> string option
-  %% [register-new-chapter label outline-text] returns a string for the new
-  %% Chapter number.
-  val register-new-chapter : string -> string -> string
+  %% [register-new-chapter label outline-text] returns a tuple
+  %% [(new-num, outline-label)] where [new-num] is a new chapter number and
+  %% [outline-label] is a label for outline which you should register location
+  val register-new-chapter : string -> string -> string * string
 
   val reset-section-num : unit -> unit
-  %% [register-new-section label outline-text] returns a string for the new
-  %% Section number.
-  val register-new-section : string -> string -> string
+  %% [register-new-section label outline-text] returns tuple
+  %% [(new-num, outline-label)] where [new-num] is a new section number and
+  %% [outline-label] is a label for outline which you should register location
+  val register-new-section : string -> string -> string * string
   val get-section-num : string -> string option
 
   val reset-subsection-num : unit -> unit
@@ -43,9 +45,10 @@ end = struct
     let raw-label = label |> Label.prefix-with [`chapter`; `num`] in
     let () = raw-label |> CrossRef.register new-num-str in
     let () = num-chapter-ref |> Ref.set new-num in
-    let outline-entry = (0, outline-text, label, false) in
+    let outline-label = label |> Label.prefix-with [`chapter`; `outline`] in
+    let outline-entry = (0, outline-text, outline-label, false) in
     let () = outline-ref |> Ref.set (outline-entry :: (outline-ref |> Ref.get)) in
-    new-num-str
+    (new-num-str, outline-label)
 
   let reset-section-num () = num-section-ref |> Ref.set 0
 
@@ -55,9 +58,10 @@ end = struct
     let raw-label = name |> Label.prefix-with [`section`; `num`] in
     let () = raw-label |> CrossRef.register new-num-str in
     let () = num-section-ref |> Ref.set new-num in
-    let outline-entry = (1, outline-text, name, false) in
+    let outline-label = name |> Label.prefix-with [`section`; `outline`] in
+    let outline-entry = (1, outline-text, outline-label, false) in
     let () = outline-ref |> Ref.set (outline-entry :: (outline-ref |> Ref.get)) in
-    new-num-str
+    (new-num-str, outline-label)
 
   let get-section-num name = name
     |> Label.prefix-with [`section`; `num`]
