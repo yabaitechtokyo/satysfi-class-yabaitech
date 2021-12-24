@@ -163,9 +163,16 @@ end = struct
     let ctx-title = make-subsection-title ctx in
     let ib-num = read-inline ctx-title (embed-string (subsection-num ^ `.`)) in
     let ib-title = read-inline ctx-title title in
+    let outline-label = label |> OutlineLabel.of-subsection in
+    let outline-text = subsection-num ^ `. `# ^ (extract-string ib-title) in
+    let () = outline-label |> OutlineRepository.register-subsection outline-text in
     let bb-title =
-      line-break true false (ctx |> set-paragraph-margin section-top-margin section-bottom-margin)
-      (ib-num ++ (inline-skip 10pt) ++ ib-title ++ (inline-fil)) in
+      line-break
+        true
+        false
+        (ctx |> set-paragraph-margin section-top-margin section-bottom-margin)
+        ((ib-num ++ (inline-skip 10pt) ++ ib-title ++ (inline-fil))
+        |> OutlineLocation.register-current-location outline-label) in
     let bb-inner = read-block ctx inner in
     bb-title +++ bb-inner
 

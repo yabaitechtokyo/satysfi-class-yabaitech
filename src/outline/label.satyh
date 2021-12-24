@@ -10,6 +10,9 @@ module OutlineLabel : sig
   %% [of-section orig-label] returns an annotated label for section outline
   val of-section : string -> t
 
+  %% [of-subsection orig-label] returns an annotated label for section outline
+  val of-subsection : string -> t
+
   val unwrap : t -> string
 
 end = struct
@@ -19,6 +22,8 @@ end = struct
   let of-chapter label = label |> Label.prefix-with [`outline`; `chapter`]
 
   let of-section label = label |> Label.prefix-with [`outline`; `section`]
+
+  let of-subsection label = label |> Label.prefix-with [`outline`; `subsection`]
 
   let unwrap outline-label = outline-label
 
