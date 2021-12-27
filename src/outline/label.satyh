@@ -1,0 +1,30 @@
+@import: ../lib/label
+
+module OutlineLabel : sig
+
+  type t
+
+  %% [of-chapter orig-label] returns an annotated label for chapter outline
+  val of-chapter : string -> t
+
+  %% [of-section orig-label] returns an annotated label for section outline
+  val of-section : string -> t
+
+  %% [of-subsection orig-label] returns an annotated label for section outline
+  val of-subsection : string -> t
+
+  val unwrap : t -> string
+
+end = struct
+
+  type t = string
+
+  let of-chapter label = label |> Label.prefix-with [`outline`; `chapter`]
+
+  let of-section label = label |> Label.prefix-with [`outline`; `section`]
+
+  let of-subsection label = label |> Label.prefix-with [`outline`; `subsection`]
+
+  let unwrap outline-label = outline-label
+
+end
