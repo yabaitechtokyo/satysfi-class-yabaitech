@@ -1,3 +1,5 @@
+@require: base/block
+@require: base/debug
 @require: base/ref
 @import: ../document-config
 @import: ../font-config
@@ -5,33 +7,108 @@
 
 module PageHeader : sig
 
+  val reserved-height : int -> length
   val render : int -> block-boxes
 
 end = struct
 
-  let render pageno =
-    let ctx =
-      FontConfig.get-standard-context DocumentConfig.header-width
-      |> set-paragraph-margin 0pt 0pt
-    in
-    let (bb-float-boxes, acc) =
+  let ctx-float =
+    FontConfig.get-standard-context DocumentConfig.header-width
+    |> set-paragraph-margin 0pt 0pt
+
+  let wrap-float bb =
+    line-break true true (ctx-float |> set-paragraph-margin 0pt 12pt)
+      (inline-fil
+        ++ embed-block-top ctx-float DocumentConfig.text-width (fun _ -> bb)
+        ++ inline-fil)
+
+  let dequeue-plan pageno =
+    let pending-fifo =
       Mutables.ref-float-boxes
       |> Ref.get
-      |> List.fold-left (fun (bbacc, acc) elem -> (
-        let (pn, bb) = elem in
-          if pn < pageno then
-            let bbs =
-              line-break true true (ctx |> set-paragraph-margin 0pt 12pt)
-              (inline-fil
-                ++ embed-block-top ctx DocumentConfig.text-width (fun _ -> bb)
-                ++ inline-fil)
-            in
-              (bbacc +++ bbs, acc)
-          else
-            (bbacc, elem :: acc))
-        ) (block-nil, [])
-    in
-    let () = Mutables.ref-float-boxes |> Ref.set acc in
-      bb-float-boxes
+      |> List.reverse in
+    let (eligible-rev, future-rev) =
+      pending-fifo
+      |> List.fold-left (fun (eligible-acc, future-acc) elem -> (
+        let (pn, _) = elem in
+        if pn < pageno then
+          (elem :: eligible-acc, future-acc)
+        else
+          (eligible-acc, elem :: future-acc)
+      )) ([], []) in
+    let eligible = List.reverse eligible-rev in
+    let future = List.reverse future-rev in
+    let-rec take-under-threshold bbs-rev height rem =
+      match rem with
+      | [] ->
+        (List.reverse bbs-rev, height, [])
+      | (_, bb) :: tl ->
+        let bbs = wrap-float bb in
+        let h = get-natural-length bbs in
+        let h-next = height +' h in
+        if h-next >' DocumentConfig.float-break-height then
+          (List.reverse bbs-rev, height, rem)
+        else
+          take-under-threshold (bbs :: bbs-rev) h-next tl in
+    let (bbs-selected-list, height-selected, eligible-rem, warn-oversized-first) =
+      match eligible with
+      | [] ->
+        ([], 0pt, [], false)
+      | (_, bb-first) :: rem ->
+        let bbs-first = wrap-float bb-first in
+        let h-first = get-natural-length bbs-first in
+        if h-first >' DocumentConfig.float-break-height then
+          ([bbs-first], h-first, rem, true)
+        else
+          let (bbs-rem, h-rem, eligible-rem) =
+            take-under-threshold [bbs-first] h-first rem in
+          (bbs-rem, h-rem, eligible-rem, false) in
+    let bb-selected =
+      bbs-selected-list
+      |> List.fold-left (fun bbacc bbs -> bbacc +++ bbs) block-nil in
+    let use-float-page =
+      height-selected >' DocumentConfig.float-page-height-threshold in
+    let height-selected-capped =
+      if height-selected >' DocumentConfig.text-height then
+        DocumentConfig.text-height
+      else
+        height-selected in
+    let height-reserved =
+      if use-float-page then
+        DocumentConfig.text-height
+      else
+        height-selected-capped in
+    let bb-rendered =
+      if use-float-page then
+        let h-rest = DocumentConfig.text-height -' height-selected-capped in
+        if h-rest >' 0pt then
+          let h-top = h-rest *' 0.5 in
+          (Block.skip h-top)
+          +++ bb-selected
+          +++ (Block.skip (h-rest -' h-top))
+        else
+          bb-selected
+      else
+        bb-selected in
+    let pending-fifo-next = List.append eligible-rem future in
+    let pending-internal-next = List.reverse pending-fifo-next in
+    (bb-rendered, height-reserved, pending-internal-next, warn-oversized-first)
+
+  let reserved-height pageno =
+    let (_, hgt, _, _) = dequeue-plan pageno in
+    hgt
+
+  let render pageno =
+    let (bb-float-boxes, _, queue-next, warn-oversized-first) = dequeue-plan pageno in
+    let () = Mutables.ref-float-boxes |> Ref.set queue-next in
+    let () =
+      if warn-oversized-first then
+        Debug.log (
+          `[warning] The first queued float exceeded float-break-height; dequeued forcibly on page `
+          ^ (arabic pageno)
+          ^ `.`)
+      else
+        () in
+    bb-float-boxes
 
 end

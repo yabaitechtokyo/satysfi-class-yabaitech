@@ -1,0 +1,27 @@
+% -*- coding: utf-8 -*-
+@require: base/debug
+
+@import: ../../src/yabaitech
+@import: figure
+
+let colophon = ColophonData.make (|
+  title = `YABAITECH.TOKYO vol.4 class file`;
+  history = [
+    `2020年10月19日 第一刷 発行`;
+    `2020年11月20日 第二刷 発行`;
+  ];
+  publisher = (Option.some `yabaitech.tokyo`);
+  website = (Option.some `http://yabaitech.tokyo`);
+  email = (Option.some `admin@yabaitech.tokyo`);
+  printer = (Option.some `どこかの出版社`);
+|)
+in
+document (|
+  title = `YABAITECH.TOKYO vol.4 class file`;
+  volume = `(no volume)`;
+  date = `Feb 29th 2020`;
+  front = Option.none;
+  colophon = colophon;
+  |) '<
+    #FigureTest.article;
+>

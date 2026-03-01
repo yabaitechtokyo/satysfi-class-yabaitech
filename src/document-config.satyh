@@ -4,6 +4,8 @@ module DocumentConfig : sig
   val text-origin : length * length
   val text-width : length
   val text-height : length
+  val float-break-height : length
+  val float-page-height-threshold : length
   val header-origin : length * length
   val header-width : length
   val footer-origin : length * length
@@ -26,6 +28,8 @@ end = struct
   let text-origin = (16mm, 30mm)
   let text-width = 150mm
   let text-height = 200mm
+  let float-break-height = text-height
+  let float-page-height-threshold = text-height *' 0.7
   let header-origin = (16mm, 15mm)
   let header-width = text-width
   let footer-origin = (16mm, 240mm)

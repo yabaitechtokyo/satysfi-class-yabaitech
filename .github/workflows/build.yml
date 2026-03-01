@@ -14,6 +14,7 @@ jobs:
           export HOME=/root
           eval $(opam env)
           opam update
+          opam pin add "git+https://github.com/zeptometer/SATySFi-fonts-asana-math.git"
           opam pin add "file://${PWD}"
           satyrographos install -l class-yabaitech class-yabaitech-doc
   regression-test:
@@ -30,6 +31,7 @@ jobs:
           export HOME=/root
           eval $(opam env)
           opam update
+          opam pin add "git+https://github.com/zeptometer/SATySFi-fonts-asana-math.git"
           opam pin add satysfi-class-yabaitech.opam "file://${PWD}"
           satyrographos install -l class-yabaitech
       - name: Run regression tests
