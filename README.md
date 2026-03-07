@@ -12,3 +12,6 @@ You can buy our magazines at [BOOTH](https://booth.pm). Check them out!
 - [yabaitech.tokyo vol.2](https://booth.pm/ja/items/1304326)
 - [yabaitech.tokyo vol.3](https://booth.pm/ja/items/1557104)
 - [yabaitech.tokyo vol.4](https://booth.pm/ja/items/1888547)
+- [yabaitech.tokyo vol.5](https://booth.pm/ja/items/2616633)
+- [yabaitech.tokyo vol.6](https://booth.pm/ja/items/2947378)
+- [yabaitech.tokyo vol.7](https://booth.pm/ja/items/3518239)
