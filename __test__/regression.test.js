@@ -60,4 +60,11 @@ describe(`yabaitech SATySFi class file`, () => {
     expect(result.exitCode).toBe(0);
     expect(result.pdfBuffer).toMatchPdfSnapshot();
   });
+
+  it(`Generates many figures as expected`, () => {
+    const result = compileSatysfi("many_figures/many_figures.test.saty");
+
+    expect(result.exitCode).toBe(0);
+    expect(result.pdfBuffer).toMatchPdfSnapshot();
+  });
 });
