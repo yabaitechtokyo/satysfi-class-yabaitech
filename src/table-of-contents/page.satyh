@@ -2,6 +2,7 @@
 @require: base/inline
 @require: base/int
 @require: base/option-ext
+@require: base/list-ext
 
 @import: ../font-config
 @import: ../chapter/commands
@@ -91,12 +92,20 @@ end = struct
         let subtitle = ctx |> write-subtitle element in
         let author = ctx |> write-author element in
         let page = ctx |> write-page page-opt in
+        let total-width =
+          [title; subtitle; author; page]
+          |> List.map get-natural-width
+          |> List.fold-left (+') 0pt in
         ctx
         |> set-paragraph-margin 0pt 24pt
         |> Block.of-inline true true (fun ctx -> Inline.concat [
             title;
             subtitle;
-            Inline.skip 15pt;
+            (if total-width >' DocumentConfig.text-width -' 30pt then
+            Inline.fil
+            else
+            Inline.skip 15pt
+            );
             author;
             Inline.fil;
             page
